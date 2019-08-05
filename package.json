@@ -1,0 +1,64 @@
+{
+  "name": "nast-f-vue-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "info": "vue-cli-service build --report",
+    "inspect": "vue-cli-service inspect",
+    "publish:fast": "node publish-fast.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "cookie-universal": "^2.0.16",
+    "core-js": "^2.6.5",
+    "localforage": "^1.7.3",
+    "moment": "^2.24.0",
+    "nast-ui": "file:../nast-ui-old/publish",
+    "vue": "^2.6.10",
+    "vue-meta": "^2.0.3",
+    "vue-router": "^3.0.6",
+    "vuex": "^3.1.1",
+    "vuex-router-sync": "^5.0.0",
+    "xss": "^1.0.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-eslint": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
+    "acorn": "^6.1.1",
+    "acorn-dynamic-import": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.12.4",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-vue": "^5.0.0",
+    "sass": "^1.18.0",
+    "sass-loader": "^7.1.0",
+    "vue-cli-plugin-nast": "file:vue-cli-plugin-nast",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.35.2"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "eslintIgnore": [
+    "node_modules",
+    "publish"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "google",
+    "plugin:vue/recommended"
+  ],
+  "rules": {
+    "comma-dangle": [
+      "error",
+      "always"
+    ],
+    "array-bracket-spacing": [
+      "error",
+      "always"
+    ],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "indent": [
+      "error",
+      2
+    ],
+    "indent-legacy": [
+      "error",
+      2
+    ],
+    "arrow-parens": [
+      "error",
+      "always"
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 150
+      }
+    ],
+    "import/no-extraneous-dependencies": 0,
+    "import/extensions": 0,
+    "import/no-unresolved": 0,
+    "sort-imports": 0,
+    "global-require": 0,
+    "no-trailing-spaces": 0,
+    "spaced-comment": 0,
+    "no-plusplus": 0,
+    "no-undef": 0,
+    "no-invalid-this": 0,
+    "no-param-reassign": 0,
+    "linebreak-style": 0,
+    "vue/max-attributes-per-line": 0,
+    "vue/html-self-closing": 0,
+    "vue/require-prop-types": 0,
+    "vue/single line-html-element-content-newline": 0
+  }
+}
