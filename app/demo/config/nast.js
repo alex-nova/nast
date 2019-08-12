@@ -1,8 +1,8 @@
 module.exports = {
-  platforms: {
+  themes: {
     web: 'default',
   },
-  themes: {
+  presets: {
     default: {
       Link: 'default',
       Items: 'default',

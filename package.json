@@ -5,8 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "info": "vue-cli-service build --report",
-    "inspect": "vue-cli-service inspect",
-    "publish:fast": "node publish-fast.js"
+    "inspect": "vue-cli-service inspect"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -14,7 +13,8 @@
     "core-js": "^2.6.5",
     "localforage": "^1.7.3",
     "moment": "^2.24.0",
-    "nast-ui": "file:../nast-ui-old/publish",
+    "nast": "file:app/nast",
+    "nast-ui": "file:./../nast-ui/app/nast-ui",
     "vue": "^2.6.10",
     "vue-meta": "^2.0.3",
     "vue-router": "^3.0.6",
@@ -44,7 +44,7 @@
     "rollup-plugin-vue": "^5.0.0",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
-    "vue-cli-plugin-nast": "file:vue-cli-plugin-nast",
+    "vue-cli-plugin-nast": "file:app/vue-cli-plugin-nast",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.35.2"
   },

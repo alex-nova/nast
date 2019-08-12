@@ -10,7 +10,11 @@ import ide from './global/ide-helpers'
 const boot = (Vue) => {
   initGlobal()
   
-  installNastUI(Vue)
+  if ($env.prod) {
+    installNastUI(Vue)
+  } else {
+    Vue.use(require('nast-ui/src/components').default)
+  }
   
   installPlugins(Vue)
   

@@ -8,22 +8,22 @@ export default () => {
       /**
        * @var {boolean}
        */
-      prod,
+      prod: true,
       
       /**
        * @var {string} development|testing|alpha|beta|demo|production
        */
-      env,
+      env: 'production',
       
       /**
        * @var {string} web|android|ios|windows|mac|linux
        */
-      theme,
+      theme: 'web',
       
       /**
        * @var {string} for web: hash|prerender|sfa
        */
-      type,
+      type: '',
     }
   }
 }

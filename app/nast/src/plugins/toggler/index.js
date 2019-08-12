@@ -1,5 +1,5 @@
 
-const mixin = {
+const plugin = {
   install(Vue, options) {
     Vue.mixin({
       data: () => ({
@@ -19,4 +19,4 @@ const mixin = {
   },
 }
 
-export default () => mixin
+export default plugin

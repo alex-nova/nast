@@ -49,9 +49,10 @@ export default {
     
     expect(value, expect, name = '') {
       if ($n.isEqual(value, expect)) {
-        console.warn(`Test ${this.testName}[${name}] passed!`)
+        console.log($env.prod)
+        $debug.warn(`Test ${this.testName}[${name}] passed!`)
       } else {
-        console.error(`Test ${this.testName}[${name}] failed! Expected `, expect, 'got ', value)
+        $debug.error(`Test ${this.testName}[${name}] failed! Expected `, expect, 'got ', value)
       }
     },
   },
