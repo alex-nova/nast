@@ -13,7 +13,7 @@ const boot = (Vue) => {
   if ($env.prod) {
     installNastUI(Vue)
   } else {
-    Vue.use(require('nast-ui/src/components').default)
+    Vue.use(require('nast-ui/src').default)
   }
   
   installPlugins(Vue)
