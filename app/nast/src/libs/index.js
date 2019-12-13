@@ -1,46 +1,20 @@
-import { libs as customLibs, } from './../userApp'
-import Api from './api'
-import Bus from './bus'
-import Cookie from './cookie'
-import Http from './http'
-import Date from './date'
-import Session from './session'
-import Storage from './storage'
-import config from '../config'
+import { libs as customLibs, } from '../framework/userApp'
+import Pages from './Pages'
+import Store from './Store'
 
 
 const libs = {
-  Api: customLibs.Api || Api,
-  Bus: customLibs.Bus || Bus,
-  Cookie: customLibs.Cookie || Cookie,
-  Http: customLibs.Http || Http,
-  Date: customLibs.Date || Date,
-  Session: customLibs.Session || Session,
-  Storage: customLibs.Storage || Storage,
+  Pages: customLibs.Pages || Pages,
+  Store: customLibs.Store || Store,
 }
 
-const bus = new libs.Bus()
-const cookie = new libs.Cookie()
-const date = new libs.Date()
-const http = new libs.Http()
-const session = new libs.Session()
-const storage = new libs.Storage()
-const api = new libs.Api({ config, http, })
+const pages = new libs.Pages()
+const store = new libs.Store()
 
 
 export default {
-  /** @type {BusInterface} */
-  bus,
-  /** @type {ApiInterface} */
-  api,
-  /** @type {CookieInterface} */
-  cookie,
-  /** @type {DateInterface} */
-  date,
-  /** @type {HttpInterface} */
-  http,
-  /** @type {SessionInterface} */
-  session,
-  /** @type {StorageInterface} */
-  storage,
+  /** @type {PagesInterface} */
+  pages,
+  /** @type {StoreInterface} */
+  store,
 }

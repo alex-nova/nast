@@ -6,8 +6,8 @@ module.exports = {
   
   pluginOptions: {
     nast: {
-      entry: 'app/demo/config',
       appDir: 'app/demo',
+      configDir: 'a', // относительно appDir без начального слеша
     },
   },
 }

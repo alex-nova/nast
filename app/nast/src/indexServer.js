@@ -1,6 +1,5 @@
-import { createApp, } from './index'
+import createApp from './framework'
 
 export default (context) => {
-  const { app, } = createApp()
-  return app
+  return createApp()
 }
