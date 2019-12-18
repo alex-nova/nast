@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 
-let routes = { routes: [], pages: {}, }
+let routes = []
 let store = {}
 let api = {}
 let libs = {}

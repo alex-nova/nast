@@ -16,12 +16,11 @@ export default {
     title: { type: String, default: '', },
   },
   computed: {
-    ...$n.mapGetters('pages', [ 'structureByName', 'getPage', ]),
     breadcrumbs() {
-      return this.structureByName(this.$route.name)
+      return $app.pages.breadcrumbs(this.$route.name)
     },
     page() {
-      return this.getPage(this.$route.name)
+      return $app.pages.get(this.$route.name)
     },
   },
 }

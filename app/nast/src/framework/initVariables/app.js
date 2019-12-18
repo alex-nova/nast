@@ -1,11 +1,9 @@
+import PagesGlobalInterface from './../../interfaces/global/Pages'
 
 export default (libs) => {
-  // const { cookie, date, session, storage, api, } = libs
-  const { locale, } = libs
-  
   global.$app = {
-    /** @type {LocaleGlobalInterface} */
-    locale,
+    /** @type {PagesGlobalInterface} */
+    pages: libs.pages.installGlobals ? libs.pages.installGlobals() : new PagesGlobalInterface(),
     // /** @type {ApiInterface} */
     // api,
     // /** @type {CookieInterface} */

@@ -44,6 +44,27 @@ const setInRange = (value, a, b) => {
   return value
 }
 
+/**
+ * @param {Array|Object} container
+ * @param {Function} callback
+ * @param {String} childrenName
+ * @param {Function} parentData
+ */
+const eachDeep = (container, callback, childrenName = 'children', parentData = undefined) => {
+  each(container, (item, key) => {
+    let _parentData = parentData
+    const data = (d) => {
+      if (d === undefined) return _parentData
+      _parentData = d
+    }
+    callback(item, key, data)
+    const children = item[childrenName]
+    if (isArray(children) || isObject(children)) {
+      eachDeep(children, callback, childrenName, _parentData)
+    }
+  })
+}
+
 const mapDeep = (container, childrenName, callback, deep = 0) => {
   return map(container, (cont) => {
     cont = clone(cont)
@@ -58,17 +79,25 @@ const mapDeep = (container, childrenName, callback, deep = 0) => {
   })
 }
 
-const reduceDeep = (container, childrenName, callback, accumulator, parentData) => {
-  return reduce(container, (result, cont, key) => {
-    let _parentData = clone(parentData)
+/**
+ * @param {Array|Object} container
+ * @param {Function} callback
+ * @param {*} accumulator
+ * @param {String} childrenName
+ * @param {Function} parentData
+ * @return {*}
+ */
+const reduceDeep = (container, callback, accumulator, childrenName = 'children', parentData = undefined) => {
+  return reduce(container, (result, item, key) => {
+    let _parentData = parentData
     const data = (d) => {
       if (d === undefined) return _parentData
       _parentData = d
     }
-    result = callback(result, cont, key, data)
-    const children = cont[childrenName]
+    result = callback(result, item, key, data)
+    const children = item[childrenName]
     if (isArray(children) || isObject(children)) {
-      result = reduceDeep(children, childrenName, callback, result, _parentData)
+      result = reduceDeep(children, callback, result, childrenName, _parentData)
     }
     return result
   }, accumulator)
@@ -133,6 +162,7 @@ export default () => {
     setInRange,
     mapDeep,
     reduceDeep,
+    eachDeep,
     isPromise,
     objectPromiseAll,
   

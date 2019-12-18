@@ -5,13 +5,13 @@ import { sync, } from 'vuex-router-sync'
 import installNastUI from 'nast-ui/utils/webpack'
 import App from './App.vue'
 import { routes, store, } from './userApp'
-import initGlobalVariables from './initVariables/index'
+import { initGlobalVariables, initLibVariables, } from './initVariables/index'
 import initGlobalMixins from './initMixins/index'
 import initStores from './initStores/index'
-import libs from './../libs'
+import initLibs from './../libs'
 
 
-const createStore = () =>{
+const createStore = (libs) =>{
   libs.store.corePatchStore(Vuex)
   Vue.use(Vuex)
   
@@ -22,9 +22,9 @@ const createStore = () =>{
   })
 }
 
-const createRouter = () => {
+const createRouter = (libs) => {
   Vue.use(Router)
-  return new Router(libs.pages.coreInitRouter(Vue, routes.routes))
+  return new Router(libs.pages.coreInitRouter(Vue, routes))
 }
 
 const createUI = () => {
@@ -41,13 +41,17 @@ const createUI = () => {
  * @return {object}
  */
 export default () => {
-  initGlobalVariables(libs)
+  initGlobalVariables()
+  
+  const libs = initLibs()
+  
+  initLibVariables(libs)
   initGlobalMixins(libs)
   
   createUI()
   
-  const store = createStore()
-  const router = createRouter()
+  const store = createStore(libs)
+  const router = createRouter(libs)
   
   sync(store, router)
   

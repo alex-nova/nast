@@ -4,10 +4,14 @@ import helpers from './ide-helpers'
 import functions from './functions'
 import debug from './debug'
 
-export default (libs) => {
-  app(libs)
+
+export const initGlobalVariables = () => {
   config()
   helpers()
   functions()
   debug()
+}
+
+export const initLibVariables = (libs) => {
+  app(libs)
 }
