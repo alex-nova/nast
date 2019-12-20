@@ -1,4 +1,4 @@
 module.exports = {
-  staticPath: 'app/_demo/assets/static/',
+  staticPath: 'assets/static/',
   port: 1214,
 }

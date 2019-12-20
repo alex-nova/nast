@@ -14,6 +14,13 @@ export default class PagesInterface {
   constructor(routes) {}
   
   /**
+   * @return {PagesGlobalInterface}
+   */
+  installGlobals() {
+    return {}
+  }
+  
+  /**
    * @param {Vue} Vue
    * @return {RouterOptions} options to new Router(options)
    */

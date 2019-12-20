@@ -30,6 +30,9 @@ class PagesPageInterface {
  *
  */
 class Pages extends PagesInterface {
+  /**
+   * @type {Array}
+   */
   routes = []
   /**
    * @type {{'pageName': PagesPageInterface}}
@@ -58,10 +61,9 @@ class Pages extends PagesInterface {
   }
   
   /**
-   *
    * @return {PagesGlobalInterface}
    */
-  installGlobals = () => {
+  installGlobals() {
     return {
       get: (name) => this.getPage(name),
       breadcrumbs: (name) => this.structureByName(name),
