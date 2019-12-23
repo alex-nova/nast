@@ -34,8 +34,8 @@ export default {
   }),
   created() {
     this.$inputs.init({
-      iin: '',
-      password: '',
+      iin: '123456789012',
+      password: '123456',
     })
     this.$inputs.rules({
       iin: [ 'required', ],
@@ -45,12 +45,17 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.check()) {
+      if (this.$inputs.get('iin') === '123456789012' && this.$inputs.get('password') === '123456') {
         this.$store.commit('app/loading', true)
-        setTimeout(() => {
+        $api.users.get(1).then((response) => {
           this.$store.commit('app/loading', false)
+          this.$store.commit('app/login', response.data)
           this.$router.push({ name: 'index', })
-        }, 3000)
+        })
+      } else {
+        this.$set(this.inputs_errors, 'default', {
+          'iin': [ 'Неверный ИИН или пароль', ],
+        })
       }
     },
   },

@@ -51,9 +51,10 @@ class Pages extends PagesInterface {
       if (item.name) {
         result[item.name] = {
           name: item.name,
+          route: item.name,
           parent: item.parent || null,
           icon: item.icon || null,
-          title: `app.pages.${item.name}`,
+          title: __(`app.pages.${item.name}`),
         }
       }
       return result

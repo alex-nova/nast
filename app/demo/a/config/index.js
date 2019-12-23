@@ -6,7 +6,7 @@ export default {
   api: {
     servers: {
       default: {
-        dev: 'http://127.0.0.1:8000/api/',
+        dev: 'https://cms.nova.st/api/',
         prod: 'api/',
       },
     },

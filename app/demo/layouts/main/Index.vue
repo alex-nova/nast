@@ -1,9 +1,10 @@
 <template>
   <div class="layout-main">
-    <n-layout-cool :menu="navigation">
+    <n-layout-cool :menu="navigation" :profile="profile">
       <template #logo><div class="logo">E-Qurylys</div></template>
       <template #logo-min><div class="logo">EQ</div></template>
       <template #avatar><img :src="avatar" /></template>
+      <template #name>{{ $store.state.app.user ? $store.state.app.user.fullName : '' }}</template>
       <div slot="content">
         <page-title />
         <router-view />
@@ -35,9 +36,51 @@ export default {
   },
   data: () => ({
     avatar,
+    menu: [
+      { name: 'index', },
+      { title: __('app.pages.companyGroup'), icon: 'building', children: [
+        { name: 'info', },
+        { name: 'staff', },
+        { name: 'admins', },
+      ], },
+      // { name: 'notifications', },
+      // { name: 'journals', },
+      // { name: 'settings', },
+    ],
+    profile: [
+      { title: 'Профиль', icon: 'user', route: 'profile', },
+      { title: 'Выход', icon: 'sign-out-alt', route: 'login', },
+    ],
   }),
+  beforeRouteUpdate(to, from, next) {
+    if (!this.$store.state.app.user) {
+      this.$router.push({ name: 'login', })
+    }
+    next()
+  },
+  created() {
+    if (!this.$store.state.app.user) {
+      this.$router.push({ name: 'login', })
+    }
+  },
   computed: {
-    ...$n.mapGetters('pages', [ 'navigation', ]),
+    navigation() {
+      const reducer = (result, item) => {
+        const isGroup = Boolean(item.children)
+        const page = isGroup ? item : ($app.pages.get(item.name) || {})
+    
+        result.push({
+          title: page.title,
+          icon: page.icon,
+          route: page.route,
+          children: isGroup ? page.children.reduce(reducer, []) : undefined,
+        })
+    
+        return result
+      }
+      
+      return this.menu.reduce(reducer, [])
+    },
   },
 }
 </script>
@@ -49,7 +92,7 @@ export default {
 @include initialize((
   default: (
     colors: (
-      primary: #00a0e3,
+      primary: #3472e3,
       secondary: #ffd200,
       tertiary: #c556ff,
     ),

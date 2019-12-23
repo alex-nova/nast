@@ -14,6 +14,7 @@ class Api extends ApiInterface {
    */
   constructor() {
     super()
+    this.create('default')
   }
   
   /**
@@ -43,24 +44,28 @@ class Api extends ApiInterface {
    * @param {String} name
    * @param {ApiConfigInterface} config
    */
-  create(name, config) {
+  create(name, config = {}) {
     if (config.useVersion !== undefined) {
       this.config.useVersion = config.useVersion
     }
-    if (config.baseUrl !== undefined) {
-      this.config.baseUrl = $n.trim(config.baseUrl, '/')
-    }
-    this.instances[name] = axios.create(config)
+    
+    let baseURL = $config(`api.servers.${name}.${$env.prod ? 'prod' : 'dev'}`)
+    baseURL = $n.trim(config.baseURL || baseURL, '/')
+    
+    this._instances[name] = axios.create({
+      ...config,
+      baseURL,
+    })
   }
   
   /**
-   * @param {String} url
+   * @param {String|Array} url
    * @param {String} method
    * @param {String} name
    * @return {ApiObject}
    */
   request(url, method, name = 'default') {
-    return new ApiObject(url, method, this.instances[name], this._config)
+    return new ApiObject(url, method, this._instances[name], this._config)
   }
 }
 

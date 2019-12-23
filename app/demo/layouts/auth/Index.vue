@@ -36,7 +36,7 @@ export default {
   @include initialize((
     default: (
       colors: (
-        primary: #00a0e3,
+        primary: #3472e3,
         secondary: #ffd200,
         tertiary: #c556ff,
       ),

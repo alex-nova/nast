@@ -10,6 +10,8 @@ export default class ApiObject {
   _config = {}
   _resource = null
   _data = undefined
+  _mock = undefined
+  _mockTimeout = 500
   
   _page = 0
   _size = 0
@@ -41,9 +43,21 @@ export default class ApiObject {
   }
   
   /**
+   * @param {Function} callback
    * @return {Promise}
    */
-  then() {
+  then(callback) {
+    if (this._mock) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            headers: {},
+            data: this._mock(),
+          })
+        }, this._mockTimeout)
+      }).then(callback)
+    }
+    
     return this._instance({
       ...this._config,
       method: this._method,
@@ -57,7 +71,7 @@ export default class ApiObject {
         }
       }
       return response
-    })
+    }).then(callback)
   }
   
   /**
@@ -66,6 +80,19 @@ export default class ApiObject {
    */
   config(config) {
     this._config = config
+    return this
+  }
+  
+  /**
+   * @param {ApiConfigInterface} mock
+   * @param {Integer} timeout
+   * @return {ApiObject}
+   */
+  mock(mock, timeout) {
+    this._mock = mock
+    if (timeout) {
+      this._mockTimeout = timeout
+    }
     return this
   }
   
@@ -211,7 +238,9 @@ export default class ApiObject {
       const parts = this._url[0].split('{}')
       const params = this._url.slice(1)
       $n.each(params, (item, index) => {
-        parts[index] += `/${item}`
+        if (item !== undefined) {
+          parts[index] += `/${item}`
+        }
       })
       url = '/' + $n.trim(parts.join(''), '/')
     }
@@ -234,7 +263,7 @@ export default class ApiObject {
     if (this._size) {
       filters.push('size=' + this._size)
     }
-    if (this._sort) {
+    if (this._sort.length) {
       const sort = $n.reduce(this._sort, (result, item) => {
         result.push(`sort[]=${item}`)
         return result
@@ -251,6 +280,9 @@ export default class ApiObject {
     // TODO all
     // TODO query
     
-    return '?' + filters.join('&')
+    if (filters.length) {
+      return '?' + filters.join('&')
+    }
+    return ''
   }
 }

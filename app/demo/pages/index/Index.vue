@@ -1,6 +1,19 @@
 <template>
   <div class="index-page">
-    <h1>Hello!</h1>
+    <n-card>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </n-card>
   </div>
 </template>
 

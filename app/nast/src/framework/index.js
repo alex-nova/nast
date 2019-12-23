@@ -4,11 +4,12 @@ import Router from 'vue-router'
 import { sync, } from 'vuex-router-sync'
 import installNastUI from 'nast-ui/utils/webpack'
 import App from './App.vue'
-import { routes, store, } from './userApp'
-import { initGlobalVariables, initLibVariables, } from './initVariables/index'
+import { routes, store, api, } from './userApp'
+import { initGlobalVariables, initLibVariables, initApiVariables, } from './initVariables/index'
 import initGlobalMixins from './initMixins/index'
 import initStores from './initStores/index'
 import initLibs from './../libs'
+import elements from './translate'
 
 
 const createStore = (libs) =>{
@@ -28,11 +29,11 @@ const createRouter = (libs) => {
 }
 
 const createUI = () => {
-  if ($env.prod) {
-    installNastUI(Vue)
-  } else {
-    Vue.use(require('nast-ui/src').default)
-  }
+  // if ($env.prod) {
+  //   installNastUI(Vue)
+  // } else {
+  Vue.use(require('nast-ui/src').default)
+  // }
 }
 
 /**
@@ -42,11 +43,23 @@ const createUI = () => {
  */
 export default () => {
   initGlobalVariables()
+  initApiVariables(api)
+  
+  // TODO delete
+  global.__ = (key) => $n.get(elements, key, key)
+  Vue.mixin({
+    methods: {
+      __(key) {
+        return __(key)
+      },
+    },
+  })
+  // TODO
   
   const libs = initLibs()
   
   initLibVariables(libs)
-  initGlobalMixins(libs)
+  initGlobalMixins(Vue, libs)
   
   createUI()
   
@@ -62,6 +75,7 @@ export default () => {
     store,
     render: (h) => h(App),
   })
+  
   
   if ($env.type !== 'server') {
     // const initState = (store) => {

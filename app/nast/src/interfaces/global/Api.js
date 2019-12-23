@@ -1,20 +1,57 @@
+
 /**
  *
  */
 export default class ApiGlobalInterface {
   /**
+   * @param {String|Array} url
    * @param {String} name
-   * @return {{'pageName': PagesPageInterface} | PagesPageInterface}
+   * @return {ApiObject}
    */
-  get(name = '') {
+  get(url, name = '') {
+    return {}
+  }
+  /**
+   * @param {String|Array} url
+   * @param {String} name
+   * @return {ApiObject}
+   */
+  post(url, name = '') {
+    return {}
+  }
+  /**
+   * @param {String|Array} url
+   * @param {String} name
+   * @return {ApiObject}
+   */
+  put(url, name = '') {
+    return {}
+  }
+  /**
+   * @param {String|Array} url
+   * @param {String} name
+   * @return {ApiObject}
+   */
+  patch(url, name = '') {
+    return {}
+  }
+  /**
+   * @param {String|Array} url
+   * @param {String} name
+   * @return {ApiObject}
+   */
+  delete(url, name = '') {
     return {}
   }
   
   /**
-   * @param {String} name
-   * @return {PagesPageInterface[]}
+   * @param {ApiConfigInterface} config
    */
-  breadcrumbs(name) {
-    return {}
-  }
+  config(config) {}
+  
+  /**
+   * @param {String} name
+   * @param {ApiConfigInterface} config
+   */
+  create(name, config) {}
 }

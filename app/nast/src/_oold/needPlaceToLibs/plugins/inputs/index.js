@@ -21,11 +21,12 @@ const defaultOptions = {
     phone: 'Поле должно быть корректным телефонным номером',
     between: (name, params, value) => `Поле должно быть от ${params[0]} до ${params[1]}`,
   },
-  input: (self, name) => ({
+  input: (self, name, form) => ({
     name,
-    value: self.$inputs.get(name),
-    input: (value) => self.$inputs.set(name, value),
-    danger: self.$inputs.errors(name),
+    value: self.$inputs.get(name, form),
+    input: (value) => self.$inputs.set(name, value, form),
+    danger: self.$inputs.errors(name, form),
+    text: !self.$inputs.editable(form),
   }),
 }
 
@@ -40,6 +41,7 @@ export default {
         inputs_initial: {}, // { default: { username: 'admin', }, }
         inputs_rules: {}, // { default: { username: [ 'required', 'minLength' ], }, }
         inputs_validations: options.validations, // { required: (value) => {}, minLength: (value) => {}, }
+        inputs_editable: {}, // { default: true, }
       }),
       computed: {
         $inputs() {
@@ -51,12 +53,21 @@ export default {
             reset: this.inputs_reset,
             errors: this.inputs_getErrors,
             rules: this.inputs_setRules,
-            input: this.input_input,
+            input: this.inputs_input,
+            editable: this.inputs_getEditable,
+            edit: this.inputs_edit,
           }
         },
       },
       methods: {
-        inputs_init(inputs, form = 'default') {
+        inputs_getEditable(form = 'default') {
+          return this.inputs_editable[form]
+        },
+        inputs_edit(value, form = 'default') {
+          this.$set(this.inputs_editable, form, (value !== undefined ? value : !this.inputs_editable[form]))
+        },
+        inputs_init(inputs, editable = true, form = 'default') {
+          this.$set(this.inputs_editable, form, editable)
           this.$set(this.inputs_inputs, form, inputs)
           this.$set(this.inputs_initial, form, inputs)
         },
@@ -75,7 +86,6 @@ export default {
           if (this.inputs_inputs[form] === undefined) {
             this.inputs_inputs[form] = {}
           }
-          
           const newInputs = {
             ...this.inputs_inputs[form],
           }
@@ -85,14 +95,12 @@ export default {
         inputs_setRules(rules, form = 'default') {
           this.inputs_rules[form] = rules
         },
-        input_input(name) {
-          return options.input(this, name)
+        inputs_input(name, form = 'default') {
+          return options.input(this, name, form)
         },
-        inputs_reset() {
-          this.inputs_inputs = {
-            ...this.inputs_initial,
-          }
-          this.inputs_errors = {}
+        inputs_reset(form = 'default') {
+          this.$set(this.inputs_inputs, form, this.inputs_initial[form])
+          this.$set(this.inputs_errors, form, {})
         },
         inputs_check(name, form = 'default') {
           if (this.inputs_errors[form] === undefined) {

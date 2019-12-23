@@ -7,7 +7,7 @@ export default class ApiConfigInterface {
    * It will be prepended to `url` unless `url` is absolute.
    * @type {string}
    */
-  baseUrl = ''
+  baseURL = ''
   
   /**
    * If true, `v1/` will prepended to `url`.
