@@ -1,6 +1,5 @@
 <template>
   <div class="page-company-staff">
-  
     <n-card :loading="$toggler.loading">
       <div class="tools">
         <n-button icon="plus" @click="$toggle('add', true)">Добавить сотрудника</n-button>
@@ -12,14 +11,14 @@
       </n-table>
     </n-card>
     
-    <n-modal v-if="$toggler.add" @close="$toggle('add', false)" :loading="$toggler.loadingAdd">
+    <n-modal v-if="$toggler.add" :loading="$toggler.loadingAdd" @close="$toggle('add', false)">
       <div class="items">
         <n-input title="ИИН" v-bind="$inputs.input('iin')" />
         <n-input title="E-mail" v-bind="$inputs.input('email')" />
         <n-input title="Должность" v-bind="$inputs.input('position')" />
       </div>
       <n-items>
-        <n-button color="primary" @click="submit" wide>Отправить приглашение</n-button>
+        <n-button color="primary" wide @click="submit">Отправить приглашение</n-button>
       </n-items>
     </n-modal>
   </div>

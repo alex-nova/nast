@@ -4,7 +4,7 @@
     <form @submit="submit">
       <n-card class="auth-form">
         <div class="content">
-          <n-input title="Компания" value='ТОО "Строительная компания"' disabled />
+          <n-input title="Компания" value="ТОО &quot;Строительная компания&quot;" disabled />
           <n-input title="Должность" value="Главный инженер" disabled />
           <n-input title="E-mail" v-bind="$inputs.input('email')" />
           <n-input title="ФИО" v-bind="$inputs.input('fio')" />
@@ -18,7 +18,7 @@
     </form>
     <div class="links">
       <template v-for="(link, i) in links">
-        <n-link :to="link.link" :key="link.title">{{ link.title }}</n-link>
+        <n-link :key="link.title" :to="link.link">{{ link.title }}</n-link>
         <div v-if="i < links.length - 1" :key="link.title+'sep'">|</div>
       </template>
     </div>

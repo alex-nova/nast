@@ -5,7 +5,7 @@
       <div class="sidebar-content">
         <div class="logo">E-Qurylys</div>
         <div class="other">
-<!--          <n-select :data="langs" value="Русский" inline />-->
+          <!--          <n-select :data="langs" value="Русский" inline />-->
         </div>
         <div class="footer">
           E-Qurylys 1.0

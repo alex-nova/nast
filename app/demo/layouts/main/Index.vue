@@ -58,11 +58,6 @@ export default {
     }
     next()
   },
-  created() {
-    if (!this.$store.state.app.user) {
-      this.$router.push({ name: 'login', })
-    }
-  },
   computed: {
     navigation() {
       const reducer = (result, item) => {
@@ -81,6 +76,11 @@ export default {
       
       return this.menu.reduce(reducer, [])
     },
+  },
+  created() {
+    if (!this.$store.state.app.user) {
+      this.$router.push({ name: 'login', })
+    }
   },
 }
 </script>

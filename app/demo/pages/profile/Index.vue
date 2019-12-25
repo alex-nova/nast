@@ -1,6 +1,5 @@
 <template>
   <div class="page-user-index">
-    
     <n-card :loading="$toggler.loading">
       <template #header><h3>Основная информация</h3></template>
       <div class="items">

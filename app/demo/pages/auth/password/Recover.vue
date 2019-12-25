@@ -1,6 +1,7 @@
 <template>
   <div class="page-login">
-    <div class="title"><h1>Восстановление пароля</h1>
+    <div class="title">
+      <h1>Восстановление пароля</h1>
     </div>
     <form @submit="submit">
       <n-card class="auth-form">
@@ -12,7 +13,7 @@
     </form>
     <div class="links">
       <template v-for="(link, i) in links">
-        <n-link :to="link.link" :key="link.title">{{ link.title }}</n-link>
+        <n-link :key="link.title" :to="link.link">{{ link.title }}</n-link>
         <div v-if="i < links.length - 1" :key="link.title+'sep'">|</div>
       </template>
     </div>

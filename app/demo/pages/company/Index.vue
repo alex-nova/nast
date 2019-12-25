@@ -1,6 +1,5 @@
 <template>
   <div class="page-company-index">
-  
     <n-card :loading="$toggler.loading">
       <div class="items">
         <n-input title="Название" v-bind="$inputs.input('name')" />

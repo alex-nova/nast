@@ -1,6 +1,5 @@
 <template>
   <div class="page-company-admins">
-  
     <n-card :loading="$toggler.loading">
       <div class="tools">
         <n-button icon="plus" @click="$toggle('add', true)">Добавить администратора</n-button>
@@ -13,11 +12,10 @@
       </n-table>
     </n-card>
   
-    <n-modal v-if="$toggler.add" @close="$toggle('add', false)" :loading="$toggler.loadingAdd">
+    <n-modal v-if="$toggler.add" :loading="$toggler.loadingAdd" @close="$toggle('add', false)">
       <n-select :data="users" option-title="fullName" selected-title="fullName" item-value="id" :value.sync="newAdmin" title="Пользователь" />
-      <n-button style="margin-top: 15px" color="primary" @click="submit" wide>Добавить администратора</n-button>
+      <n-button style="margin-top: 15px" color="primary" wide @click="submit">Добавить администратора</n-button>
     </n-modal>
-    
   </div>
 </template>
 
