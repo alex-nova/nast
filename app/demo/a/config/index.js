@@ -12,4 +12,9 @@ export default {
     },
   },
   
+  form: {
+    input() {
+    
+    },
+  },
 }
