@@ -3,14 +3,14 @@
     <n-loader :loading="$store.state.app.loading" />
     <div class="sidebar">
       <div class="sidebar-content">
-        <div class="logo">E-Qurylys</div>
+        <div class="logo">{{ names['logo'] }}</div>
         <div class="other">
           <!--          <n-select :data="langs" value="Русский" inline />-->
         </div>
         <div class="footer">
-          E-Qurylys 1.0
+          {{ names['product'] }}
           <br />
-          © 2019 TOO "DCS инжиниринг"
+          {{ names['company'] }}
         </div>
       </div>
     </div>
@@ -21,9 +21,12 @@
 </template>
 
 <script>
+import names from './../names'
+
 export default {
   name: 'LayoutAuth',
   data: () => ({
+    names: names(),
     langs: [ 'Русский', 'Казахский', 'Английский', ],
   }),
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="layout-main">
     <n-layout-cool :menu="navigation" :profile="profile">
-      <template #logo><div class="logo">E-Qurylys</div></template>
-      <template #logo-min><div class="logo">EQ</div></template>
+      <template #logo><div class="logo">{{ names['logo'] }}</div></template>
+      <template #logo-min><div class="logo">{{ names['logoMin'] }}</div></template>
       <template #avatar><img :src="avatar" /></template>
       <template #name>{{ $store.state.app.user ? $store.state.app.user.fullName : '' }}</template>
       <div slot="content">
@@ -10,13 +10,11 @@
         <router-view />
       </div>
       <div slot="footer">
-        E-Qurylys 1.0
+        {{ names['product'] }}
         <br />
-        © 2019 TOO "DCS инжиниринг"
+        {{ names['company'] }}
         <br />
-        <n-link to="#">
-          Сообщить об ошибке
-        </n-link>
+        <n-link to="#">Сообщить об ошибке</n-link>
       </div>
     </n-layout-cool>
   </div>
@@ -25,6 +23,7 @@
 <script>
 import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
+import names from './../names'
 
 export default {
   name: 'MainLayout',
@@ -35,6 +34,7 @@ export default {
     }
   },
   data: () => ({
+    names: names(),
     avatar,
     menu: [
       { name: 'index', },

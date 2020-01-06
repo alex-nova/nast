@@ -11,8 +11,8 @@ const plugin = {
         },
       },
       methods: {
-        $toggle(name, show) {
-          this.$set(this.toggler_toggles, name, show !== undefined ? show : !this.toggler_toggles[name])
+        $toggle(name, value) {
+          this.$set(this.toggler_toggles, name, value !== undefined ? value : !this.toggler_toggles[name])
         },
       },
     })
