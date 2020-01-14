@@ -3,10 +3,10 @@
     <div class="title">
       <h1>Вход в систему</h1>
     </div>
-    <n-card class="auth-form">
+    <n-card class="auth-form" :loading="$var('loading')">
       <form class="content" @submit="submit">
-        <n-input title="ИИН" v-bind="$inputs.input('iin')" />
-        <n-input title="Пароль" type="password" v-bind="$inputs.input('password')" />
+        <n-input title="ИИН" v-bind="$form.input('iin')" />
+        <n-input title="Пароль" type="password" v-bind="$form.input('password')" />
         <n-button color="primary" type="submit" wide>Войти</n-button>
       </form>
     </n-card>
@@ -34,11 +34,11 @@ export default {
     ],
   }),
   created() {
-    this.$inputs.init({
-      iin: '123456789012',
-      password: '123456',
+    this.$form.init({
+      iin: 'admin@site.com',
+      password: '!Q2w3e4r',
     })
-    this.$inputs.rules({
+    this.$form.rules({
       iin: [ 'required', ],
       password: [ 'required', ],
     })
@@ -46,16 +46,16 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.get('iin') === '123456789012' && this.$inputs.get('password') === '123456') {
-        this.$store.commit('app/loading', true)
-        $api.users.get(1).then((response) => {
-          this.$store.commit('app/loading', false)
-          this.$store.commit('app/login', response.data)
+      if (this.$form.check()) {
+        this.$var('loading', true)
+        $app.auth.login(this.$form.get('iin'), this.$form.get('password')).then(() => {
+          this.$var('loading', false)
           this.$router.push({ name: 'index', })
-        })
-      } else {
-        this.$set(this.inputs_errors, 'default', {
-          'iin': [ 'Неверный ИИН или пароль', ],
+        }).catch(() => {
+          this.$set(this.form_errors, 'default', {
+            'iin': [ 'Неверный ИИН или пароль', ],
+          })
+          this.$var('loading', false)
         })
       }
     },

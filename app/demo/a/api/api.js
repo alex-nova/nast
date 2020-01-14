@@ -3,32 +3,63 @@ import mocks from './mocks'
 
 export default {
   auth: {
-  
+    login(username, password) {
+      return $app.api.post('auth/login').data({ email: username, password, })
+    },
   },
   users: {
     get(id) {
-      return $app.api.get([ 'users{}', id, ]).mock(() => {
-        if (id) {
-          const user = $n.find(mocks.users, [ 'id', id*1, ])
-          return {
-            ...user,
-            company: $n.find(mocks.companies, [ 'id', user.companyId, ]),
+      return $app.api.get([ 'users{}', id, ])
+        .mock(() => {
+          let content
+          if (id) {
+            const user = $n.find(mocks.users, [ 'id', id*1, ])
+            content = {
+              ...user,
+              company: $n.find(mocks.companies, [ 'id', user.companyId, ]),
+            }
+          } else {
+            content = mocks.users
           }
-        } else {
-          return mocks.users
-        }
-      })
+          return { content, }
+        })
     },
   },
   companies: {
     get(id) {
-      return $app.api.get([ 'companies', id, ]).mock(() => {
-        if (id) {
-          return $n.find(mocks.companies, [ 'id', id*1, ])
-        } else {
-          return mocks.companies
-        }
-      })
+      return $app.api.get([ 'companies', id, ])
+        .mock(() => {
+          const content = id ? $n.find(mocks.companies, [ 'id', id*1, ]) : mocks.companies
+          return { content, }
+        })
+    },
+  },
+  
+  projects: {
+    get(id) {
+      return $app.api.get([ 'projects', id, ])
+    },
+    edit(id, data) {
+      return $app.api.put([ 'projects', id, ]).data(data)
+    },
+  },
+  
+  objects: {
+    get(id) {
+      return $app.api.get([ 'quizzes', id, ])
+        .mock(() => {
+          let content
+          if (id) {
+            const object = $n.find(mocks.objects, [ 'id', id*1, ])
+            content = {
+              ...object,
+              project: $n.find(mocks.projects, [ 'id', object.projectId, ]),
+            }
+          } else {
+            content = mocks.objects
+          }
+          return { content, }
+        })
     },
   },
   

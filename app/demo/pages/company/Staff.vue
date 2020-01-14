@@ -13,9 +13,9 @@
     
     <n-modal v-if="$toggler.add" :loading="$toggler.loadingAdd" @close="$toggle('add', false)">
       <div class="items">
-        <n-input title="ИИН" v-bind="$inputs.input('iin')" />
-        <n-input title="E-mail" v-bind="$inputs.input('email')" />
-        <n-input title="Должность" v-bind="$inputs.input('position')" />
+        <n-input title="ИИН" v-bind="$form.input('iin')" />
+        <n-input title="E-mail" v-bind="$form.input('email')" />
+        <n-input title="Должность" v-bind="$form.input('position')" />
       </div>
       <n-items>
         <n-button color="primary" wide @click="submit">Отправить приглашение</n-button>
@@ -39,12 +39,12 @@ export default {
     ],
   }),
   created() {
-    this.$inputs.init({
+    this.$form.init({
       iin: '',
       email: '',
       position: '',
     })
-    this.$inputs.rules({
+    this.$form.rules({
       iin: [ 'required', ],
       email: [ 'required', ],
       position: [ 'required', ],
@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     submit(e) {
-      if (this.$inputs.check()) {
+      if (this.$form.check()) {
         this.$toggle('loadingAdd', true)
         setTimeout(() => {
           this.$toggle('loadingAdd', false)

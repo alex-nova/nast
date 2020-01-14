@@ -23,10 +23,10 @@ const defaultOptions = {
   },
   input: (self, name, form) => ({
     name,
-    value: self.$inputs.get(name, form),
-    input: (value) => self.$inputs.set(name, value, form),
-    danger: self.$inputs.errors(name, form),
-    text: !self.$inputs.editable(form),
+    value: self.$form.get(name, form),
+    input: (value) => self.$form.set(name, value, form),
+    danger: self.$form.errors(name, form),
+    text: !self.$form.editable(form),
   }),
 }
 

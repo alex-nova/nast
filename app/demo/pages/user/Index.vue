@@ -2,17 +2,17 @@
   <div class="page-user-index">
     <n-card :loading="$toggler.loading">
       <div class="items">
-        <n-input title="Компания" v-bind="$inputs.input('company.name')" text />
-        <n-input title="ФИО" v-bind="$inputs.input('fullName')" />
-        <n-input title="ИИН" v-bind="$inputs.input('iin')" />
-        <n-input title="E-mail" v-bind="$inputs.input('email')" />
-        <n-input title="Телефон" v-bind="$inputs.input('phone')" />
-        <n-input title="Должность" v-bind="$inputs.input('position')" />
+        <n-input title="Компания" v-bind="$form.input('company.name')" text />
+        <n-input title="ФИО" v-bind="$form.input('fullName')" />
+        <n-input title="ИИН" v-bind="$form.input('iin')" />
+        <n-input title="E-mail" v-bind="$form.input('email')" />
+        <n-input title="Телефон" v-bind="$form.input('phone')" />
+        <n-input title="Должность" v-bind="$form.input('position')" />
       </div>
       <n-items>
-        <n-button v-if="!$inputs.editable()" color="primary" @click="$inputs.edit">Редактировать</n-button>
-        <n-button v-if="$inputs.editable()" color="success" @click="save">Сохранить</n-button>
-        <n-button v-if="$inputs.editable()" flat @click="() => { $inputs.reset(); $inputs.edit() }">Отмена</n-button>
+        <n-button v-if="!$form.editable()" color="primary" @click="$form.edit">Редактировать</n-button>
+        <n-button v-if="$form.editable()" color="success" @click="save">Сохранить</n-button>
+        <n-button v-if="$form.editable()" flat @click="() => { $form.reset(); $form.edit() }">Отмена</n-button>
       </n-items>
     </n-card>
   </div>
@@ -30,15 +30,15 @@ export default {
     }
     $api.users.get(this.$route.params.id).with(relations).then((request) => {
       this.$toggle('loading', false)
-      this.$inputs.init(request.data, false)
+      this.$form.init(request.data, false)
     })
   },
   methods: {
     save() {
-      if (this.$inputs.check()) {
+      if (this.$form.check()) {
         this.$toggle('loading', true)
         setTimeout(() => {
-          this.$inputs.edit(false)
+          this.$form.edit(false)
           this.$toggle('loading', false)
         }, 1500)
       }

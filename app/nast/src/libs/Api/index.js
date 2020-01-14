@@ -28,16 +28,18 @@ class Api extends ApiInterface {
       put: (url, name = 'default') => this.request(url, 'put', name),
       patch: (url, name = 'default') => this.request(url, 'patch', name),
       delete: (url, name = 'default') => this.request(url, 'delete', name),
-      config: (config) => this.config(config),
+      config: (config, name) => this.config(config, name),
       create: (name, config) => this.create(name, config),
     }
   }
   
   /**
    * @param {ApiConfigInterface} config
+   * @param {String} name
    */
-  config(config) {
-    this.create('default', config)
+  config(config, name = 'default') {
+    $n.merge(this._instances[name].defaults, config)
+    // this.create(name, config)
   }
   
   /**

@@ -1,5 +1,5 @@
 
-export default (type = 'emg') => {
+export default (type = 'eq') => {
   const content = {
     emg: {
       logo: 'EMG',

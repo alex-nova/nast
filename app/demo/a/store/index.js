@@ -4,5 +4,5 @@ import pages from './pages'
 
 export default {
   app,
-  pages,
+  // pages,
 }

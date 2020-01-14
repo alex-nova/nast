@@ -6,7 +6,7 @@
     <form @submit="submit">
       <n-card class="auth-form">
         <div class="content">
-          <n-input title="E-mail" v-bind="$inputs.input('email')" />
+          <n-input title="E-mail" v-bind="$form.input('email')" />
           <n-button color="primary" type="submit" wide>Восстановить пароль</n-button>
         </div>
       </n-card>
@@ -35,14 +35,14 @@ export default {
     ],
   }),
   created() {
-    this.$inputs.init({
+    this.$form.init({
       email: '',
     })
   },
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.check()) {
+      if (this.$form.check()) {
         this.$store.commit('app/loading', true)
         setTimeout(() => {
           this.$store.commit('app/loading', false)

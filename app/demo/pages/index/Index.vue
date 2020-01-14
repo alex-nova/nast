@@ -1,5 +1,33 @@
 <template>
-  <div class="index-page">
+  <div class="index-page container">
+    <n-card>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </n-card>
+    <n-card>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </n-card>
     <n-card>
       <br />
       <br />

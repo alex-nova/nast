@@ -4,7 +4,7 @@
       <template #logo><div class="logo">{{ names['logo'] }}</div></template>
       <template #logo-min><div class="logo">{{ names['logoMin'] }}</div></template>
       <template #avatar><img :src="avatar" /></template>
-      <template #name>{{ $store.state.app.user ? $store.state.app.user.fullName : '' }}</template>
+      <template #name>Осипов Владимир Николаевич{{ $app.auth.user() ? $app.auth.user().name : '' }}</template>
       <div slot="content">
         <page-title />
         <router-view />
@@ -17,6 +17,7 @@
         <n-link to="#">Сообщить об ошибке</n-link>
       </div>
     </n-layout-cool>
+    <cards />
   </div>
 </template>
 
@@ -24,10 +25,11 @@
 import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
 import names from './../names'
+import Cards from './../../cards/Index'
 
 export default {
   name: 'MainLayout',
-  components: { PageTitle, },
+  components: { Cards, PageTitle, },
   html() {
     return {
       title: 'E-Qurylys',
@@ -38,26 +40,20 @@ export default {
     avatar,
     menu: [
       { name: 'index', },
-      { title: __('app.pages.companyGroup'), icon: 'building', children: [
-        { name: 'info', },
-        { name: 'staff', },
-        { name: 'admins', },
+      { title: __('app.pages.company.group'), icon: 'building', children: [
+        { name: 'company.info', },
+        { name: 'company.staff', },
+        { name: 'company.admins', },
       ], },
-      // { name: 'notifications', },
-      // { name: 'journals', },
-      // { name: 'settings', },
+      { title: __('app.pages.projects.group'), icon: 'building', children: [
+        { name: 'projects.list', },
+      ], },
     ],
     profile: [
       { title: 'Профиль', icon: 'user', route: 'profile', },
       { title: 'Выход', icon: 'sign-out-alt', route: 'login', },
     ],
   }),
-  beforeRouteUpdate(to, from, next) {
-    if (!this.$store.state.app.user) {
-      this.$router.push({ name: 'login', })
-    }
-    next()
-  },
   computed: {
     navigation() {
       const reducer = (result, item) => {
@@ -77,10 +73,22 @@ export default {
       return this.menu.reduce(reducer, [])
     },
   },
+  watch: {
+    '$store.state.auth.user'() {
+      this.checkAuth()
+    },
+  },
   created() {
-    if (!this.$store.state.app.user) {
-      this.$router.push({ name: 'login', })
-    }
+    this.checkAuth()
+  },
+  methods: {
+    checkAuth() {
+      if (!$app.auth.user()) {
+        this.$router.push({ name: 'login', })
+        return false
+      }
+      return true
+    },
   },
 }
 </script>
@@ -115,6 +123,10 @@ export default {
     padding: 10px 0;
     font-weight: 600;
     color: var(--text-color-op);
+  }
+  
+  .container {
+    padding: 10px;
   }
 }
 </style>

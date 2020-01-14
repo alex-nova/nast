@@ -28,10 +28,7 @@ export default {
 
 <style lang="scss" scoped>
 .component-page-title {
-  margin: 0 0 30px;
-  
   .content {
-    
     h1 {
       margin: 0;
       padding: 25px var(--n-layout-content-padding);

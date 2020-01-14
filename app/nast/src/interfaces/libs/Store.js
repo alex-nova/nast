@@ -4,7 +4,11 @@
  */
 export default class StoreInterface {
   /**
-   * @param {Object} Vuex
+   * @param {Vue} Vue
+   * @param {Object} stores
+   * @return {Store}
    */
-  corePatchStore(Vuex) {}
+  coreInitStore(Vue, stores) {
+    return {}
+  }
 }

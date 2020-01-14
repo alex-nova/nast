@@ -1,4 +1,3 @@
-import { mapState, mapGetters, mapMutations, mapActions, } from 'vuex'
 import each from 'lodash/each'
 import map from 'lodash/map'
 import reduce from 'lodash/reduce'
@@ -167,10 +166,5 @@ export default () => {
     eachDeep,
     isPromise,
     objectPromiseAll,
-  
-    mapState,
-    mapGetters,
-    mapMutations,
-    mapActions,
   }
 }

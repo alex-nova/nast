@@ -71,7 +71,7 @@ export default class ApiObject {
         }
       }
       return response
-    }).then(callback)
+    }).then($config('api.callback')).then(callback).catch($config('api.catch'))
   }
   
   /**
@@ -233,7 +233,7 @@ export default class ApiObject {
     let url = ''
     
     if ($n.isString(this._url)) {
-      url = $n.trim(this._url, '/')
+      url = '/' + $n.trim(this._url, '/')
     } else { // [ 'users{}/articles{}', 1, 2] -> 'users/1/articles/2'
       const parts = this._url[0].split('{}')
       const params = this._url.slice(1)
@@ -273,7 +273,14 @@ export default class ApiObject {
     if (this._search) {
       filters.push('search=' + this._search)
     }
-    // TODO filters
+    
+    if (this._filters) {
+      const fltrs = $n.reduce(this._filters, (result, item, name) => {
+        result.push(`filter[${name}]=${item}`)
+        return result
+      }, [])
+      filters.push(fltrs.join('&'))
+    }
     // TODO with
     // TODO fields
     // TODO tree
