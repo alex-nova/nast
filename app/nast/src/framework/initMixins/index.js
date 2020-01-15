@@ -33,6 +33,15 @@ export default (Vue, libs) => {
       $app() {
         return $app
       },
+      $d() {
+        return $data
+      },
+      $api() {
+        return $api
+      },
+      $config() {
+        return $config
+      },
     },
   })
 }

@@ -18,6 +18,9 @@ export default {
     init: () => {
       $app.api.config({})
     },
+    getData: (response) => {
+      return response.data.content
+    },
     callback: (response) => {
       response.data.content = response.data.data
       return response
@@ -28,7 +31,7 @@ export default {
   },
   
   auth: {
-    api: (u, p) => $api.auth.login(u, p),
+    api: (u, p) => $api().auth.login(u, p),
     getToken: (response) => {
       return response.data.content.token
     },

@@ -54,4 +54,11 @@ export default class ApiGlobalInterface {
    * @param {ApiConfigInterface} config
    */
   create(name, config) {}
+  
+  /**
+   * @return {CustomApiData}
+   */
+  data() {
+    return {}
+  }
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="layout-main">
     <n-layout-cool :menu="navigation" :profile="profile">
-      <template #logo><div class="logo">{{ names['logo'] }}</div></template>
-      <template #logo-min><div class="logo">{{ names['logoMin'] }}</div></template>
+      <template #logo>{{ names['logo'] }}</template>
+      <template #logo-min>{{ names['logoMin'] }}</template>
       <template #avatar><img :src="avatar" /></template>
       <template #name>Осипов Владимир Николаевич{{ $app.auth.user() ? $app.auth.user().name : '' }}</template>
       <div slot="content">

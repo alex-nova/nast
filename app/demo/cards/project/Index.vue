@@ -93,7 +93,7 @@ export default {
   methods: {
     load() {
       this.$var('loading', true)
-      $api.projects.get(this.$route.query.id).then((response) => {
+      $api().projects.get(this.$route.query.id).then((response) => {
         this.model = response.data.content
         this.model.startedAt = $app.date.format(this.model.startedAt, 'date')
         this.model.endedAt = $app.date.format(this.model.endedAt, 'date')
@@ -104,12 +104,13 @@ export default {
     save() {
       if (this.$form.check()) {
         this.$var('loading', true)
-        $api.projects.edit(this.$route.query.id, this.$form.get()).then((response) => {
+        $api().projects.edit(this.$route.query.id, this.$form.get()).then((response) => {
           this.model = response.data.content
           this.model.startedAt = $app.date.format(this.model.startedAt, 'date')
           this.model.endedAt = $app.date.format(this.model.endedAt, 'date')
           this.$form.init(this.model, false)
           this.$var('loading', false)
+          $data().projects.load().then()
         }).catch(() => {
           this.$var('loading', false)
         })

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { sync, } from 'vuex-router-sync'
 // import installNastUI from 'nast-ui/utils/webpack'
 import App from './App.vue'
-import { api, store as userStores, } from './userApp'
+import { store as userStores, } from './userApp'
 import { initGlobalVariables, initLibVariables, initApiVariables, } from './initVariables/index'
 import initGlobalMixins from './initMixins/index'
 import initStores from './initStores/index'
@@ -25,7 +25,6 @@ const createUI = () => {
  */
 export default () => {
   initGlobalVariables()
-  initApiVariables(api)
   
   // TODO delete
   global.__ = (key) => $n.get(elements, key, key)
@@ -41,6 +40,7 @@ export default () => {
   const libs = initLibs()
   
   initLibVariables(libs)
+  initApiVariables(libs)
   initGlobalMixins(Vue, libs)
   
   createUI()

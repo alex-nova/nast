@@ -16,6 +16,7 @@ export const initLibVariables = (libs) => {
   app(libs)
 }
 
-export const initApiVariables = (api) => {
-  global.$api = api.api
+export const initApiVariables = (libs) => {
+  libs.api.coreInitApi()
+  libs.api.coreInitData()
 }

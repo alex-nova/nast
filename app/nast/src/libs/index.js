@@ -1,4 +1,4 @@
-import { libs as customLibs, routes as customRoutes, } from '../framework/userApp'
+import { libs as customLibs, routes as customRoutes, api as customApi, } from '../framework/userApp'
 import Pages from './Pages'
 import Store from './Store'
 import Api from './Api'
@@ -16,9 +16,9 @@ export default () => {
     Date: customLibs.Date || Date,
   }
   
-  const pages = new libs.Pages(customRoutes)
   const store = new libs.Store()
-  const api = new libs.Api()
+  const pages = new libs.Pages(customRoutes)
+  const api = new libs.Api(customApi, store)
   const auth = new libs.Auth(store, api)
   const form = new libs.Form()
   const date = new libs.Date()

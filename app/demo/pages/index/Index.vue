@@ -68,7 +68,7 @@ export default {
   //     }
   //     const fields = [ 'id', 'name', 'avatar', ]
   //
-  //     $api.articles.get(id).params(params).with(relations).fields(fields).then(() => {
+  //     $api().articles.get(id).params(params).with(relations).fields(fields).then(() => {
   //
   //     })
   //   },
@@ -78,7 +78,7 @@ export default {
   //   },
   //   save2() {
   //     $app.inputs.validate
-  //     $api.article.create(this.params)
+  //     $api().article.create(this.params)
   //   },
   // },
 }

@@ -11,9 +11,8 @@ export default [
       { path: 'company', name: 'company.info', icon: 'file-alt', parent: 'index', component: () => import('pages/company/Index'), },
       { path: 'company/staff', name: 'company.staff', icon: 'users', parent: 'company.info', component: () => import('pages/company/Staff'), },
       { path: 'company/admins', name: 'company.admins', icon: 'user-shield', parent: 'company.info', component: () => import('pages/company/Admins'), },
-        
+      
       { path: 'projects', name: 'projects.list', icon: 'user', parent: 'index', component: () => import('pages/projects/index/Index'), },
-      { path: 'projects/:id', name: 'projects.info', icon: 'user', parent: 'projects.list', component: () => import('pages/projects/project/Index'), },
     ], },
     
     { path: '', component: () => import('layouts/auth/Index'), children: [

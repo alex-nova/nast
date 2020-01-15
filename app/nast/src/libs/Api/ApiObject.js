@@ -12,6 +12,7 @@ export default class ApiObject {
   _data = undefined
   _mock = undefined
   _mockTimeout = 500
+  _callbacks = {}
   
   _page = 0
   _size = 0
@@ -55,10 +56,10 @@ export default class ApiObject {
             data: this._mock(),
           })
         }, this._mockTimeout)
-      }).then(callback)
+      })
     }
-    
-    return this._instance({
+  
+    const promise = this._instance({
       ...this._config,
       method: this._method,
       url: this._constructUrl(),
@@ -71,7 +72,13 @@ export default class ApiObject {
         }
       }
       return response
-    }).then($config('api.callback')).then(callback).catch($config('api.catch'))
+    }).then($config('api.callback'))
+  
+    $n.each(this._callbacks, (cb) => {
+      promise.then(cb)
+    })
+    
+    return promise.then(callback).catch($config('api.catch'))
   }
   
   /**
@@ -80,6 +87,16 @@ export default class ApiObject {
    */
   config(config) {
     this._config = config
+    return this
+  }
+  
+  /**
+   * @param {Function} callback
+   * @param {String} name
+   * @return {ApiObject}
+   */
+  callback(callback, name = 'default') {
+    this._callbacks[name] = callback
     return this
   }
   

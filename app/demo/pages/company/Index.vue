@@ -23,7 +23,7 @@ export default {
   }),
   mounted() {
     this.$toggle('loading', true)
-    $api.companies.get(1).then((request) => {
+    $api().companies.get(1).then((request) => {
       this.$toggle('loading', false)
       this.$form.init(request.data, false)
     })

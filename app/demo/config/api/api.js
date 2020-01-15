@@ -1,13 +1,13 @@
 import mocks from './mocks'
 
 
-export default {
-  auth: {
+export default class CustomApi {
+  auth = {
     login(username, password) {
       return $app.api.post('auth/login').data({ email: username, password, })
     },
-  },
-  users: {
+  }
+  users = {
     get(id) {
       return $app.api.get([ 'users{}', id, ])
         .mock(() => {
@@ -24,8 +24,8 @@ export default {
           return { content, }
         })
     },
-  },
-  companies: {
+  }
+  companies = {
     get(id) {
       return $app.api.get([ 'companies', id, ])
         .mock(() => {
@@ -33,18 +33,18 @@ export default {
           return { content, }
         })
     },
-  },
+  }
   
-  projects: {
+  projects = {
     get(id) {
       return $app.api.get([ 'projects', id, ])
     },
     edit(id, data) {
       return $app.api.put([ 'projects', id, ]).data(data)
     },
-  },
+  }
   
-  objects: {
+  objects = {
     get(id) {
       return $app.api.get([ 'quizzes', id, ])
         .mock(() => {
@@ -61,7 +61,7 @@ export default {
           return { content, }
         })
     },
-  },
+  }
   
   // users: {
   //   get(id) {

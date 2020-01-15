@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     loadUsers(params) {
-      $api.users.get().then((response) => {
+      $api().users.get().then((response) => {
         this.users = response.data.content
         this.$toggle('loading', false)
       })
@@ -41,6 +41,6 @@ export default {
 
 <style lang="scss" scoped>
   .tab-info {
-    
+  
   }
 </style>
