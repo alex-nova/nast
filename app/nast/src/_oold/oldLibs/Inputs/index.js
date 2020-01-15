@@ -34,9 +34,9 @@ class Inputs extends LibraryInterface {
       },
       input: (self, name) => ({
         name,
-        value: self.$inputs.get(name),
-        input: (value) => self.$inputs.set(name, value),
-        danger: self.$inputs.errors(name),
+        value: self.$form.get(name),
+        input: (value) => self.$form.set(name, value),
+        danger: self.$form.errors(name),
       }),
     }
     

@@ -4,21 +4,21 @@
     <form @submit="submit">
       <n-card class="auth-form">
         <div class="content">
-          <n-input title="Компания" value='ТОО "Строительная компания"' disabled />
+          <n-input title="Компания" value="ТОО &quot;Строительная компания&quot;" disabled />
           <n-input title="Должность" value="Главный инженер" disabled />
-          <n-input title="E-mail" v-bind="$inputs.input('email')" />
-          <n-input title="ФИО" v-bind="$inputs.input('fio')" />
-          <n-input title="ИИН" v-bind="$inputs.input('iin')" />
-          <n-input title="Должность" v-bind="$inputs.input('position')" />
-          <n-input title="Пароль" type="password" v-bind="$inputs.input('password')" />
-          <n-input title="Повторите пароль" type="password" v-bind="$inputs.input('password2')" />
+          <n-input title="E-mail" v-bind="$form.input('email')" />
+          <n-input title="ФИО" v-bind="$form.input('fio')" />
+          <n-input title="ИИН" v-bind="$form.input('iin')" />
+          <n-input title="Должность" v-bind="$form.input('position')" />
+          <n-input title="Пароль" type="password" v-bind="$form.input('password')" />
+          <n-input title="Повторите пароль" type="password" v-bind="$form.input('password2')" />
           <n-button color="primary" type="submit" wide>Зарегистрироваться</n-button>
         </div>
       </n-card>
     </form>
     <div class="links">
       <template v-for="(link, i) in links">
-        <n-link :to="link.link" :key="link.title">{{ link.title }}</n-link>
+        <n-link :key="link.title" :to="link.link">{{ link.title }}</n-link>
         <div v-if="i < links.length - 1" :key="link.title+'sep'">|</div>
       </template>
     </div>
@@ -40,7 +40,7 @@ export default {
     ],
   }),
   created() {
-    this.$inputs.init({
+    this.$form.init({
       email: '',
       fio: '',
       iin: '',
@@ -48,7 +48,7 @@ export default {
       password: '',
       password2: '',
     })
-    this.$inputs.rules({
+    this.$form.rules({
       email: [ 'required', ],
       fio: [ 'required', ],
       iin: [ 'required', ],
@@ -59,7 +59,7 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.check()) {
+      if (this.$form.check()) {
         this.$store.commit('app/loading', true)
         setTimeout(() => {
           this.$store.commit('app/loading', false)

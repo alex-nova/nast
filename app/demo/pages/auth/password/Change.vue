@@ -4,9 +4,9 @@
     <form @submit="submit">
       <n-card class="auth-form">
         <div class="content">
-          <n-input title="Старый пароль" type="password" v-bind="$inputs.input('password')" />
-          <n-input title="Новый пароль" type="password" v-bind="$inputs.input('password2')" />
-          <n-input title="Повторите новый пароль" type="password" v-bind="$inputs.input('password3')" />
+          <n-input title="Старый пароль" type="password" v-bind="$form.input('password')" />
+          <n-input title="Новый пароль" type="password" v-bind="$form.input('password2')" />
+          <n-input title="Повторите новый пароль" type="password" v-bind="$form.input('password3')" />
           <n-button color="primary" type="submit" wide>Сменить пароль</n-button>
         </div>
       </n-card>
@@ -23,12 +23,12 @@ export default {
     }
   },
   created() {
-    this.$inputs.init({
+    this.$form.init({
       password: '',
       password2: '',
       password3: '',
     })
-    this.$inputs.rules({
+    this.$form.rules({
       password: [ 'required', ],
       password2: [ 'required', ],
       password3: [ 'required', ],
@@ -37,7 +37,7 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.check()) {
+      if (this.$form.check()) {
         this.$store.commit('app/loading', true)
         setTimeout(() => {
           this.$store.commit('app/loading', false)

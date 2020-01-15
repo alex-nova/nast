@@ -1,17 +1,18 @@
 <template>
   <div class="page-login">
-    <div class="title"><h1>Вход в систему</h1>
+    <div class="title">
+      <h1>Вход в систему</h1>
     </div>
-    <n-card class="auth-form">
+    <n-card class="auth-form" :loading="$var('loading')">
       <form class="content" @submit="submit">
-        <n-input title="ИИН" v-bind="$inputs.input('iin')" />
-        <n-input title="Пароль" type="password" v-bind="$inputs.input('password')" />
+        <n-input title="ИИН" v-bind="$form.input('iin')" />
+        <n-input title="Пароль" type="password" v-bind="$form.input('password')" />
         <n-button color="primary" type="submit" wide>Войти</n-button>
       </form>
     </n-card>
     <div class="links">
       <template v-for="(link, i) in links">
-        <n-link :to="link.link" :key="link.title">{{ link.title }}</n-link>
+        <n-link :key="link.title" :to="link.link">{{ link.title }}</n-link>
         <div v-if="i < links.length - 1" :key="link.title+'sep'">|</div>
       </template>
     </div>
@@ -33,11 +34,11 @@ export default {
     ],
   }),
   created() {
-    this.$inputs.init({
-      iin: '',
-      password: '',
+    this.$form.init({
+      iin: 'admin@site.com',
+      password: '!Q2w3e4r',
     })
-    this.$inputs.rules({
+    this.$form.rules({
       iin: [ 'required', ],
       password: [ 'required', ],
     })
@@ -45,12 +46,17 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.check()) {
-        this.$store.commit('app/loading', true)
-        setTimeout(() => {
-          this.$store.commit('app/loading', false)
+      if (this.$form.check()) {
+        this.$var('loading', true)
+        $app.auth.login(this.$form.get('iin'), this.$form.get('password')).then(() => {
+          this.$var('loading', false)
           this.$router.push({ name: 'index', })
-        }, 3000)
+        }).catch(() => {
+          this.$set(this.form_errors, 'default', {
+            'iin': [ 'Неверный ИИН или пароль', ],
+          })
+          this.$var('loading', false)
+        })
       }
     },
   },

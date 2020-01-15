@@ -5,19 +5,19 @@
       <n-card class="auth-form">
         <div slot="header" class="form-title">Компания</div>
         <div class="content">
-          <n-input title="Название компании" v-bind="$inputs.input('cname')" />
-          <n-input title="ИИН/БИН" v-bind="$inputs.input('bin')" />
+          <n-input title="Название компании" v-bind="$form.input('cname')" />
+          <n-input title="ИИН/БИН" v-bind="$form.input('bin')" />
         </div>
       </n-card>
       <n-card class="auth-form">
         <div slot="header" class="form-title">Ответственное лицо</div>
         <div class="content">
-          <n-input title="E-mail" v-bind="$inputs.input('email')" />
-          <n-input title="ФИО" v-bind="$inputs.input('fio')" />
-          <n-input title="ИИН" v-bind="$inputs.input('iin')" />
-          <n-input title="Должность" v-bind="$inputs.input('position')" />
-          <n-input title="Пароль" type="password" v-bind="$inputs.input('password')" />
-          <n-input title="Повторите пароль" type="password" v-bind="$inputs.input('password2')" />
+          <n-input title="E-mail" v-bind="$form.input('email')" />
+          <n-input title="ФИО" v-bind="$form.input('fio')" />
+          <n-input title="ИИН" v-bind="$form.input('iin')" />
+          <n-input title="Должность" v-bind="$form.input('position')" />
+          <n-input title="Пароль" type="password" v-bind="$form.input('password')" />
+          <n-input title="Повторите пароль" type="password" v-bind="$form.input('password2')" />
         </div>
       </n-card>
       <n-card>
@@ -26,7 +26,7 @@
     </form>
     <div class="links">
       <template v-for="(link, i) in links">
-        <n-link :to="link.link" :key="link.title">{{ link.title }}</n-link>
+        <n-link :key="link.title" :to="link.link">{{ link.title }}</n-link>
         <div v-if="i < links.length - 1" :key="link.title+'sep'">|</div>
       </template>
     </div>
@@ -48,7 +48,7 @@ export default {
     ],
   }),
   created() {
-    this.$inputs.init({
+    this.$form.init({
       cname: '',
       bin: '',
       email: '',
@@ -58,7 +58,7 @@ export default {
       password: '',
       password2: '',
     })
-    this.$inputs.rules({
+    this.$form.rules({
       cname: [ 'required', ],
       bin: [ 'required', ],
       email: [ 'required', ],
@@ -71,7 +71,7 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault()
-      if (this.$inputs.check()) {
+      if (this.$form.check()) {
         this.$store.commit('app/loading', true)
         setTimeout(() => {
           this.$store.commit('app/loading', false)

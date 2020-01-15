@@ -1,4 +1,3 @@
-import { mapState, mapGetters, mapMutations, mapActions, } from 'vuex'
 import each from 'lodash/each'
 import map from 'lodash/map'
 import reduce from 'lodash/reduce'
@@ -8,6 +7,7 @@ import merge from 'lodash/merge'
 import get from 'lodash/get'
 import set from 'lodash/set'
 import unset from 'lodash/unset'
+import trim from 'lodash/trim'
 import pull from 'lodash/pull'
 import includes from 'lodash/includes'
 import concat from 'lodash/concat'
@@ -135,6 +135,7 @@ export default () => {
     get,
     set,
     unset,
+    trim,
     pull,
     includes,
     concat,
@@ -165,10 +166,5 @@ export default () => {
     eachDeep,
     isPromise,
     objectPromiseAll,
-  
-    mapState,
-    mapGetters,
-    mapMutations,
-    mapActions,
   }
 }

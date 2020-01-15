@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "info": "vue-cli-service build --report",
     "inspect": "vue-cli-service inspect"
   },
@@ -16,9 +17,11 @@
     "nast": "file:app/nast",
     "nast-ui": "file:./../nast-ui/app/nast-ui",
     "vue": "^2.6.10",
-    "vue-meta": "^2.0.3",
+    "vue-meta": "^2.3.1",
     "vue-router": "^3.0.6",
+    "vuetify-datetime-picker": "^2.1.1",
     "vuex": "^3.1.1",
+    "vuex-persist": "^2.2.0",
     "vuex-router-sync": "^5.0.0",
     "xss": "^1.0.6"
   },
@@ -27,9 +30,9 @@
     "@babel/node": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
-    "@vue/cli-plugin-babel": "^3.8.0",
-    "@vue/cli-plugin-eslint": "^3.8.0",
-    "@vue/cli-service": "^3.8.0",
+    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-plugin-eslint": "^3.12.1",
+    "@vue/cli-service": "^3.12.1",
     "acorn": "^6.1.1",
     "acorn-dynamic-import": "^4.0.0",
     "babel-eslint": "^10.0.1",
@@ -41,12 +44,12 @@
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.0.0",
-    "rollup-plugin-vue": "^5.0.0",
+    "rollup-plugin-vue": "^5.1.4",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-nast": "file:app/vue-cli-plugin-nast",
-    "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.35.2"
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.41.4"
   },
   "postcss": {
     "plugins": {

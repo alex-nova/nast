@@ -1,38 +1,21 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
-import Router from 'vue-router'
 import { sync, } from 'vuex-router-sync'
-import installNastUI from 'nast-ui/utils/webpack'
+// import installNastUI from 'nast-ui/utils/webpack'
 import App from './App.vue'
-import { routes, store, } from './userApp'
-import { initGlobalVariables, initLibVariables, } from './initVariables/index'
+import { api, store as userStores, } from './userApp'
+import { initGlobalVariables, initLibVariables, initApiVariables, } from './initVariables/index'
 import initGlobalMixins from './initMixins/index'
 import initStores from './initStores/index'
 import initLibs from './../libs'
+import elements from './translate'
 
-
-const createStore = (libs) =>{
-  libs.store.corePatchStore(Vuex)
-  Vue.use(Vuex)
-  
-  return new Vuex.Store({
-    modules: {
-      ...store,
-    },
-  })
-}
-
-const createRouter = (libs) => {
-  Vue.use(Router)
-  return new Router(libs.pages.coreInitRouter(Vue, routes))
-}
 
 const createUI = () => {
-  if ($env.prod) {
-    installNastUI(Vue)
-  } else {
-    Vue.use(require('nast-ui/src').default)
-  }
+  // if ($env.prod) {
+  //   installNastUI(Vue)
+  // } else {
+  Vue.use(require('nast-ui/src').default)
+  // }
 }
 
 /**
@@ -42,26 +25,39 @@ const createUI = () => {
  */
 export default () => {
   initGlobalVariables()
+  initApiVariables(api)
+  
+  // TODO delete
+  global.__ = (key) => $n.get(elements, key, key)
+  Vue.mixin({
+    methods: {
+      __(key) {
+        return __(key)
+      },
+    },
+  })
+  // TODO
   
   const libs = initLibs()
   
   initLibVariables(libs)
-  initGlobalMixins(libs)
+  initGlobalMixins(Vue, libs)
   
   createUI()
-  
-  const store = createStore(libs)
-  const router = createRouter(libs)
+  const store = libs.store.coreInitStore(Vue, {
+    ...userStores,
+    ...initStores(libs),
+  })
+  const router = libs.pages.coreInitRouter(Vue)
   
   sync(store, router)
-  
-  initStores(store)
   
   const app = new Vue({
     router,
     store,
     render: (h) => h(App),
   })
+  
   
   if ($env.type !== 'server') {
     // const initState = (store) => {

@@ -1,41 +1,19 @@
-import PagesInterface from './../../interfaces/libs/Pages'
+import Router from 'vue-router'
 import Meta from 'vue-meta'
-
-/**
- *
- */
-class PagesPageInterface {
-  /**
-   * @type {String}
-   */
-  name
-  
-  /**
-   * @type {String}
-   */
-  parent
-  
-  /**
-   * @type {String}
-   */
-  icon
-  
-  /**
-   * @type {String}
-   */
-  title
-}
+import PagesInterface from './../../interfaces/libs/Pages'
 
 /**
  *
  */
 class Pages extends PagesInterface {
+  /**
+   * @type {Array}
+   */
   routes = []
   /**
    * @type {{'pageName': PagesPageInterface}}
    */
   pages = {}
-  
   
   /**
    * @param {Array} routes
@@ -48,9 +26,10 @@ class Pages extends PagesInterface {
       if (item.name) {
         result[item.name] = {
           name: item.name,
+          route: item.name,
           parent: item.parent || null,
           icon: item.icon || null,
-          title: `app.pages.${item.name}`,
+          title: __(`app.pages.${item.name}`),
         }
       }
       return result
@@ -58,14 +37,37 @@ class Pages extends PagesInterface {
   }
   
   /**
-   *
    * @return {PagesGlobalInterface}
    */
-  installGlobals = () => {
+  installGlobals() {
     return {
       get: (name) => this.getPage(name),
       breadcrumbs: (name) => this.structureByName(name),
     }
+  }
+  
+  /**
+   * @param {Vue} Vue
+   * @return {VueRouter}
+   */
+  coreInitRouter(Vue) {
+    // TODO разобраться в конфиге
+    Vue.use(Meta, {
+      keyName: 'html',
+      attribute: 'dv-meta',
+      ssrAttribute: 'dv-meta-server-rendered',
+      tagIDKeyName: 'mid',
+    })
+    
+    const config = {
+      base: $env.prod ? $config('app.baseUrl') : '/',
+      mode: 'history',
+      fallback: false,
+      routes: this.routes,
+    }
+  
+    Vue.use(Router)
+    return new Router(config)
   }
   
   /**
@@ -94,27 +96,6 @@ class Pages extends PagesInterface {
       n = item.parent
     }
     return result.reverse()
-  }
-  
-  /**
-   * @param {Vue} Vue
-   * @return {RouterOptions} options to new Router(options)
-   */
-  coreInitRouter(Vue) {
-    // TODO разобраться в конфиге
-    Vue.use(Meta, {
-      keyName: 'html',
-      attribute: 'dv-meta',
-      ssrAttribute: 'dv-meta-server-rendered',
-      tagIDKeyName: 'mid',
-    })
-    
-    return {
-      base: $env.prod ? $config('app.baseUrl') : '/',
-      mode: 'history',
-      fallback: false,
-      routes: this.routes,
-    }
   }
 }
 
