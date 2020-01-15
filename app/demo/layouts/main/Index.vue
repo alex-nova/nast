@@ -32,7 +32,7 @@ export default {
   components: { Cards, PageTitle, },
   html() {
     return {
-      title: 'E-Qurylys',
+      title: this.names['product'],
     }
   },
   data: () => ({

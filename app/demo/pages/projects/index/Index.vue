@@ -27,6 +27,11 @@ export default {
   data: () => ({
     projects: [],
   }),
+  load() {
+    return {
+      projects: $api.projects.get().filters({ projectId: null, }).then((r) => r.data.content),
+    }
+  },
   watch: {
     '$route.query'(value) {
       if (!value.modal) {
@@ -35,10 +40,7 @@ export default {
     },
   },
   mounted() {
-    this.load()
-    // setInterval(() => {
-    //   this.load()
-    // }, 10000)
+    // this.load()
   },
   methods: {
     load() {

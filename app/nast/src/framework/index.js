@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { sync, } from 'vuex-router-sync'
-import installNastUI from 'nast-ui/utils/webpack'
+// import installNastUI from 'nast-ui/utils/webpack'
 import App from './App.vue'
 import { api, store as userStores, } from './userApp'
 import { initGlobalVariables, initLibVariables, initApiVariables, } from './initVariables/index'

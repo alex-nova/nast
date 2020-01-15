@@ -6,7 +6,8 @@ export default {
   api: {
     servers: {
       default: {
-        dev: 'http://127.0.0.1:8000/api/',
+        // dev: 'http://127.0.0.1:8000/api/',
+        dev: 'http://46.101.127.68/api/',
         prod: 'http://46.101.127.68/api/',
       },
       nova: {
@@ -15,19 +16,11 @@ export default {
       },
     },
     init: () => {
-      $app.api.config({
-        baseUrl: 'https://cms.nova.st/api/',
-      })
+      $app.api.config({})
     },
     callback: (response) => {
-      const data = {
-        ...response.data,
-        content: response.data.data,
-      }
-      return {
-        ...response,
-        data,
-      }
+      response.data.content = response.data.data
+      return response
     },
     catch: (error) => {
       throw error
