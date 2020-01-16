@@ -28,7 +28,7 @@ export default {
     const relations = {
       company: { fields: [ 'id', 'title', ], },
     }
-    $api().users.get(this.$route.params.id).with(relations).then((request) => {
+    $api.users.get(this.$route.params.id).with(relations).then((request) => {
       this.$toggle('loading', false)
       this.$form.init(request.data, false)
     })

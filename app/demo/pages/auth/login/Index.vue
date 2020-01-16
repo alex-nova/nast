@@ -35,7 +35,7 @@ export default {
   }),
   created() {
     this.$form.init({
-      iin: 'admin@site.com',
+      iin: '123456789012',
       password: '!Q2w3e4r',
     })
     this.$form.rules({

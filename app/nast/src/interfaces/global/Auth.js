@@ -13,10 +13,10 @@ export default class AuthGlobalInterface {
   }
   
   /**
-   * @return {Promise}
+   *
    */
   logout() {
-    return new Promise(() => {})
+  
   }
   
   /**

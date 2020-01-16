@@ -17,6 +17,9 @@ export const initLibVariables = (libs) => {
 }
 
 export const initApiVariables = (libs) => {
-  libs.api.coreInitApi()
-  libs.api.coreInitData()
+  /** @var {CustomApi} */
+  global.$api = libs.api.coreInitApi()
+  
+  /** @var {CustomApiData} */
+  global.$d = libs.api.coreInitData()
 }

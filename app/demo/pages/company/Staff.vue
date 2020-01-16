@@ -52,7 +52,7 @@ export default {
   },
   mounted() {
     this.$toggle('loading', true)
-    $api().users.get().then((response) => {
+    $api.users.get().then((response) => {
       this.staff = response.data
       this.$toggle('loading', false)
     })

@@ -53,82 +53,132 @@ class Api extends ApiInterface {
       state: {},
       getters: {
         data: (state) => {
-          return (name, params = '_') => $n.get(state, `${name}.${params}.data`, null)
+          return (name, params) => $n.get(state, `${name}.${this.getApiKey(params)}.data`, {})
         },
         loading: (state) => {
-          return (name, params = '_') => $n.get(state, `${name}.${params}.loading`, false)
+          return (name, params) => $n.get(state, `${name}.${this.getApiKey(params)}.loading`, false)
         },
       },
       mutations: {
-        set(state, { name, params = '_', loading, data, }) {
+        set: (state, { name, params, loading, data, }) => {
           if (!state[name]) {
             state[name] = {}
           }
-          state[name][params] = { data, loading, }
+          state[name][this.getApiKey(params)] = { data, loading, }
         },
       },
     }
   }
   
   /**
-   *
+   * @param {Object} router
    */
-  coreInitApi() {
-    /**
-     * @return {CustomApi}
-     */
-    global.$api = () => this._userApi
+  coreUpdateRouter(router) {
+    router.beforeResolve((to, from, next) => {
+      const matched = router.getMatchedComponents(to)
+      const prevMatched = router.getMatchedComponents(from)
+      let diffed = false
+      const activated = matched.filter((c, i) => {
+        return diffed || (diffed = (prevMatched[i] !== c))
+      })
+      const asyncDataHooks = activated.map((c) => c.load).filter((_) => _)
+      if (!asyncDataHooks.length) {
+        return next()
+      }
+    
+      const promises = []
+      $n.each(asyncDataHooks, (hook) => {
+        $n.reduce(hook(), (result, value) => {
+          const name = $n.isString(value) ? value : value.name
+          const params = $n.isString(value) ? [] : value.params
+          promises[`${name}.${this.getApiKey(params)}`] = this.load(name, params)
+          return result
+        }, {})
+      })
+      
+      Promise.all(Object.values(promises)).then(() => next()).catch(next)
+      next()
+    })
   }
   
   /**
-   *
+   * @return {CustomApi}
+   */
+  coreInitApi() {
+    return this._userApi
+  }
+  
+  /**
+   * @return {Object}
    */
   coreInitData() {
     const data = {}
     $n.each(this._userData, (value, name) => {
       data[name] = {
-        get: (...args) => this.get(name, ...args),
-        loading: (...args) => this.loading(name, ...args),
-        load: (...args) => this.load(name, ...args),
-        toComponent: () => {},
+        get: (...args) => this.getData(name, args),
+        loading: (...args) => this.getLoading(name, args),
+        load: (...args) => this.load(name, args),
+        reload: (...args) => this.load(name, args).then(),
+        toComponent: (...args) => this.toComponent(name, args),
       }
     })
-    /**
-     * @return {CustomApiData}
-     */
-    global.$data = () => data
+    
+    return data
   }
   
   /**
-   * @param {String} name
-   * @param {*} args
-   * @return {Boolean}
+   * @param {Array} args
+   * @return {string}
    */
-  get(name, ...args) {
-    return this._store.getter('api.data')(name, args.join('') || '_')
+  getApiKey(args) {
+    return args.join('') || '_'
   }
   
   /**
    * @param {String} name
-   * @param {*} args
-   * @return {Boolean}
+   * @param {Array} args
+   * @return {*}
    */
-  loading(name, ...args) {
-    return this._store.getter('api.loading')(name, args.join('') || '_')
+  getData(name, args) {
+    return this._store.getter('api.data')(name, args)
   }
   
   /**
    * @param {String} name
-   * @param {*} args
+   * @param {Array} args
+   * @return {*}
+   */
+  getLoading(name, args) {
+    return this._store.getter('api.loading')(name, args)
+  }
+  
+  /**
+   * @param {String} name
+   * @param {Array} args
    * @return {Promise}
    */
-  load(name, ...args) {
-    this._store.mutation('api.set', { name: name, params: args.join('') || '_', loading: true, data: null, })
+  load(name, args) {
+    this._store.mutation('api.set', { name: name, params: args, loading: true, data: null, })
     return this._userData[name](...args).callback((response) => {
       const data = $config('api.getData')(response)
-      $app.store.mutation('api.set', { name: name, params: args.join('') || '_', loading: false, data, })
+      $app.store.mutation('api.set', { name: name, params: args, loading: false, data, })
       return response
     }, '_api.data')
+  }
+  
+  /**
+   * @param {String} name
+   * @param {*} args
+   * @return {function(...[*]=)}
+   */
+  toComponent(name, args) {
+    return (params) => {
+      if (this.getLoading(name, args) || (this.getData(name, args))) {
+        return new Promise(((resolve) => resolve(this.getData(name, args))))
+      } else {
+        return this.load(name, args)
+      }
+    }
   }
   
   /**

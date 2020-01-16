@@ -39,7 +39,7 @@ export default {
   methods: {
     load() {
       this.$toggle('loading', true)
-      $api().users.get().then((response) => {
+      $api.users.get().then((response) => {
         this.admins = $n.filter(response.data, [ 'isAdmin', true, ])
         this.users = $n.filter(response.data, [ 'isAdmin', false, ])
         this.$toggle('loading', false)

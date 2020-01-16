@@ -21,7 +21,7 @@ export default class CustomApi {
           } else {
             content = mocks.users
           }
-          return { content, }
+          return content
         })
     },
   }
@@ -30,7 +30,7 @@ export default class CustomApi {
       return $app.api.get([ 'companies', id, ])
         .mock(() => {
           const content = id ? $n.find(mocks.companies, [ 'id', id*1, ]) : mocks.companies
-          return { content, }
+          return content
         })
     },
   }
@@ -41,6 +41,12 @@ export default class CustomApi {
     },
     edit(id, data) {
       return $app.api.put([ 'projects', id, ]).data(data)
+    },
+    
+    docs: {
+      post(id) {
+      
+      },
     },
   }
   
@@ -58,7 +64,7 @@ export default class CustomApi {
           } else {
             content = mocks.objects
           }
-          return { content, }
+          return content
         })
     },
   }

@@ -26,4 +26,10 @@ export default {
     { id: 2, projectId: 1, name: 'Блок 2"', address: 'Жамбыла 114a', user: 'Боранбаев Мақсат Серікұлы', description: 'Строительство Жилого комплекса "Иван"', startedAt: '30.10.2018', endedAt: '31.10.2019', },
     { id: 3, projectId: 1, name: 'Блок 3"', address: 'Жамбыла 114a', user: 'Боранбаев Мақсат Серікұлы', description: 'Строительство Жилого комплекса "Иван"', startedAt: '30.10.2018', endedAt: '31.10.2019', },
   ],
+  
+  docs: [
+    { id: 1, name: '', desc: 'Описание', file: '123', type: 1, },
+    { id: 2, name: '', desc: 'Описание', file: '123', type: 2, },
+    { id: 3, name: 'Другой файл', desc: 'Описание', file: '123', type: 3, },
+  ],
 }

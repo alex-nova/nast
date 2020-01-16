@@ -26,12 +26,15 @@ export default {
       return response
     },
     catch: (error) => {
+      if (error.response.status === 401) {
+        $app.auth.logout()
+      }
       throw error
     },
   },
   
   auth: {
-    api: (u, p) => $api().auth.login(u, p),
+    api: (u, p) => $api.auth.login(u, p),
     getToken: (response) => {
       return response.data.content.token
     },

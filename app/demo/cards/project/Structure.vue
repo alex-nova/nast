@@ -37,7 +37,7 @@ export default {
   methods: {
     loadObjects() {
       this.$var('loading', true)
-      $api().projects.get().filters({ projectId: this.$route.query.id, }).then((response) => {
+      $api.projects.get().filters({ projectId: this.$route.query.id, }).then((response) => {
         this.objects = response.data.content
         this.$var('loading', false)
       })
