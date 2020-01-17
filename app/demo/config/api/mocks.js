@@ -27,9 +27,29 @@ export default {
     { id: 3, projectId: 1, name: 'Блок 3"', address: 'Жамбыла 114a', user: 'Боранбаев Мақсат Серікұлы', description: 'Строительство Жилого комплекса "Иван"', startedAt: '30.10.2018', endedAt: '31.10.2019', },
   ],
   
+  types: [
+    { id: 1, name: 'Бетонные работы', },
+    { id: 2, name: 'Сварка', },
+  ],
+  
   docs: [
-    { id: 1, name: '', desc: 'Описание', file: '123', type: 1, },
+    { id: 1, name: '', desc: 'Описание', file: '123', type: 3, },
     { id: 2, name: '', desc: 'Описание', file: '123', type: 2, },
-    { id: 3, name: 'Другой файл', desc: 'Описание', file: '123', type: 3, },
+    { id: 3, name: '', desc: 'Описание', file: '123', type: 4, },
+  ],
+  
+  docs2: [
+    { id: 1, name: 'Чертеж 1', desc: 'Описание', file: '123', object: 'Блок 1', type: 1, },
+    { id: 2, name: 'Чертеж 2', desc: 'Описание', file: '123', object: 'Блок 1', type: 2, },
+  ],
+  
+  materials: [
+    { id: 1, name: 'Бетон', unit: 'м3', count: 10, desc: '', },
+    { id: 2, name: 'Кирпичи', unit: 'т', count: 4, desc: '', },
+    { id: 3, name: 'Балка', unit: 'шт', count: 12, desc: 'Описание балки', },
+  ],
+  works: [
+    { id: 1, name: 'Заливка бетона', type: 1, object: 'Блок 1', },
+    { id: 2, name: 'Укладка кирпичей', type: 2, object: 'Блок 1', },
   ],
 }

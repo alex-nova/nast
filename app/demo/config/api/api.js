@@ -44,8 +44,32 @@ export default class CustomApi {
     },
     
     docs: {
-      post(id) {
-      
+      post(id, data) {
+        return $app.api.post([ 'projects{}/files', id, ], data).mock(() => {
+          const name = data.type === 1 ? data.name : data.typeName
+          mocks.docs.push({ id: mocks.docs.length+1, name, desc: data.desc, file: '123', type: data.type, })
+        })
+      },
+    },
+    docs2: {
+      post(id, data) {
+        return $app.api.post([ 'projects{}/files', id, ], data).mock(() => {
+          mocks.docs2.push({ id: mocks.docs2.length+1, name: data.name, desc: data.desc, file: '123', type: data.type, object: data.object, })
+        })
+      },
+    },
+    materials: {
+      post(data) {
+        return $app.api.post([ 'projects{}/files', ], data).mock(() => {
+          mocks.materials.push({ id: mocks.materials.length+1, name: data.name, desc: data.desc, count: data.count, unit: data.unit, })
+        })
+      },
+    },
+    works: {
+      post(data) {
+        return $app.api.post([ 'projects{}/files', ], data).mock(() => {
+          mocks.works.push({ id: mocks.works.length+1, name: data.name, type: data.type, object: data.object, })
+        })
       },
     },
   }

@@ -1,6 +1,9 @@
 <template>
   <div class="tab-info">
-    <n-loader :loading="$var('loading')" />
+    <div v-if="$var('loading')" style="top: 0; left: 50%; width: 50%; height: 100%; position: fixed; z-index: 1100;">
+      <n-loader :loading="$var('loading')" />
+    </div>
+    <!--    <n-loader :loading="$var('loading')" />-->
     <n-list :data="structure" :sortable="form.editable()">
       <template #group="{ item, }"><span class="type">[Проект]</span> {{ item.title }}</template>
       <template #default="{ item, }"><span class="type">[Объект]</span> {{ item.title }}</template>

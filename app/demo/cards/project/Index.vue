@@ -10,9 +10,6 @@
               <div>{{ model.name }}</div>
             </div>
           </n-items>
-          <n-items>
-            <div><n-button icon="trash" /></div>
-          </n-items>
         </n-divide>
       </template>
       <template #tab.info>
@@ -43,7 +40,7 @@
       <template #footer="{tab}">
         <n-divide>
           <n-button @click="() => $router.push({query: {}})">Закрыть</n-button>
-          <n-items v-if="tab.callback">
+          <n-items v-if="tab.callback" inline>
             <n-button v-if="!$form.editable() && tab.name === 'info'" color="primary" @click="$form.edit()">Редактировать</n-button>
             <n-button v-if="!$form.editable() && tab.name === 'structure'" color="primary" @click="$form.edit()">Сортировать</n-button>
             <n-button v-if="$form.editable()" @click="$form.cancel()">Отмена</n-button>

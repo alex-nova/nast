@@ -49,36 +49,52 @@ export default class ApiObject {
    */
   then(callback) {
     if (this._mock) {
-      return new Promise((resolve) => {
+      const promise = new Promise((resolve) => {
         setTimeout(() => {
           resolve({
             headers: {},
-            data: this._mock(),
+            data: {
+              data: this._mock(),
+            },
           })
         }, this._mockTimeout)
-      })
-    }
-  
-    const promise = this._instance({
-      ...this._config,
-      method: this._method,
-      url: this._constructUrl(),
-      data: this._data,
-    }).then((response) => {
-      if (this._resource) {
-        return {
-          ...response,
-          data: new (this._resource)(response),
+      }).then((response) => {
+        if (this._resource) {
+          return {
+            ...response,
+            data: new (this._resource)(response),
+          }
         }
-      }
-      return response
-    }).then($config('api.callback'))
+        return response
+      }).then($config('api.callback'))
   
-    $n.each(this._callbacks, (cb) => {
-      promise.then(cb)
-    })
-    
-    return promise.then(callback).catch($config('api.catch'))
+      $n.each(this._callbacks, (cb) => {
+        promise.then(cb)
+      })
+  
+      return promise.then(callback).catch($config('api.catch'))
+    } else {
+      const promise = this._instance({
+        ...this._config,
+        method: this._method,
+        url: this._constructUrl(),
+        data: this._data,
+      }).then((response) => {
+        if (this._resource) {
+          return {
+            ...response,
+            data: new (this._resource)(response),
+          }
+        }
+        return response
+      }).then($config('api.callback'))
+  
+      $n.each(this._callbacks, (cb) => {
+        promise.then(cb)
+      })
+  
+      return promise.then(callback).catch($config('api.catch'))
+    }
   }
   
   /**

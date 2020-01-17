@@ -5,12 +5,22 @@
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить файл</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.projectFiles.get($route.params.id) || []" />
+    <n-table :columns="columns" :data="$d.projectFiles.get($route.params.id) || []" :loading="$d.projectFiles.loading($route.params.id)">
+      <template #name="{item}">
+        {{ item.type === 1 ? item.name : types[item.type - 1].title }}
+      </template>
+      <template #createdAt="{item}">
+        16.01.2020
+      </template>
+      <template #tools>
+        <n-link to="https://cms.nova.st/files/322.doc" type="external" target="_blank">Скачать</n-link>
+      </template>
+    </n-table>
   
     <n-modal v-if="$var('add')" @close="$var('add', false)">
       <n-items>
         <n-select title="Тип файла" :data="types" :value.sync="type" style="width: 100%;" />
-        <n-input v-if="type.value === 3" title="Название файла" v-bind="$form.input('name')" />
+        <n-input v-if="type.value === 1" title="Название файла" v-bind="$form.input('name')" />
         <n-input title="Дополнительная информация" v-bind="$form.input('desc')" />
         <n-upload title="Загрузить файл" v-bind="$form.input('file')" />
         <n-button color="primary" wide @click="submit">Добавить файл</n-button>
@@ -26,17 +36,20 @@ export default {
   data() {
     return {
       types: [
-        { title: 'Уведомление о начале СМР', value: 1, },
-        { title: 'Акт геодезической разбивки', value: 2, },
-        { title: 'Другое', value: 3, },
+        { title: 'Уведомление о начале СМР', value: 2, },
+        { title: 'Акт геодезической разбивки', value: 3, },
+        { title: 'Акт проверки посадки здания', value: 4, },
+        { title: 'Государственный акт', value: 5, },
+        { title: 'Заключение экспертизы по проекту', value: 6, },
+        { title: 'Другое', value: 1, },
       ],
       type: {},
       data: [],
       columns: [
-        { title: 'Название документа', },
-        { title: 'Дата добавления', },
-        { title: 'Дополнительная информация', },
-        { title: 'Скачать файл', },
+        { title: 'Название документа', name: 'name', },
+        { title: 'Дата добавления', name: 'createdAt', },
+        { title: 'Дополнительная информация', name: 'desc', },
+        { title: 'Скачать файл', name: 'tools', },
       ],
     }
   },
@@ -51,8 +64,12 @@ export default {
   },
   methods: {
     submit() {
-      $debug.log($d.projectFiles.get($route.params.id))
-      $api.projects.docs.post($route.params.id, this.$form.get()).then((response) => {
+      const data = {
+        ...this.$form.get(),
+        type: this.type.value,
+        typeName: this.type.title,
+      }
+      $api.projects.docs.post(this.$route.params.id, data).then((response) => {
         $d.projectFiles.reload(this.$route.params.id)
         this.$var('add', false)
       })
