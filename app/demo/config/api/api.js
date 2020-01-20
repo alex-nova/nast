@@ -1,6 +1,8 @@
 import mocks from './mocks'
 
-
+/**
+ * 
+ */
 export default class CustomApi {
   auth = {
     login(username, password) {

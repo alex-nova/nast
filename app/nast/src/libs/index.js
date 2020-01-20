@@ -1,5 +1,5 @@
 import { libs as customLibs, routes as customRoutes, api as customApi, } from '../framework/userApp'
-import Pages from './Pages'
+import Router from './Router'
 import Store from './Store'
 import Api from './Api'
 import Auth from './Auth'
@@ -8,7 +8,7 @@ import Date from './Date'
 
 export default () => {
   const libs = {
-    Pages: customLibs.Pages || Pages,
+    Router: customLibs.Router || Router,
     Store: customLibs.Store || Store,
     Api: customLibs.Api || Api,
     Auth: customLibs.Auth || Auth,
@@ -17,15 +17,15 @@ export default () => {
   }
   
   const store = new libs.Store()
-  const pages = new libs.Pages(customRoutes)
+  const router = new libs.Router(customRoutes)
   const api = new libs.Api(customApi, store)
   const auth = new libs.Auth(store, api)
   const form = new libs.Form()
   const date = new libs.Date()
   
   return {
-    /** @type {PagesInterface} */
-    pages,
+    /** @type {RouterInterface} */
+    router,
     /** @type {StoreInterface} */
     store,
     /** @type {ApiInterface} */

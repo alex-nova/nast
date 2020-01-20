@@ -1,9 +1,7 @@
 <template>
   <div class="component-page-title">
     <div class="content">
-      <h1 slot="header">
-        {{ page.title }}
-      </h1>
+      <h1 slot="header">{{ page.title }}</h1>
       <n-breadcrumbs :items="breadcrumbs" />
     </div>
   </div>
@@ -15,12 +13,30 @@ export default {
   props: {
     title: { type: String, default: '', },
   },
+  data: () => ({
+    titles: {
+      index: 'Главная страница',
+      user: 'Карточка пользователя',
+      profile: 'Профиль',
+      company: {
+        group: 'Компания',
+        info: 'Информация о компании',
+        staff: 'Сотрудники',
+        admins: 'Администраторы',
+      },
+      projects: {
+        group: 'Проекты',
+        list: 'Проекты',
+        info: 'Проект',
+      },
+    },
+  }),
   computed: {
     breadcrumbs() {
-      return $app.pages.breadcrumbs(this.$route.name)
+      return $app.router.breadcrumbs(this.$route.name, this.titles)
     },
     page() {
-      return $app.pages.get(this.$route.name)
+      return $app.router.get(this.$route.name)
     },
   },
 }

@@ -10,7 +10,7 @@ class Locale extends LocaleInterface {
    */
   routes = []
   /**
-   * @type {{'pageName': PagesPageInterface}}
+   * @type {{'pageName': RouterPageInterface}}
    */
   pages = {}
   
@@ -36,7 +36,7 @@ class Locale extends LocaleInterface {
   }
   
   /**
-   * @return {PagesGlobalInterface}
+   * @return {RouterGlobalInterface}
    */
   installGlobals() {
     return {
@@ -47,7 +47,7 @@ class Locale extends LocaleInterface {
   
   /**
    * @param {String} name
-   * @return {{'pageName': PagesPageInterface} | PagesPageInterface}
+   * @return {{'pageName': RouterPageInterface} | RouterPageInterface}
    */
   getPage(name = undefined) {
     if (name) {
@@ -59,7 +59,7 @@ class Locale extends LocaleInterface {
   
   /**
    * @param {String} name
-   * @return {PagesPageInterface[]}
+   * @return {RouterPageInterface[]}
    */
   structureByName(name) {
     const result = []

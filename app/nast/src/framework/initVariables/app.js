@@ -1,4 +1,4 @@
-import PagesGlobalInterface from './../../interfaces/global/Pages'
+import RouterGlobalInterface from './../../interfaces/global/Router'
 import ApiGlobalInterface from './../../interfaces/global/Api'
 import StoreGlobalInterface from './../../interfaces/global/Store'
 import AuthGlobalInterface from './../../interfaces/global/Auth'
@@ -6,8 +6,8 @@ import DateGlobalInterface from './../../interfaces/global/Date'
 
 export default (libs) => {
   global.$app = {
-    /** @type {PagesGlobalInterface} */
-    pages: libs.pages.installGlobals ? libs.pages.installGlobals() : new PagesGlobalInterface(),
+    /** @type {RouterGlobalInterface} */
+    router: libs.router.installGlobals ? libs.router.installGlobals() : new RouterGlobalInterface(),
     /** @type {StoreGlobalInterface} */
     store: libs.store.installGlobals ? libs.store.installGlobals() : new StoreGlobalInterface(),
     /** @type {ApiGlobalInterface} */

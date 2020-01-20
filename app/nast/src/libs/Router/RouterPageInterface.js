@@ -2,7 +2,7 @@
 /**
  *
  */
-export default class PagesPageInterface {
+export default class RouterPageInterface {
   /**
    * @type {String}
    */

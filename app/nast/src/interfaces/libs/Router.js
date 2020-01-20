@@ -2,7 +2,7 @@
 /**
  *
  */
-export default class PagesInterface {
+export default class RouterInterface {
   /**
    * @property {Array}
    */
@@ -14,7 +14,7 @@ export default class PagesInterface {
   constructor(routes) {}
   
   /**
-   * @return {PagesGlobalInterface}
+   * @return {RouterGlobalInterface}
    */
   installGlobals() {
     return {}
@@ -22,7 +22,7 @@ export default class PagesInterface {
   
   /**
    * @param {Vue} Vue
-   * @return {RouterOptions} options to new Router(options)
+   * @return {VueRouter}
    */
   coreInitRouter(Vue) {
     return {}

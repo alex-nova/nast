@@ -38,39 +38,38 @@ export default {
   data: () => ({
     names: names(),
     avatar,
-    menu: [
-      { name: 'index', },
-      { title: __('app.pages.company.group'), icon: 'building', children: [
-        { name: 'company.info', },
-        { name: 'company.staff', },
-        { name: 'company.admins', },
-      ], },
-      { title: __('app.pages.projects.group'), icon: 'building', children: [
-        { name: 'projects.list', },
-      ], },
-    ],
     profile: [
       { title: 'Профиль', icon: 'user', route: 'profile', },
       { title: 'Выход', icon: 'sign-out-alt', route: 'login', },
     ],
+    menu: [
+      { name: 'index', },
+      { name: 'company.group', icon: 'building', children: [
+        { name: 'company.info', },
+        { name: 'company.staff', },
+        { name: 'company.admins', },
+      ], },
+      { name: 'projects.list', },
+    ],
+    titles: {
+      index: 'Главная страница',
+      user: 'Карточка пользователя',
+      profile: 'Профиль',
+      company: {
+        group: 'Компания',
+        info: 'Информация о компании',
+        staff: 'Сотрудники',
+        admins: 'Администраторы',
+      },
+      projects: {
+        list: 'Проекты',
+        info: 'Проект',
+      },
+    },
   }),
   computed: {
     navigation() {
-      const reducer = (result, item) => {
-        const isGroup = Boolean(item.children)
-        const page = isGroup ? item : ($app.pages.get(item.name) || {})
-    
-        result.push({
-          title: page.title,
-          icon: page.icon,
-          route: page.route,
-          children: isGroup ? page.children.reduce(reducer, []) : undefined,
-        })
-    
-        return result
-      }
-      
-      return this.menu.reduce(reducer, [])
+      return $app.router.navigation(this.menu, this.titles)
     },
   },
   watch: {

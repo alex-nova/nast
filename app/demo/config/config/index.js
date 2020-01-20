@@ -33,6 +33,15 @@ export default {
     },
   },
   
+  router: {
+    pageLocaleKey(name) {
+      return `app.pages.${name}`
+    },
+    navLocaleKey(name) {
+      return `app.nav.${name}`
+    },
+  },
+  
   auth: {
     api: (u, p) => $api.auth.login(u, p),
     getToken: (response) => {

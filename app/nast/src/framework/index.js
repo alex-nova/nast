@@ -7,7 +7,6 @@ import { initGlobalVariables, initLibVariables, initApiVariables, } from './init
 import initGlobalMixins from './initMixins/index'
 import initStores from './initStores/index'
 import initLibs from './../libs'
-import elements from './translate'
 
 
 const createUI = () => {
@@ -27,7 +26,7 @@ export default () => {
   initGlobalVariables()
   
   // TODO delete
-  global.__ = (key) => $n.get(elements, key, key)
+  global.__ = (key) => key
   Vue.mixin({
     methods: {
       __(key) {
@@ -48,7 +47,7 @@ export default () => {
     ...userStores,
     ...initStores(libs),
   })
-  const router = libs.pages.coreInitRouter(Vue)
+  const router = libs.router.coreInitRouter(Vue)
   
   sync(store, router)
   
