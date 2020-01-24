@@ -18,9 +18,6 @@ export default {
     init: () => {
       $app.api.config({})
     },
-    getData: (response) => {
-      return response.data.content
-    },
     callback: (response) => {
       response.data.content = response.data.data
       return response
@@ -31,6 +28,11 @@ export default {
       }
       throw error
     },
+    dataKey: 'data.content',
+  },
+  
+  data: {
+    preload: false,
   },
   
   router: {
@@ -52,13 +54,28 @@ export default {
     },
   },
   
+  locale: {
+    api: {
+      locales: () => {},
+      elements: () => {},
+      change: () => {},
+    },
+  },
+  
+  models: {
+    types: [ 'string', 'boolean', 'date', 'datetime', 'time', 'int', 'float', ],
+    casts: {
+    
+    },
+  },
+  
   form: {
     input: (self, name, form) => ({
       name,
       value: self.$form.get(name, form),
       input: (value) => self.$form.set(name, value, form),
       danger: self.$form.errors(name, form),
-      text: !self.$form.editable(form),
+      text: self.$form.editable(form) === false,
     }),
     validations: {
       customRule(value) {

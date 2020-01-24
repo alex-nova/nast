@@ -36,7 +36,7 @@ export default class User extends ApiModel {
   /**
    * @param {object} model
    */
-  constructor(model) {
+  constructor(model, form) {
     super()
     this.set('username', model.username)
     this.set('name', model.name)

@@ -1,38 +1,14 @@
 import LocaleInterface from './../../interfaces/libs/Locale'
 
-
 /**
  *
  */
 class Locale extends LocaleInterface {
-  /**
-   * @type {Array}
-   */
-  routes = []
-  /**
-   * @type {{'pageName': RouterPageInterface}}
-   */
-  pages = {}
-  
   
   /**
-   * @param {Array} routes
    */
-  constructor(routes) {
-    super(routes)
-    this.routes = routes
-    
-    this.pages = $n.reduceDeep(this.routes, (result, item) => {
-      if (item.name) {
-        result[item.name] = {
-          name: item.name,
-          parent: item.parent || null,
-          icon: item.icon || null,
-          title: `app.pages.${item.name}`,
-        }
-      }
-      return result
-    }, {})
+  constructor() {
+    super()
   }
   
   /**
@@ -40,46 +16,24 @@ class Locale extends LocaleInterface {
    */
   installGlobals() {
     return {
-      get: (name) => this.getPage(name),
-      breadcrumbs: (name) => this.structureByName(name),
+      all: () => this.getPage(name),
+      current: () => this.structureByName(name),
+      other: () => {},
+      set: (name) => {},
     }
   }
   
   /**
+   * Всего 17 записей
+   * __('app.table.countRecords', 17)
+   * 'Всего <b>{param1}</b> запис{ь|и|ей}'
    * @param {String} name
-   * @return {{'pageName': RouterPageInterface} | RouterPageInterface}
+   * @param {Object} params
+   * @return {String}
    */
-  getPage(name = undefined) {
-    if (name) {
-      return this.pages[name]
-    }
-    
-    return this.pages
+  translate(name, params) {
+    return ''
   }
-  
-  /**
-   * @param {String} name
-   * @return {RouterPageInterface[]}
-   */
-  structureByName(name) {
-    const result = []
-    let item
-    let n = name
-    while (n) {
-      item = this.pages[n]
-      result.push(item)
-      n = item.parent
-    }
-    return result.reverse()
-  }
-  
-  /**
-   * @param {Vue} Vue
-   * @return {RouterOptions} options to new Router(options)
-   */
-  // coreTranslate(key, def) {
-  //   const translate = $n.get()
-  // }
 }
 
 export default Locale

@@ -40,7 +40,7 @@ class Router extends RouterInterface {
    */
   installGlobals() {
     return {
-      get: (name) => this.getPage(name),
+      getPage: (name) => this.getPage(name),
       breadcrumbs: (name, titles) => this.breadcrumbs(name, titles),
       navigation: (values, titles) => this.navigation(values, titles),
     }

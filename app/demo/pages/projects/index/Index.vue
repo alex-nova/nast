@@ -1,16 +1,17 @@
 <template>
   <div class="page-projects-index container">
-    <n-loader :loading="$d.projects.loading()" />
+    <n-loader :loading="$d.loading('projects')" />
+    {{ $d.loading('projects') }}
     <div class="projects">
-      <n-card v-for="project in $d.projects.get()" :key="project.id">
+      <n-card v-for="project in $d.get('projects')" :key="project.id">
         <div class="project">
           <div class="preview">
             <n-image mock />
           </div>
           <div class="content">
-            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="name">{{ project.name }}</n-link>
+            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="name">{{ project.title }}</n-link>
             <div class="address">{{ project.address }}</div>
-            <div class="description"><div>{{ project.description }}</div></div>
+            <div class="description"><div>{{ project.desc }}</div></div>
             <div class="dates">
               <div class="startedAt">Начало: {{ $app.date.format(project.startedAt, 'date') }}</div>
               <div class="endedAt">Конец: {{ $app.date.format(project.endedAt, 'date') }}</div>
@@ -25,10 +26,13 @@
 <script>
 export default {
   name: 'PageProjectsIndex',
-  load() {
-    return [
-      'projects',
-    ]
+  load(route) {
+    return {
+      projects: {
+        api: $api.projects.get().fromQuery(route.query),
+        tag: 'projects',
+      },
+    }
   },
 }
 </script>

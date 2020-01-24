@@ -13,6 +13,8 @@ export default [
       { path: 'company/admins', name: 'company.admins', icon: 'user-shield', parent: 'company.info', component: () => import('pages/company/Admins'), },
       
       { path: 'projects', name: 'projects.list', icon: 'user', parent: 'index', component: () => import('pages/projects/index/Index'), },
+      
+      { path: 'my/journals', name: 'my.journals.list', icon: 'user', parent: 'index', component: () => import('pages/journals/my/Index'), },
     ], },
     
     { path: '', component: () => import('layouts/auth/Index'), children: [

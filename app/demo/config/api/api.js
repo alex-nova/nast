@@ -1,45 +1,36 @@
 import mocks from './mocks'
 
 /**
- * 
+ *
  */
 export default class CustomApi {
   auth = {
-    login(username, password) {
-      return $app.api.post('auth/login').data({ email: username, password, })
+    login: (username, password) => $app.api.post('auth/login').data({ email: username, password, }),
+  }
+  
+  locale = {
+    get: (id) => $app.api.get([ 'locales*', id, ]),
+    set: (id) => $app.api.post([ 'locales*', id, ]),
+    elements: {
+      get: () => $app.api.get([ 'elements', ]),
     },
   }
+  
   users = {
-    get(id) {
-      return $app.api.get([ 'users{}', id, ])
-        .mock(() => {
-          let content
-          if (id) {
-            const user = $n.find(mocks.users, [ 'id', id*1, ])
-            content = {
-              ...user,
-              company: $n.find(mocks.companies, [ 'id', user.companyId, ]),
-            }
-          } else {
-            content = mocks.users
-          }
-          return content
-        })
-    },
+    get: (id) => $app.api.get([ 'users*', id, ]),
+    create: (data) => $app.api.post('users').data(data),
+    edit: (id, data) => $app.api.put([ 'users*', id, ]).data(data),
+    delete: (id) => $app.api.delete([ 'users*', id, ]),
   }
+  
   companies = {
-    get(id) {
-      return $app.api.get([ 'companies', id, ])
-        .mock(() => {
-          const content = id ? $n.find(mocks.companies, [ 'id', id*1, ]) : mocks.companies
-          return content
-        })
-    },
+    get: (id) => $app.api.get([ 'companies', id, ]),
   }
   
   projects = {
     get(id) {
       return $app.api.get([ 'projects', id, ])
+        // .model($models.Project)
     },
     edit(id, data) {
       return $app.api.put([ 'projects', id, ]).data(data)
@@ -47,7 +38,7 @@ export default class CustomApi {
     
     docs: {
       post(id, data) {
-        return $app.api.post([ 'projects{}/files', id, ], data).mock(() => {
+        return $app.api.post([ 'projects*/files', id, ], data).mock(() => {
           const name = data.type === 1 ? data.name : data.typeName
           mocks.docs.push({ id: mocks.docs.length+1, name, desc: data.desc, file: '123', type: data.type, })
         })
@@ -55,21 +46,21 @@ export default class CustomApi {
     },
     docs2: {
       post(id, data) {
-        return $app.api.post([ 'projects{}/files', id, ], data).mock(() => {
+        return $app.api.post([ 'projects*/files', id, ], data).mock(() => {
           mocks.docs2.push({ id: mocks.docs2.length+1, name: data.name, desc: data.desc, file: '123', type: data.type, object: data.object, })
         })
       },
     },
     materials: {
       post(data) {
-        return $app.api.post([ 'projects{}/files', ], data).mock(() => {
+        return $app.api.post([ 'projects*/files', ], data).mock(() => {
           mocks.materials.push({ id: mocks.materials.length+1, name: data.name, desc: data.desc, count: data.count, unit: data.unit, })
         })
       },
     },
     works: {
       post(data) {
-        return $app.api.post([ 'projects{}/files', ], data).mock(() => {
+        return $app.api.post([ 'projects*/files', ], data).mock(() => {
           mocks.works.push({ id: mocks.works.length+1, name: data.name, type: data.type, object: data.object, })
         })
       },
@@ -111,7 +102,7 @@ export default class CustomApi {
   //
   // articles: {
   //   get(id, data) {
-  //     return $app.api.post([ 'v1/articles{}', id, ]).data(data)
+  //     return $app.api.post([ 'v1/articles*', id, ]).data(data)
   //   },
   //   create(model) {
   //     return $app.api.post('v1/articles', model)

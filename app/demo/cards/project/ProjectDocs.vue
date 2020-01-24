@@ -5,7 +5,7 @@
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить файл</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.projectFiles2.get($route.params.id) || []" :loading="$d.projectFiles2.loading($route.params.id)">
+    <n-table :columns="columns" :data="$d.get.projectFiles2($route.params.id) || []" :loading="$d.projectFiles2.loading($route.params.id)">
       <template #createdAt="{item}">
         16.01.2020
       </template>
@@ -19,8 +19,8 @@
   
     <n-modal v-if="$var('add')" @close="$var('add', false)">
       <n-items>
-        <n-select title="Объект" :data="$d.objects.get(1)" :value.sync="object" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
-        <n-select title="Вид работ" :data="$d.types.get()" :value.sync="type" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
+        <n-select title="Объект" :data="$d.get.objects(1)" :value.sync="object" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
+        <n-select title="Вид работ" :data="$d.get.types()" :value.sync="type" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
         <n-input title="Название файла" v-bind="$form.input('name')" />
         <n-input title="Дополнительная информация" v-bind="$form.input('desc')" />
         <n-upload title="Загрузить файл" v-bind="$form.input('file')" />
@@ -56,13 +56,13 @@ export default {
       file: null,
     })
     
-    $d.objects.reload(1)
-    $d.types.reload()
-    $d.projectFiles2.reload(this.$route.params.id)
+    $d.reload.objects(1)
+    $d.reload.types()
+    $d.reload.projectFiles2(this.$route.params.id)
   },
   methods: {
     getType(id) {
-      const types = $d.types.get()
+      const types = $d.get.types()
       if (types) {
         return $n.find(types, [ 'id', id, ])
       }
@@ -75,7 +75,7 @@ export default {
         object: this.object.name,
       }
       $api.projects.docs2.post(this.$route.params.id, data).then((response) => {
-        $d.projectFiles2.reload(this.$route.params.id)
+        $d.reload.projectFiles2(this.$route.params.id)
         this.$var('add', false)
       })
     },

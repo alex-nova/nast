@@ -34,8 +34,8 @@ class Store extends StoreInterface {
     return {
       state: (name) => this.state(name),
       getter: (name) => this.getter(name),
-      mutation: (name, payload) => this.mutation(name, payload),
-      action: (name, payload) => this.action(name, payload),
+      mutation: (name, payload = undefined) => this.mutation(name, payload),
+      action: (name, payload = undefined) => this.action(name, payload),
       mapState: (namespace, mapper = undefined) => this.mapState(namespace, mapper),
       mapGetters: (namespace, mapper = undefined) => this.mapGetters(namespace, mapper),
       mapMutations: (namespace, mapper = undefined) => this.mapMutations(namespace, mapper),
@@ -52,15 +52,15 @@ class Store extends StoreInterface {
     patchStore(this._vuex)
     Vue.use(this._vuex)
     
-    const vuexLocal = new VuexPersistence({
-      storage: window.localStorage,
-    })
+    // const vuexLocal = new VuexPersistence({
+    //   storage: window.localStorage,
+    // })
     
     const instance = new this._vuex.Store({
       modules: {
         ...stores,
       },
-      plugins: [ vuexLocal.plugin, ],
+      // plugins: [ vuexLocal.plugin, ],
     })
     
     this._instance = instance

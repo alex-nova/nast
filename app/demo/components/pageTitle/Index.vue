@@ -8,35 +8,19 @@
 </template>
 
 <script>
+import pages from './../../layouts/pages'
+
 export default {
   name: 'PageTitle',
   props: {
     title: { type: String, default: '', },
   },
-  data: () => ({
-    titles: {
-      index: 'Главная страница',
-      user: 'Карточка пользователя',
-      profile: 'Профиль',
-      company: {
-        group: 'Компания',
-        info: 'Информация о компании',
-        staff: 'Сотрудники',
-        admins: 'Администраторы',
-      },
-      projects: {
-        group: 'Проекты',
-        list: 'Проекты',
-        info: 'Проект',
-      },
-    },
-  }),
   computed: {
     breadcrumbs() {
-      return $app.router.breadcrumbs(this.$route.name, this.titles)
+      return $app.router.breadcrumbs(this.$route.name, pages)
     },
     page() {
-      return $app.router.get(this.$route.name)
+      return $app.router.getPage(this.$route.name)
     },
   },
 }

@@ -51,10 +51,14 @@ export default () => {
   
   sync(store, router)
   
+  libs.auth.coreInit()
+  
   const app = new Vue({
     router,
     store,
-    render: (h) => h(App),
+    render: (h) => h(App, {
+      props: { libs, },
+    }),
   })
   
   
@@ -78,7 +82,7 @@ export default () => {
     // })
   
     router.onReady(() => {
-      libs.api.coreUpdateRouter(router)
+      libs.data.coreUpdateRouter(router)
       app.$mount('#app')
     })
   }

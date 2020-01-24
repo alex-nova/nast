@@ -5,7 +5,7 @@
 export default class ApiGlobalInterface {
   /**
    * @param {String|Array} url
-   * @param {String} name
+   * @param {String} name  Name of api instance
    * @return {ApiObject}
    */
   get(url, name = '') {
@@ -13,7 +13,7 @@ export default class ApiGlobalInterface {
   }
   /**
    * @param {String|Array} url
-   * @param {String} name
+   * @param {String} name  Name of api instance
    * @return {ApiObject}
    */
   post(url, name = '') {
@@ -21,7 +21,7 @@ export default class ApiGlobalInterface {
   }
   /**
    * @param {String|Array} url
-   * @param {String} name
+   * @param {String} name  Name of api instance
    * @return {ApiObject}
    */
   put(url, name = '') {
@@ -29,7 +29,7 @@ export default class ApiGlobalInterface {
   }
   /**
    * @param {String|Array} url
-   * @param {String} name
+   * @param {String} name  Name of api instance
    * @return {ApiObject}
    */
   patch(url, name = '') {
@@ -37,7 +37,7 @@ export default class ApiGlobalInterface {
   }
   /**
    * @param {String|Array} url
-   * @param {String} name
+   * @param {String} name  Name of api instance
    * @return {ApiObject}
    */
   delete(url, name = '') {
@@ -45,20 +45,9 @@ export default class ApiGlobalInterface {
   }
   
   /**
+   * Config instance
    * @param {ApiConfigInterface} config
+   * @param {String} name  Name of api instance
    */
-  config(config) {}
-  
-  /**
-   * @param {String} name
-   * @param {ApiConfigInterface} config
-   */
-  create(name, config) {}
-  
-  /**
-   * @return {CustomApiData}
-   */
-  data() {
-    return {}
-  }
+  config(config, name = '') {}
 }

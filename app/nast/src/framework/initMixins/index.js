@@ -33,12 +33,6 @@ export default (Vue, libs) => {
       $app() {
         return $app
       },
-      /**
-       * @return {CustomApiData}
-       */
-      $d() {
-        return $d
-      },
       $api() {
         return $api
       },

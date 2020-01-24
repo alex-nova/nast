@@ -26,6 +26,7 @@ import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
 import names from './../names'
 import Cards from './../../cards/Index'
+import pages from './../pages'
 
 export default {
   name: 'MainLayout',
@@ -50,26 +51,12 @@ export default {
         { name: 'company.admins', },
       ], },
       { name: 'projects.list', },
+      { name: 'my.journals.list', },
     ],
-    titles: {
-      index: 'Главная страница',
-      user: 'Карточка пользователя',
-      profile: 'Профиль',
-      company: {
-        group: 'Компания',
-        info: 'Информация о компании',
-        staff: 'Сотрудники',
-        admins: 'Администраторы',
-      },
-      projects: {
-        list: 'Проекты',
-        info: 'Проект',
-      },
-    },
   }),
   computed: {
     navigation() {
-      return $app.router.navigation(this.menu, this.titles)
+      return $app.router.navigation(this.menu, pages)
     },
   },
   watch: {

@@ -1,6 +1,7 @@
 import { libs as customLibs, routes as customRoutes, api as customApi, } from '../framework/userApp'
 import Router from './Router'
 import Store from './Store'
+import Data from './Data'
 import Api from './Api'
 import Auth from './Auth'
 import Form from './Form'
@@ -10,6 +11,7 @@ export default () => {
   const libs = {
     Router: customLibs.Router || Router,
     Store: customLibs.Store || Store,
+    Data: customLibs.Data || Data,
     Api: customLibs.Api || Api,
     Auth: customLibs.Auth || Auth,
     Form: customLibs.Form || Form,
@@ -17,6 +19,7 @@ export default () => {
   }
   
   const store = new libs.Store()
+  const data = new libs.Data(store)
   const router = new libs.Router(customRoutes)
   const api = new libs.Api(customApi, store)
   const auth = new libs.Auth(store, api)
@@ -28,6 +31,8 @@ export default () => {
     router,
     /** @type {StoreInterface} */
     store,
+    /** @type {DataInterface} */
+    data,
     /** @type {ApiInterface} */
     api,
     /** @type {AuthInterface} */

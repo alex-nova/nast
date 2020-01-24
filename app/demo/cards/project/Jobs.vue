@@ -5,7 +5,7 @@
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить работу</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.works.get() || []" :loading="$d.works.loading()">
+    <n-table :columns="columns" :data="$d.get.works() || []" :loading="$d.loading.works()">
       <template #type="{item}">
         {{ getType(item.type).name }}
       </template>
@@ -13,8 +13,8 @@
   
     <n-modal v-if="$var('add')" @close="$var('add', false)">
       <n-items>
-        <n-select title="Объект" :data="$d.objects.get(1)" :value.sync="object" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
-        <n-select title="Вид работ" :data="$d.types.get()" :value.sync="type" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
+        <n-select title="Объект" :data="$d.get.objects(1)" :value.sync="object" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
+        <n-select title="Вид работ" :data="$d.get.types()" :value.sync="type" style="width: 100%;" option-title="name" selected-title="name" item-value="id" />
         <n-input title="Название" v-bind="$form.input('name')" />
         <n-button color="primary" wide @click="submit">Добавить работу</n-button>
       </n-items>
@@ -43,13 +43,13 @@ export default {
       name: '',
       desc: '',
     })
-    $d.objects.reload(1)
-    $d.types.reload()
-    $d.works.reload()
+    $d.reload.objects(1)
+    $d.reload.types()
+    $d.reload.works()
   },
   methods: {
     getType(id) {
-      const types = $d.types.get()
+      const types = $d.get.types()
       if (types) {
         return $n.find(types, [ 'id', id, ])
       }
@@ -62,7 +62,7 @@ export default {
         object: this.object.name,
       }
       $api.projects.works.post(data).then((response) => {
-        $d.works.reload()
+        $d.reload.works()
         this.$var('add', false)
       })
     },

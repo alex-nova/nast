@@ -4,14 +4,9 @@ import AuthInterface from './../../interfaces/libs/Auth'
  *
  */
 class Auth extends AuthInterface {
-  /**
-   * @param {StoreInterface}
-   */
+  /** @var {StoreInterface} */
   _store
-  
-  /**
-   * @param {ApiInterface}
-   */
+  /** @param {ApiInterface} */
   _api
   
   /**
@@ -23,25 +18,17 @@ class Auth extends AuthInterface {
     
     this._store = store
     this._api = api
-    
-    // TODO eq
-    setTimeout(() => {
-      if (this.loggedIn()) {
-        this.apiLogin(this._store.getter('auth.token'))
-      }
-    }, 100)
   }
   
   /**
-   *
    * @return {AuthGlobalInterface}
    */
   installGlobals() {
     return {
-      login: (username, password) => this.login(username, password),
-      logout: () => this.logout(),
-      user: () => this.user(),
-      loggedIn: () => this.loggedIn(),
+      login: (username, password) => this._login(username, password),
+      logout: () => this._logout(),
+      user: () => this._user(),
+      loggedIn: () => this._loggedIn(),
     }
   }
   
@@ -77,47 +64,60 @@ class Auth extends AuthInterface {
   }
   
   /**
+   *
+   */
+  coreInit() {
+    if (this._loggedIn()) {
+      this._apiLogin(this._store.getter('auth.token'))
+    }
+  }
+  
+  /**
+   * @private
    * @param {String} username
    * @param {String} password
    * @return {Promise}
    */
-  login(username, password) {
+  _login(username, password) {
     return $config('auth.api')(username, password).then((response) => {
       const token = $config('auth.getToken')(response)
       const user = $config('auth.getUser')(response)
-  
+      
       this._store.mutation('auth.login', { user, token, })
-      this.apiLogin(token)
+      this._apiLogin(token)
       
       return response
     })
   }
   
   /**
+   * @private
    * @return {boolean}
    */
-  loggedIn() {
+  _loggedIn() {
     return Boolean(this._store.getter('auth.token'))
   }
   
   /**
-   *
+   * @private
    */
-  logout() {
+  _logout() {
     this._store.mutation('auth.logout')
   }
   
   /**
+   * @private
    * @return {Object}
    */
-  user() {
+  _user() {
     return this._store.getter('auth.user')
   }
   
   /**
+   * @private
    * @param {String} token
    */
-  apiLogin(token) {
+  _apiLogin(token) {
     this._api.config({
       headers: {
         'Authorization': `Bearer ${token}`,

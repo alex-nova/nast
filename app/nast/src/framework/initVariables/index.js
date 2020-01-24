@@ -20,6 +20,6 @@ export const initApiVariables = (libs) => {
   /** @var {CustomApi} */
   global.$api = libs.api.coreInitApi()
   
-  /** @var {CustomApiData} */
-  global.$d = libs.api.coreInitData()
+  /** @var {CustomModels} */
+  global.$models = libs.api.coreInitModels()
 }

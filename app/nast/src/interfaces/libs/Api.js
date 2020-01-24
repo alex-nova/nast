@@ -7,7 +7,7 @@ export default class ApiInterface {
    * @param {Object} userApi
    * @param {StoreInterface} store
    */
-  constructor(userApi, store) {  }
+  constructor(userApi, store) { }
   
   /**
    * @return {ApiGlobalInterface}
@@ -15,18 +15,6 @@ export default class ApiInterface {
   installGlobals() {
     return {}
   }
-  
-  /**
-   * @return {ApiStoreInterface}
-   */
-  installStore() {
-    return {}
-  }
-  
-  /**
-   * @param {Object} router
-   */
-  coreUpdateRouter(router) {}
   
   /**
    * @return {CustomApi}
@@ -38,7 +26,13 @@ export default class ApiInterface {
   /**
    * @return {Object}
    */
-  coreInitData() {
+  coreInitModels() {
     return {}
   }
+  
+  /**
+   * @param {ApiConfigInterface} config
+   * @param {String} name
+   */
+  config(config, name = 'default') {}
 }

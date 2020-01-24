@@ -1,11 +1,11 @@
 <template>
   <div class="tab-info">
-    <!--    <n-loader :loading="$d.projectFiles.loading($route.params.id)" />-->
+    <!--    <n-loader :loading="$d.loading.projectFiles($route.params.id)" />-->
     <n-divide class="tools">
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить файл</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.projectFiles.get($route.params.id) || []" :loading="$d.projectFiles.loading($route.params.id)">
+    <n-table :columns="columns" :data="$d.get.projectFiles($route.params.id) || []" :loading="$d.loading.projectFiles($route.params.id)">
       <template #name="{item}">
         {{ item.type === 1 ? item.name : types[item.type - 1].title }}
       </template>
@@ -60,7 +60,7 @@ export default {
       file: null,
     })
   
-    $d.projectFiles.reload(this.$route.params.id)
+    $d.reload.projectFiles(this.$route.params.id)
   },
   methods: {
     submit() {
@@ -70,7 +70,7 @@ export default {
         typeName: this.type.title,
       }
       $api.projects.docs.post(this.$route.params.id, data).then((response) => {
-        $d.projectFiles.reload(this.$route.params.id)
+        $d.reload.projectFiles(this.$route.params.id)
         this.$var('add', false)
       })
     },

@@ -107,7 +107,7 @@ export default {
           this.model.endedAt = $app.date.format(this.model.endedAt, 'date')
           this.$form.init(this.model, false)
           this.$var('loading', false)
-          $d.projects.load().then()
+          $d.load.projects().then()
         }).catch(() => {
           this.$var('loading', false)
         })

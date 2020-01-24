@@ -6,7 +6,7 @@ export default class RouterGlobalInterface {
    * @param {String} name
    * @return {{'pageName': RouterPageInterface} | RouterPageInterface}
    */
-  get(name = '') {
+  getPage(name = '') {
     return {}
   }
   

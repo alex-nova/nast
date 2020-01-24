@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'RootApp',
+  name: 'App',
   html() {
     const meta = {
       meta: [
@@ -30,6 +30,10 @@ export default {
     // }
     
     return meta
+  },
+  props: [ 'libs', ],
+  mounted() {
+    this.libs.data.loadData(this.$router, this.$route)
   },
 }
 </script>

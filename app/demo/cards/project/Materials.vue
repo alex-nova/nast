@@ -5,7 +5,7 @@
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить материал</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.materials.get() || []" :loading="$d.materials.loading()">
+    <n-table :columns="columns" :data="$d.get.materials() || []" :loading="$d.loading.materials()">
     </n-table>
     
     <n-modal v-if="$var('add')" @close="$var('add', false)">
@@ -40,7 +40,7 @@ export default {
       name: '',
       desc: '',
     })
-    $d.materials.reload()
+    $d.reload.materials()
   },
   methods: {
     submit() {
@@ -48,7 +48,7 @@ export default {
         ...this.$form.get(),
       }
       $api.projects.materials.post(data).then((response) => {
-        $d.materials.reload()
+        $d.reload.materials()
         this.$var('add', false)
       })
     },

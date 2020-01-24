@@ -26,7 +26,7 @@ export default class StoreGlobalInterface {
    * @param {*} payload
    * @return {*}
    */
-  mutation(name, payload) {
+  mutation(name, payload = undefined) {
     return {}
   }
   
@@ -35,7 +35,7 @@ export default class StoreGlobalInterface {
    * @param {*} payload
    * @return {*}
    */
-  action(name, payload) {
+  action(name, payload = undefined) {
     return {}
   }
   

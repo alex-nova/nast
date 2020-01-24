@@ -8,10 +8,11 @@ export default class ApiObject {
   _version = 1
   _method
   _config = {}
-  _resource = null
+  _model = null
   _data = undefined
   _mock = undefined
   _mockTimeout = 500
+  _beforeCallbacks = {}
   _callbacks = {}
   
   _page = 0
@@ -33,14 +34,12 @@ export default class ApiObject {
    * @param {Object} instance
    * @param {Object} config
    */
-  constructor(url, method, instance, config) {
+  constructor(url, method, instance, config = {}) {
     this._url = url
-    this._instance = instance
     this._method = method
+    this._instance = instance
     
-    if (config.useVersion === false) {
-      this._version = 0
-    }
+    this.config(config)
   }
   
   /**
@@ -48,53 +47,58 @@ export default class ApiObject {
    * @return {Promise}
    */
   then(callback) {
+    $n.each(this._beforeCallbacks, (callback) => {
+      callback()
+    })
+    
+    let promise
     if (this._mock) {
-      const promise = new Promise((resolve) => {
+      promise = new Promise((resolve) => {
         setTimeout(() => {
-          resolve({
-            headers: {},
-            data: {
-              data: this._mock(),
-            },
-          })
+          const data = {}
+          $n.set(data, $config('api.dataKey'), this._mock())
+          resolve(data)
         }, this._mockTimeout)
-      }).then((response) => {
-        if (this._resource) {
-          return {
-            ...response,
-            data: new (this._resource)(response),
-          }
-        }
-        return response
-      }).then($config('api.callback'))
-  
-      $n.each(this._callbacks, (cb) => {
-        promise.then(cb)
       })
-  
-      return promise.then(callback).catch($config('api.catch'))
     } else {
-      const promise = this._instance({
+      promise = this._instance({
         ...this._config,
         method: this._method,
-        url: this._constructUrl(),
+        url: this.getUrl(),
         data: this._data,
-      }).then((response) => {
-        if (this._resource) {
-          return {
-            ...response,
-            data: new (this._resource)(response),
+      })
+    }
+    
+    const callbacks = [
+      $config('api.callback'),
+      (response) => {
+        if (this._model) {
+          const key = $config('api.dataKey')
+          let data = $n.get(response, key)
+          if ($n.isArray(data)) {
+            data = $n.map(data, (value) => {
+              return new (this._model)(value)
+            })
+          } else {
+            data = new (this._model)(data)
           }
+          $n.set(response, key, data)
         }
         return response
-      }).then($config('api.callback'))
+      },
+      ...Object.values(this._callbacks),
+      callback,
+    ]
   
-      $n.each(this._callbacks, (cb) => {
-        promise.then(cb)
-      })
-  
-      return promise.then(callback).catch($config('api.catch'))
+    for (const i in Object.keys(callbacks)) {
+      if ({}.hasOwnProperty.call(callbacks, i)) {
+        promise.then(callbacks[i])
+      }
     }
+    
+    promise.catch($config('api.catch'))
+    
+    return promise
   }
   
   /**
@@ -102,7 +106,21 @@ export default class ApiObject {
    * @return {ApiObject}
    */
   config(config) {
-    this._config = config
+    if (config.useVersion === false) {
+      this._version = 0
+    }
+    
+    $n.merge(this._config, config)
+    return this
+  }
+  
+  /**
+   * @param {Function} callback
+   * @param {String} name
+   * @return {ApiObject}
+   */
+  before(callback, name = 'default') {
+    this._beforeCallbacks[name] = callback
     return this
   }
   
@@ -130,11 +148,11 @@ export default class ApiObject {
   }
   
   /**
-   * @param {Resource} resource
+   * @param {Model} model
    * @return {ApiObject}
    */
-  resource(resource) {
-    this._resource = resource
+  model(model) {
+    this._model = model
     return this
   }
   
@@ -171,10 +189,20 @@ export default class ApiObject {
    */
   params(params) {
     $n.each(params, (value, key) => {
-      this[key](value)
+      if (this[key]) {
+        this[key](value)
+      }
     })
     
     return this
+  }
+  
+  /**
+   * @param {ApiParamsInterface} params
+   * @return {ApiObject}
+   */
+  fromQuery(params) {
+    return this.params(params)
   }
   
   /**
@@ -260,15 +288,14 @@ export default class ApiObject {
   
   /**
    * @return {string}
-   * @private
    */
-  _constructUrl() {
+  getUrl() {
     let url = ''
     
     if ($n.isString(this._url)) {
       url = '/' + $n.trim(this._url, '/')
-    } else { // [ 'users{}/articles{}', 1, 2] -> 'users/1/articles/2'
-      const parts = this._url[0].split('{}')
+    } else { // [ 'users*/articles*', 1, 2] -> 'users/1/articles/2'
+      const parts = this._url[0].split('*')
       const params = this._url.slice(1)
       $n.each(params, (item, index) => {
         if (item !== undefined) {
