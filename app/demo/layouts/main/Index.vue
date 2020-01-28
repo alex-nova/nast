@@ -26,7 +26,6 @@ import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
 import names from './../names'
 import Cards from './../../cards/Index'
-import pages from './../pages'
 
 export default {
   name: 'MainLayout',
@@ -51,12 +50,12 @@ export default {
         { name: 'company.admins', },
       ], },
       { name: 'projects.list', },
-      { name: 'my.journals.list', },
+      { name: 'journals.my', },
     ],
   }),
   computed: {
     navigation() {
-      return $app.router.navigation(this.menu, pages)
+      return $app.router.navigation(this.menu)
     },
   },
   watch: {

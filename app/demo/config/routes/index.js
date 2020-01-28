@@ -14,7 +14,9 @@ export default [
       
       { path: 'projects', name: 'projects.list', icon: 'user', parent: 'index', component: () => import('pages/projects/index/Index'), },
       
-      { path: 'my/journals', name: 'my.journals.list', icon: 'user', parent: 'index', component: () => import('pages/journals/my/Index'), },
+      { path: 'my/journals', name: 'journals.my', icon: 'user', parent: 'index', component: () => import('pages/journals/my/Index'), },
+      { path: 'journals/:id', name: 'journals.index', icon: 'user', parent: 'journals.my', component: () => import('pages/journals/index/Index'), },
+      { path: 'journals/:id/add', name: 'records.create', icon: 'user', parent: 'journals.my', component: () => import('pages/records/create/Index'), },
     ], },
     
     { path: '', component: () => import('layouts/auth/Index'), children: [

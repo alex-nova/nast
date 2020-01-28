@@ -1,7 +1,6 @@
 <template>
   <div class="page-projects-index container">
     <n-loader :loading="$d.loading('projects')" />
-    {{ $d.loading('projects') }}
     <div class="projects">
       <n-card v-for="project in $d.get('projects')" :key="project.id">
         <div class="project">
@@ -9,9 +8,9 @@
             <n-image mock />
           </div>
           <div class="content">
-            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="name">{{ project.title }}</n-link>
+            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="name">{{ project.name }}</n-link>
             <div class="address">{{ project.address }}</div>
-            <div class="description"><div>{{ project.desc }}</div></div>
+            <div class="description"><div>{{ project.description }}</div></div>
             <div class="dates">
               <div class="startedAt">Начало: {{ $app.date.format(project.startedAt, 'date') }}</div>
               <div class="endedAt">Конец: {{ $app.date.format(project.endedAt, 'date') }}</div>

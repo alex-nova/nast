@@ -52,15 +52,15 @@ class Store extends StoreInterface {
     patchStore(this._vuex)
     Vue.use(this._vuex)
     
-    // const vuexLocal = new VuexPersistence({
-    //   storage: window.localStorage,
-    // })
+    const vuexLocal = new VuexPersistence({
+      storage: window.localStorage,
+    })
     
     const instance = new this._vuex.Store({
       modules: {
         ...stores,
       },
-      // plugins: [ vuexLocal.plugin, ],
+      plugins: [ vuexLocal.plugin, ],
     })
     
     this._instance = instance

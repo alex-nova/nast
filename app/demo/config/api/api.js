@@ -29,8 +29,7 @@ export default class CustomApi {
   
   projects = {
     get(id) {
-      return $app.api.get([ 'projects', id, ])
-        // .model($models.Project)
+      return $app.api.get([ 'projects', id, ]).filters({ projectId: null, })
     },
     edit(id, data) {
       return $app.api.put([ 'projects', id, ]).data(data)
@@ -52,6 +51,11 @@ export default class CustomApi {
       },
     },
     materials: {
+      get(id) {
+        return $app.api.get([ 'projects/{}/files', id, ]).mock(() => {
+          return $n.reverse(mocks.materials)
+        })
+      },
       post(data) {
         return $app.api.post([ 'projects*/files', ], data).mock(() => {
           mocks.materials.push({ id: mocks.materials.length+1, name: data.name, desc: data.desc, count: data.count, unit: data.unit, })
@@ -59,6 +63,11 @@ export default class CustomApi {
       },
     },
     works: {
+      get(id) {
+        return $app.api.get([ 'projects/{}/files', id, ]).mock(() => {
+          return $n.reverse(mocks.works)
+        })
+      },
       post(data) {
         return $app.api.post([ 'projects*/files', ], data).mock(() => {
           mocks.works.push({ id: mocks.works.length+1, name: data.name, type: data.type, object: data.object, })
@@ -67,22 +76,25 @@ export default class CustomApi {
     },
   }
   
-  objects = {
+  journals = {
     get(id) {
-      return $app.api.get([ 'quizzes', id, ])
-        .mock(() => {
-          let content
-          if (id) {
-            const object = $n.find(mocks.objects, [ 'id', id*1, ])
-            content = {
-              ...object,
-              project: $n.find(mocks.projects, [ 'id', object.projectId, ]),
-            }
-          } else {
-            content = mocks.objects
-          }
-          return content
-        })
+      return $app.api.get([ 'journals', id, ])
+        .mock(() => id ? $n.find(mocks.journals, [ 'id', id*1, ]) : mocks.journals)
+    },
+    
+    records: {
+      get(journalId, id = null) {
+        return $app.api.get([ 'journals{}/records{}', journalId, id, ])
+          .mock(() => id ? $n.find(mocks.records, [ 'id', id*1, ]) : $n.reverse(mocks.records, 'id'))
+      },
+    },
+  }
+  
+  types = {
+    get() {
+      return $app.api.get([]).mock(() => {
+        return mocks.types
+      })
     },
   }
   

@@ -8,8 +8,6 @@
 </template>
 
 <script>
-import pages from './../../layouts/pages'
-
 export default {
   name: 'PageTitle',
   props: {
@@ -17,7 +15,7 @@ export default {
   },
   computed: {
     breadcrumbs() {
-      return $app.router.breadcrumbs(this.$route.name, pages)
+      return $app.router.breadcrumbs(this.$route.name)
     },
     page() {
       return $app.router.getPage(this.$route.name)

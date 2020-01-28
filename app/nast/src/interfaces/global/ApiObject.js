@@ -135,11 +135,11 @@ export default class ApiObject {
   }
   
   /**
-   * @param {ApiConfigInterface} mock
+   * @param {*} mock
    * @param {Integer} timeout
    * @return {ApiObject}
    */
-  mock(mock, timeout) {
+  mock(mock, timeout = 0) {
     this._mock = mock
     if (timeout) {
       this._mockTimeout = timeout

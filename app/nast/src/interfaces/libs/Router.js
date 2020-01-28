@@ -4,11 +4,6 @@
  */
 export default class RouterInterface {
   /**
-   * @property {Array}
-   */
-  routes
-  
-  /**
    * @param {Array} routes
    */
   constructor(routes) {}

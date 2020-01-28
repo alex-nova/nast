@@ -66,40 +66,42 @@ class Data extends DataInterface {
     return {
       namespaced: true,
       state: {
-        project_PageJournalsMy: {},
-        // variable_Component: {
-        //   data: [],
-        //   loading: false,
-        //   loadedAt: 192232323000,
-        //   lifetime: 60*60,
-        //   tag: 'tagName',
-        //   def: {},
-        // },
+        data: {
+          // variable_Component: {
+          //   data: [],
+          //   loading: false,
+          //   loadedAt: 192232323000,
+          //   lifetime: 60*60,
+          //   tag: 'tagName',
+          //   def: {},
+          // },
+        },
       },
       getters: {
-        get: (state) => (name, component) => $n.get(state, this._getDataKey(name, component), this._getDataItem()),
+        get: (state) => (name, component) => $n.get(state['data'], this._getDataKey(name, component), this._getDataItem()),
       },
       mutations: {
         startLoad: (state, { name, component, def, tag, lifetime, }) => {
-          // $n.set(state, this._getDataKey(name, component), )
-          state[this._getDataKey(name, component)] = this._getDataItem({ data: def, loading: true, def, tag, lifetime, })
+          state['data'] = {
+            ...state['data'],
+            [this._getDataKey(name, component)]: this._getDataItem({ data: def, loading: true, def, tag, lifetime, }),
+          }
         },
         update: (state, { name, component, data, }) => {
-          state[this._getDataKey(name, component)] = {
-            ...$n.get(state, this._getDataKey(name, component)),
+          state['data'][this._getDataKey(name, component)] = {
+            ...$n.get(state['data'], this._getDataKey(name, component)),
             data,
             loading: false,
             loadedAt: new Date().getTime(),
           }
-          // console.log(state)
-          // $n.set(state, `${this._getDataKey(name, component)}.data`, data)
-          // $n.set(state, `${this._getDataKey(name, component)}.loading`, false)
-          // $n.set(state, `${this._getDataKey(name, component)}.loadedAt`, new Date().getTime())
         },
         error: (state, { name, component, }) => {
-          $n.set(state, `${this._getDataKey(name, component)}.data`, $n.get(state, `${this._getDataKey(name, component)}.def`), [])
-          $n.set(state, `${this._getDataKey(name, component)}.loading`, false)
-          $n.set(state, `${this._getDataKey(name, component)}.loadedAt`, 0)
+          state['data'][this._getDataKey(name, component)] = {
+            ...$n.get(state['data'], this._getDataKey(name, component)),
+            data: $n.get(state['data'], `${this._getDataKey(name, component)}.def`),
+            loading: false,
+            loadedAt: 0,
+          }
         },
         outdateTag: (state, { tag, }) => {
           $n.each(state, (value, name) => {

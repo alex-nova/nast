@@ -49,7 +49,26 @@ export default {
     { id: 3, name: 'Балка', unit: 'шт', count: 12, desc: 'Описание балки', },
   ],
   works: [
-    { id: 1, name: 'Заливка бетона', type: 1, object: 'Блок 1', },
-    { id: 2, name: 'Укладка кирпичей', type: 2, object: 'Блок 1', },
+    { id: 1, name: 'Заливка бетона', type: 1, object: 'Блок 1', units: 'м3', },
+    { id: 2, name: 'Укладка кирпичей', type: 2, object: 'Блок 1', units: 'т', },
+  ],
+  
+  journals: [
+    { id: 1, object: { name: 'Блок 1', }, project: { name: 'ЖК «Восточка»', }, lastRecord: Date.now(), },
+    { id: 2, object: { name: 'Блок 2', }, project: { name: 'ЖК «Восточка»', }, lastRecord: Date.now(), },
+  ],
+  records: [
+    { id: 1, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '50', done: '', createdAt: Date.now(),
+      content: 'Устройство гидроизоляции по бетонной подготовке ленточных ростверков фундаментов блока №4 в осях А/2-А/1-А/4 на отм. -4,200.', },
+    { id: 2, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '34', done: '60м3', createdAt: Date.now(),
+      content: 'Бетонирование столбчатых ростверков фундаментов блока №4', },
+    { id: 3, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '35', done: '', createdAt: Date.now(),
+      content: 'Армирование и монтаж опалубки столбчатых и ленточных ростверов фундаментов блока 4', },
+    { id: 4, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '40', done: '', createdAt: Date.now(),
+      content: 'Разработка грунта вручную под основание фундаментов блока №4 в осях Г-Д-8-9', },
+    { id: 5, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '81', done: '100шт', createdAt: Date.now(),
+      content: 'Забивка свай С-120.30-10 фундаментов блока №2', },
+    { id: 6, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '48', done: '131 шт', createdAt: Date.now(),
+      content: 'Срубка оголовков свай фундаментов блока №2 на отм -4,150', },
   ],
 }

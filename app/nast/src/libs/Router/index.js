@@ -15,16 +15,20 @@ class Router extends RouterInterface {
    */
   _pages = {}
   
+  _titles = {}
+  
   /**
    * @param {Array} routes
    */
   constructor(routes) {
     super(routes)
     this._routes = routes
+    this._titles = $config('router.titles')
     
     this._pages = $n.reduceDeep(this._routes, (result, item) => {
       if (item.name) {
         result[item.name] = {
+          title: this._getTitle(item),
           name: item.name,
           route: item.name,
           parent: item.parent || null,
@@ -40,9 +44,9 @@ class Router extends RouterInterface {
    */
   installGlobals() {
     return {
-      getPage: (name) => this.getPage(name),
-      breadcrumbs: (name, titles) => this.breadcrumbs(name, titles),
-      navigation: (values, titles) => this.navigation(values, titles),
+      getPage: (name) => this._getPage(name),
+      breadcrumbs: (name, titles) => this._breadcrumbs(name, titles),
+      navigation: (values) => this._navigation(values),
     }
   }
   
@@ -73,12 +77,12 @@ class Router extends RouterInterface {
   /**
    * @param {String} name
    * @return {{'pageName': RouterPageInterface} | RouterPageInterface}
+   * @private
    */
-  getPage(name = undefined) {
+  _getPage(name = undefined) {
     if (name) {
       return this._pages[name]
     }
-    
     return this._pages
   }
   
@@ -86,8 +90,9 @@ class Router extends RouterInterface {
    * @param {String} name
    * @param {Object} titles  { name: 'Title', name2: 'Title2', }
    * @return {RouterPageInterface[]}
+   * @private
    */
-  breadcrumbs(name, titles = []) {
+  _breadcrumbs(name, titles = []) {
     const result = []
     let item
     let n = name
@@ -95,7 +100,7 @@ class Router extends RouterInterface {
       item = this._pages[n]
       result.push({
         ...item,
-        title: this.getTitle(item, titles, 'page'),
+        title: $n.get(titles, name, this._getTitle(item, 'breadcrumbs')),
       })
       n = item.parent
     }
@@ -103,17 +108,17 @@ class Router extends RouterInterface {
   }
   
   /**
-   * @param {Object} values Example: [ { name*: 'index', children: '', title: '', icon: '', }, ]
-   * @param {Object} titles  Example: { name: 'Title', name2: 'Title2', }
+   * @param {Object} values Example: [ { name*: 'index', title: '', icon: '', children: '', }, ]
    * @return {Object[]}  Example: [ { title: 'Index Page', icon: 'home', route: 'index', children: [...], }, ]
+   * @private
    */
-  navigation(values, titles = {}) {
+  _navigation(values) {
     const reducer = (result, item) => {
-      const page = this.getPage(item.name) || item
+      const page = this._getPage(item.name) || item
       const resultItem = {
-        name: item.name,
-        title: item.title || this.getTitle(page, titles, 'nav'),
-        route: item.route || page.route,
+        name: page.name,
+        route: page.route,
+        title: item.title || this._getTitle(page, 'nav'),
         icon: item.icon || page.icon,
       }
       if (item.children) {
@@ -129,13 +134,12 @@ class Router extends RouterInterface {
   
   /**
    * @param {RouterPageInterface} page
-   * @param {Object} titles  { name: 'Title', name2: 'Title2', }
-   * @param {String} type  page or nav
+   * @param {String} type  page or nav or breadcrumbs
    * @return {String}
+   * @private
    */
-  getTitle(page, titles, type = 'page') {
-    const config = type === 'nav' ? 'navLocaleKey' : 'pageLocaleKey'
-    return $n.get(titles, page.name, '') || ($n.isFunction(__) ? __($config(`router.${config}`)(page.name)) : page.name)
+  _getTitle(page, type = 'page') {
+    return $n.get(this._titles, page.name, '') || ($n.isFunction(__) ? __($config(`router.${type}LocaleKey`)(page.name)) : page.name)
   }
 }
 

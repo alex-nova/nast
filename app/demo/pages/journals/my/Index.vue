@@ -1,16 +1,14 @@
 <template>
   <div class="page-journals-my">
     <n-card>
-      <form @submit="save">
-        <n-items>
-          <n-input title="Title" v-bind="$form.input('title')" />
-          <n-input title="Address" v-bind="$form.input('address')" />
-          <n-button type="submit">Save</n-button>
-        </n-items>
-        {{ $d.get('project') }}<br />
-        {{ $store.state.data }}<br />
-        {{ $store.state.auth }}
-      </form>
+      <n-table :data="$d.get('journals')" :columns="columns" :loading="$d.loading('journals')">
+        <template #lastRecord="{item}">
+          {{ $app.date.format(item.lastRecord, 'date') }}
+        </template>
+        <template #tools="{item}">
+          <n-link :to="{ name: 'journals.index', params: { id: item.id, }, }"><n-button>Посмотреть</n-button></n-link>
+        </template>
+      </n-table>
     </n-card>
   </div>
 </template>
@@ -20,25 +18,24 @@ export default {
   name: 'PageJournalsMy',
   data() {
     return {
-      open: true,
+      columns: [
+        { title: 'ID', name: 'id', },
+        { title: 'Объект', name: 'object.name', },
+        { title: 'Проект', name: 'project.name', },
+        { title: 'Последняя запись', name: 'lastRecord', },
+        { title: '', name: 'tools', align: 'right', width: '150px', },
+      ],
     }
   },
   load: (route) => {
     return {
-      project: {
-        api: $api.projects.get(route.query.id).fromQuery(route.query),
-        default: {},
-        tag: 'projects',
-        lifetime: 60*60,
-        callback: () => {
-        
-        },
+      journals: {
+        api: $api.journals.get(),
       },
     }
   },
   methods: {
     save() {
-    
     },
   },
 }

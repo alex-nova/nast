@@ -20,14 +20,4 @@ export default class CustomApiData {
       return $n.reverse(mocks.docs2)
     })
   }
-  materials = (id) => {
-    return $app.api.get([ 'projects/{}/files', id, ]).mock(() => {
-      return $n.reverse(mocks.materials)
-    })
-  }
-  works = (id) => {
-    return $app.api.get([ 'projects/{}/files', id, ]).mock(() => {
-      return $n.reverse(mocks.works)
-    })
-  }
 }

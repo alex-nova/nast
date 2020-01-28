@@ -19,7 +19,9 @@ export default {
       $app.api.config({})
     },
     callback: (response) => {
-      response.data.content = response.data.data
+      if (!response.data.content) {
+        response.data.content = response.data.data
+      }
       return response
     },
     catch: (error) => {
@@ -41,6 +43,32 @@ export default {
     },
     navLocaleKey(name) {
       return `app.nav.${name}`
+    },
+    breadcrumbsLocaleKey(name) {
+      return `app.breadcrumbs.${name}`
+    },
+    titles: {
+      index: 'Главная страница',
+      user: 'Карточка пользователя',
+      profile: 'Профиль',
+      company: {
+        group: 'Компания',
+        info: 'Информация о компании',
+        staff: 'Сотрудники',
+        admins: 'Администраторы',
+      },
+      projects: {
+        group: 'Проекты',
+        list: 'Проекты',
+        info: 'Проект',
+      },
+      journals: {
+        my: 'Мои журналы',
+        index: 'Журнал производственных работ [Блок 1]',
+      },
+      records: {
+        create: 'Создать запись',
+      },
     },
   },
   

@@ -1,4 +1,3 @@
-import moment from '../../libs/Date'
 
 /**
  *
