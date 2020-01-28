@@ -17,20 +17,23 @@ class Router extends RouterInterface {
   
   _titles = {}
   
+  /** { name: { custom: 'data', }, } */
+  _customData = {}
+  
+  
   /**
    * @param {Array} routes
    */
   constructor(routes) {
     super(routes)
     this._routes = routes
-    this._titles = $config('router.titles')
+    this._titles = $config('router.titles')()
     
     this._pages = $n.reduceDeep(this._routes, (result, item) => {
       if (item.name) {
         result[item.name] = {
           title: this._getTitle(item),
           name: item.name,
-          route: item.name,
           parent: item.parent || null,
           icon: item.icon || null,
         }
@@ -44,9 +47,49 @@ class Router extends RouterInterface {
    */
   installGlobals() {
     return {
-      getPage: (name) => this._getPage(name),
-      breadcrumbs: (name, titles) => this._breadcrumbs(name, titles),
+      set: (params) => this._setData(params),
+      setParent: (name, params) => this._setParent(name, params),
+      current: () => this._getCurrent(),
+      breadcrumbs: (settings) => this._getParents(settings),
       navigation: (values) => this._navigation(values),
+    }
+  }
+  
+  installStore() {
+    return {
+      namespaced: true,
+      state: {
+        data: {
+          // 'index': {},
+        },
+      },
+      getters: {
+        get: (state) => (name) => $n.get(state['data'], name, {}),
+      },
+      mutations: {
+        setData: (state, { name, data, }) => {
+          state['data'] = {
+            ...state['data'],
+            [name]: {
+              ...$n.get(state['data'], name, {}),
+              data,
+            },
+          }
+        },
+        setParent: (state, { name, parentName, data, }) => {
+          const val = $n.get(state['data'], name, {})
+          state['data'] = {
+            ...state['data'],
+            [name]: {
+              ...val,
+              parents: {
+                ...$n.get(val, 'parents', {}),
+                [parentName]: data,
+              },
+            },
+          }
+        },
+      },
     }
   }
   
@@ -75,34 +118,59 @@ class Router extends RouterInterface {
   }
   
   /**
-   * @param {String} name
-   * @return {{'pageName': RouterPageInterface} | RouterPageInterface}
+   * @param {Object} data
    * @private
    */
-  _getPage(name = undefined) {
-    if (name) {
-      return this._pages[name]
-    }
-    return this._pages
+  _setData(data = {}) {
+    const name = $app.store.state('route.name')
+    $app.store.mutation('router.setData', { name, data, })
   }
   
   /**
    * @param {String} name
-   * @param {Object} titles  { name: 'Title', name2: 'Title2', }
+   * @param {Object} data
+   * @private
+   */
+  _setParent(name, data = {}) {
+    const pageName = $app.store.state('route.name')
+    $app.store.mutation('router.setParent', { name: pageName, parentName: name, data, })
+  }
+  
+  /**
+   * @return {RouterPageInterface}
+   * @private
+   */
+  _getCurrent() {
+    const name = $app.store.state('route.name')
+    const data = $app.store.getter('router.get')(name)
+    return {
+      ...this._pages[name],
+      data,
+    }
+  }
+  
+  /**
+   * @param {Object} settings  { name: () => {}, }
    * @return {RouterPageInterface[]}
    * @private
    */
-  _breadcrumbs(name, titles = []) {
+  _getParents(settings = []) {
+    let name = $app.store.state('route.name')
+    const custom = $app.store.getter('router.get')(name)
     const result = []
     let item
-    let n = name
-    while (n) {
-      item = this._pages[n]
+    while (name) {
+      item = this._pages[name]
+      const customItem = $n.get(custom['parents'], name, {})
+      const settingsItem = $n.get(settings, name, (d) => d)({ ...item, data: customItem.data || {}, })
       result.push({
         ...item,
-        title: $n.get(titles, name, this._getTitle(item, 'breadcrumbs')),
+        route: item.name,
+        ...settingsItem,
+        ...customItem,
+        title: this._getTitle(item, 'breadcrumbs', customItem['title'] || settingsItem['title'], customItem['data'] || settingsItem['data']),
       })
-      n = item.parent
+      name = item.parent
     }
     return result.reverse()
   }
@@ -114,11 +182,11 @@ class Router extends RouterInterface {
    */
   _navigation(values) {
     const reducer = (result, item) => {
-      const page = this._getPage(item.name) || item
+      const page = $n.get(this._pages, item.name, item)
       const resultItem = {
         name: page.name,
         route: page.route,
-        title: item.title || this._getTitle(page, 'nav'),
+        title: this._getTitle(page, item.title),
         icon: item.icon || page.icon,
       }
       if (item.children) {
@@ -134,12 +202,44 @@ class Router extends RouterInterface {
   
   /**
    * @param {RouterPageInterface} page
-   * @param {String} type  page or nav or breadcrumbs
+   * @param {String} type
+   * @param {String} rewrite
+   * @param {Object} data
    * @return {String}
    * @private
    */
-  _getTitle(page, type = 'page') {
-    return $n.get(this._titles, page.name, '') || ($n.isFunction(__) ? __($config(`router.${type}LocaleKey`)(page.name)) : page.name)
+  _getTitle(page, type = '', rewrite = '', data = {}) {
+    console.log({ page, type, rewrite, data, })
+    if (rewrite) {
+      return this._translate(rewrite, data)
+    }
+    let value = ''
+    if (type === 'breadcrumbs') {
+      value = this._translate($config('router.pageTitle')(page.name, type), data)
+      if (value) {
+        return value
+      }
+    } else if (type === 'navigation') {
+      value = this._translate($config('router.pageTitle')(page.name, type), data)
+      if (value) {
+        return value
+      }
+    }
+    
+    return this._translate($config('router.pageTitle')(page.name, 'pages'), data)
+  }
+  
+  /**
+   * @param {String} name
+   * @param {Object} data
+   * @return {*}
+   * @private
+   */
+  _translate(name, data = {}) {
+    if ($n.size(this._titles)) {
+      return $n.get(this._titles, name, '')
+    }
+    return ($n.isFunction(__) ? __(name, data) : name)
   }
 }
 

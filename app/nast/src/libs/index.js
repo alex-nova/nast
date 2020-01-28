@@ -19,8 +19,8 @@ export default () => {
   }
   
   const store = new libs.Store()
-  const data = new libs.Data(store)
   const router = new libs.Router(customRoutes)
+  const data = new libs.Data(store)
   const api = new libs.Api(customApi, store)
   const auth = new libs.Auth(store, api)
   const form = new libs.Form()

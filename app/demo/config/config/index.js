@@ -1,3 +1,5 @@
+import pages from './pages'
+
 export default {
   app: {
     baseUrl: '/',
@@ -38,37 +40,11 @@ export default {
   },
   
   router: {
-    pageLocaleKey(name) {
-      return `app.pages.${name}`
+    pageTitle(name, type) {
+      return `app.${type}.${name}`
     },
-    navLocaleKey(name) {
-      return `app.nav.${name}`
-    },
-    breadcrumbsLocaleKey(name) {
-      return `app.breadcrumbs.${name}`
-    },
-    titles: {
-      index: 'Главная страница',
-      user: 'Карточка пользователя',
-      profile: 'Профиль',
-      company: {
-        group: 'Компания',
-        info: 'Информация о компании',
-        staff: 'Сотрудники',
-        admins: 'Администраторы',
-      },
-      projects: {
-        group: 'Проекты',
-        list: 'Проекты',
-        info: 'Проект',
-      },
-      journals: {
-        my: 'Мои журналы',
-        index: 'Журнал производственных работ [Блок 1]',
-      },
-      records: {
-        create: 'Создать запись',
-      },
+    titles() {
+      return pages()
     },
   },
   
@@ -87,13 +63,6 @@ export default {
       locales: () => {},
       elements: () => {},
       change: () => {},
-    },
-  },
-  
-  models: {
-    types: [ 'string', 'boolean', 'date', 'datetime', 'time', 'int', 'float', ],
-    casts: {
-    
     },
   },
   

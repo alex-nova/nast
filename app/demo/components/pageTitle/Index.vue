@@ -1,7 +1,7 @@
 <template>
   <div class="component-page-title">
     <div class="content">
-      <h1 slot="header">{{ page.title }}</h1>
+      <h1 slot="header">{{ $app.router.current().title }}</h1>
       <n-breadcrumbs :items="breadcrumbs" />
     </div>
   </div>
@@ -15,10 +15,11 @@ export default {
   },
   computed: {
     breadcrumbs() {
-      return $app.router.breadcrumbs(this.$route.name)
-    },
-    page() {
-      return $app.router.getPage(this.$route.name)
+      return $app.router.breadcrumbs({
+        'journals.index': (page) => ({
+          route: page.data.journalId ? { name: page.name, params: { id: page.data.journalId, }, } : 'journals.my',
+        }),
+      })
     },
   },
 }

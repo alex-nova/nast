@@ -52,8 +52,44 @@ class Store extends StoreInterface {
     patchStore(this._vuex)
     Vue.use(this._vuex)
     
+    const maxLvl = 2
+    const saveFound = (value) => {
+      const data = $n.reduce(value['_save'], (result, key) => {
+        result[key] = value[key]
+        return result
+      }, {})
+      if ($n.size(data)) {
+        data['_save'] = value['_save']
+      }
+      return data
+    }
+    const reducer = (value, lvl) => {
+      if ($n.get(value, '_save', false)) {
+        return saveFound(value)
+      }
+      if (lvl > maxLvl) {
+        return
+      }
+      return $n.reduce(value, (result, v, k) => {
+        const v2 = reducer(v, lvl + 1)
+        if (v2 && $n.size(v2)) {
+          result[k] = v2
+        }
+        return result
+      }, {})
+    }
+    
     const vuexLocal = new VuexPersistence({
       storage: window.localStorage,
+      reducer: (state) => {
+        return $n.reduce(state, (result, value, key) => {
+          const v = reducer(value, 1)
+          if (v && $n.size(v)) {
+            result[key] = v
+          }
+          return result
+        }, {})
+      },
     })
     
     const instance = new this._vuex.Store({

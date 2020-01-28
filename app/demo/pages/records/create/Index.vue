@@ -104,6 +104,15 @@ export default {
       },
     }
   },
+  created() {
+    $app.router.set({ object: 'sd', project: 'dsfdf', })
+    $app.router.setParent('journals.index', {
+      title: 'app.pages.journals.indexShort',
+      icon: 'plus',
+      // route: '',
+      data: { journalId: this.$route.params.id, },
+    })
+  },
   methods: {
     addMaterial() {
       this.selectedMaterials.push({})

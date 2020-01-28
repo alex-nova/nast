@@ -41,6 +41,7 @@ class Auth extends AuthInterface {
       state: {
         user: null,
         token: '',
+        _save: [ 'user', 'token', ],
       },
       getters: {
         user: (state) => {

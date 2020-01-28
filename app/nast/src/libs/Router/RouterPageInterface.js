@@ -3,23 +3,18 @@
  *
  */
 export default class RouterPageInterface {
-  /**
-   * @type {String}
-   */
+  /** @type {String} */
   name
   
-  /**
-   * @type {String}
-   */
+  /** @type {String} */
   parent
   
-  /**
-   * @type {String}
-   */
+  /** @type {String} */
   icon
   
-  /**
-   * @type {String}
-   */
+  /** @type {String} */
   title
+  
+  /** @type {Object} */
+  data
 }
