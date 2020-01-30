@@ -10,15 +10,16 @@ class Router extends RouterInterface {
    * @type {Array}
    */
   _routes = []
+  
   /**
    * @type {{'pageName': RouterPageInterface}}
    */
   _pages = {}
   
+  /**
+   * @type {Object}
+   */
   _titles = {}
-  
-  /** { name: { custom: 'data', }, } */
-  _customData = {}
   
   
   /**
@@ -47,32 +48,37 @@ class Router extends RouterInterface {
    */
   installGlobals() {
     return {
-      set: (params) => this._setData(params),
-      setParent: (name, params) => this._setParent(name, params),
+      setPage: (name, params = undefined) => this._setPage(name, params),
       current: () => this._getCurrent(),
       breadcrumbs: (settings) => this._getParents(settings),
       navigation: (values) => this._navigation(values),
     }
   }
   
+  /**
+   * @return {Object}
+   */
   installStore() {
     return {
       namespaced: true,
       state: {
         data: {
-          // 'index': {},
+          // 'index': {
+          //   page: {},
+          //   parents: {},
+          // },
         },
       },
       getters: {
         get: (state) => (name) => $n.get(state['data'], name, {}),
       },
       mutations: {
-        setData: (state, { name, data, }) => {
+        setPage: (state, { name, data, }) => {
           state['data'] = {
             ...state['data'],
             [name]: {
               ...$n.get(state['data'], name, {}),
-              data,
+              page: data,
             },
           }
         },
@@ -118,22 +124,25 @@ class Router extends RouterInterface {
   }
   
   /**
-   * @param {Object} data
+   * Usage examples: ({ data: {}, }) or ('index', { data: {}, })
+   * If params count = 1, name = this route
+   * @param {String|Object} name
+   * @param {Object} params
    * @private
    */
-  _setData(data = {}) {
-    const name = $app.store.state('route.name')
-    $app.store.mutation('router.setData', { name, data, })
-  }
-  
-  /**
-   * @param {String} name
-   * @param {Object} data
-   * @private
-   */
-  _setParent(name, data = {}) {
-    const pageName = $app.store.state('route.name')
-    $app.store.mutation('router.setParent', { name: pageName, parentName: name, data, })
+  _setPage(name, params = undefined) {
+    const thisName = $app.store.state('route.name')
+    let parentName = name
+    let thisParams = params
+    if (!params) {
+      parentName = thisName
+      thisParams = name
+    }
+    if (thisName === parentName) {
+      $app.store.mutation('router.setPage', { name: thisName, data: thisParams, })
+    } else {
+      $app.store.mutation('router.setParent', { name: thisName, parentName, data: thisParams, })
+    }
   }
   
   /**
@@ -145,7 +154,7 @@ class Router extends RouterInterface {
     const data = $app.store.getter('router.get')(name)
     return {
       ...this._pages[name],
-      data,
+      ...data,
     }
   }
   
@@ -162,7 +171,7 @@ class Router extends RouterInterface {
     while (name) {
       item = this._pages[name]
       const customItem = $n.get(custom['parents'], name, {})
-      const settingsItem = $n.get(settings, name, (d) => d)({ ...item, data: customItem.data || {}, })
+      const settingsItem = $n.get(settings, name, (d) => ({}))({ ...item, data: customItem.data || {}, })
       result.push({
         ...item,
         route: item.name,
@@ -185,7 +194,7 @@ class Router extends RouterInterface {
       const page = $n.get(this._pages, item.name, item)
       const resultItem = {
         name: page.name,
-        route: page.route,
+        route: item.children ? '' : page.name,
         title: this._getTitle(page, item.title),
         icon: item.icon || page.icon,
       }
@@ -209,7 +218,6 @@ class Router extends RouterInterface {
    * @private
    */
   _getTitle(page, type = '', rewrite = '', data = {}) {
-    console.log({ page, type, rewrite, data, })
     if (rewrite) {
       return this._translate(rewrite, data)
     }

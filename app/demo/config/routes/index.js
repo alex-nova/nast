@@ -30,3 +30,16 @@ export default [
     
   ], },
 ]
+
+// const structure = {
+//   'index': { icon: 'tachometer-alt', parent: '', access: [], },
+//   'user': { icon: 'user', parent: 'staff', access: [], },
+//   'profile': { icon: 'user', parent: 'index', access: [], },
+//   'company.info': { icon: 'file-alt', parent: 'index', access: [], },
+//   'company.staff': { icon: 'users', parent: 'company.info', access: [], },
+//   'company.admins': { icon: 'user-shield', parent: 'company.info', access: [], },
+//   'projects.list': { icon: 'user', parent: 'index', access: [], },
+//   'journals.my': { icon: 'user', parent: 'index', access: [], },
+//   'journals.index': { icon: 'user', parent: 'journals.my', access: [], },
+//   'records.create': { icon: 'user', parent: 'journals.index', access: [], },
+// }

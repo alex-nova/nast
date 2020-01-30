@@ -16,6 +16,13 @@ export default class RouterInterface {
   }
   
   /**
+   * @return {Object}
+   */
+  installStore() {
+    return {}
+  }
+  
+  /**
    * @param {Vue} Vue
    * @return {VueRouter}
    */

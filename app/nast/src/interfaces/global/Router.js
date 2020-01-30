@@ -3,19 +3,25 @@
  */
 export default class RouterGlobalInterface {
   /**
-   * @param {String} name
-   * @return {{'pageName': RouterPageInterface} | RouterPageInterface}
+   * Usage examples: ({ data: {}, }) or ('index', { data: {}, })
+   * If params count = 1, name = this route
+   * @param {String|Object} name
+   * @param {Object} params
    */
-  getPage(name = undefined) {
+  _setPage(name, params = undefined) {}
+  
+  /**
+   * @return {RouterPageInterface}
+   */
+  current() {
     return {}
   }
   
   /**
-   * @param {String} name
-   * @param {Object} titles  { name: 'Title', name2: 'Title2', }
+   * @param {Object} settings  { name: () => {}, }
    * @return {RouterPageInterface[]}
    */
-  breadcrumbs(name, titles = []) {
+  breadcrumbs(settings = []) {
     return {}
   }
   
