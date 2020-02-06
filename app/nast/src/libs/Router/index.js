@@ -195,7 +195,7 @@ class Router extends RouterInterface {
       const resultItem = {
         name: page.name,
         route: item.children ? '' : page.name,
-        title: this._getTitle(page, item.title),
+        title: this._getTitle(page, 'navigation', item.title),
         icon: item.icon || page.icon,
       }
       if (item.children) {
