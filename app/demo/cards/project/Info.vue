@@ -32,7 +32,7 @@ export default {
     loadUsers(params) {
       $api.users.get().then((response) => {
         this.users = response.data.content
-        this.$toggle('loading', false)
+        this.$var('loading', false)
       })
     },
   },

@@ -50,43 +50,7 @@
           <span class="unit">м/с</span>
         </div>
         <n-input title="Меры в особых условиях" />
-        <n-select title="Чертежи" :data="docs" :value.sync="doc" />
-      </n-items>
-    </n-card>
-    
-    <n-card>
-      <template #header>
-        <h3>Журнал бетонных работ</h3>
-      </template>
-      <n-items>
-        <n-input title="Маркировка контрольных образцов бетона и их число" />
-        <n-input title="№ акта об изготовлении контрольных образцов" />
-        <n-input title="Примечание" />
-        <div class="weather">
-          <div style="margin-bottom: 5px">Результаты испытания контрольных образцов</div>
-          <n-input title="При распалубливании" inline />
-          <n-input class="temperature" title="Дата" inline /><br />
-          <n-input style="margin-top: 15px" title="Через 28 суток" inline disabled />
-        </div>
-      </n-items>
-    </n-card>
-    
-    <n-card>
-      <template #header>
-        <h3>Журнал ухода за бетоном</h3>
-      </template>
-      <n-items>
-        <n-input title="Наименование забетонированной части сооружения" />
-        <n-input title="Объем бетона" />
-        <n-input title="Модуль поверхности, м2/м3" />
-        <n-input title="Метод выдерживания бетона" />
-        <n-input title="Дата и время окончания укладки бетона" />
-        <div class="weather">
-          <div>Начало выдерживания бетона</div>
-          <n-input title="Время" inline />
-          <n-input style="width: 200px; margin: 0 10px" title="Температура бетона" inline />
-          <n-input style="width: 200px;" title="Температура наружного воздуха" inline />
-        </div>
+        <n-upload title="Чертежи" multi />
       </n-items>
     </n-card>
     
@@ -104,13 +68,6 @@ export default {
   name: 'PageRecordCreate',
   data() {
     return {
-      doc: [],
-      docs: [
-        'Чертеж 1',
-        'Чертеж 2',
-        'Чертеж 3',
-        'Чертеж 4',
-      ],
       work: {},
       selectedMaterials: [
         {},

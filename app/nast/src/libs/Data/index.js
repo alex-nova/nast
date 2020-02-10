@@ -21,13 +21,13 @@ class Data extends DataInterface {
   installMixin() {
     const get = (name, component) => this._getData(name, component)
     const getPromise = this._getPromise
-    const outdateTag = this._outdateTag
+    const outdateTag = (tag) => this._outdateTag(tag)
     
     return {
       computed: {
         $d() {
           const component = this.$options.name
-          const vars = this.$options.load(this.$route)
+          const vars = this.$options.load ? this.$options.load(this.$route) : {}
           
           return {
             get: (name) => get(name, component).data,
@@ -40,16 +40,12 @@ class Data extends DataInterface {
           }
         },
       },
-      mounted() {
-        // this._data_check()
-      },
-      methods: {
-        _data_check() {
+      watch: {
+        '$route'(route) {
           if (this.$options.load) {
-            const vars = this.$options.load()
             const component = this.$options.name
-            $n.map(vars, (value, name) => {
-              if (get(name, component).loadedAt) {
+            $n.each(this.$options.load(this.$router), (value, name) => {
+              if (!get(name, component).loadedAt) {
                 this.$d.reload(name)
               }
             })
@@ -104,9 +100,12 @@ class Data extends DataInterface {
           }
         },
         outdateTag: (state, { tag, }) => {
-          $n.each(state, (value, name) => {
+          $n.each(state['data'], (value, name) => {
             if (value.tag === tag) {
-              $n.set(state, `${name}.loadedAt`, 0)
+              state['data'][name] = {
+                ...$n.get(state['data'], name),
+                loadedAt: 0,
+              }
             }
           })
         },
@@ -185,7 +184,7 @@ class Data extends DataInterface {
    * @return {*}
    */
   _outdateTag(tag) {
-    return this._store.mutation('data.outdateTag')(tag)
+    return this._store.mutation('data.outdateTag', { tag, })
   }
   
   // /**

@@ -8,9 +8,8 @@ export default {
   api: {
     servers: {
       default: {
-        // dev: 'http://127.0.0.1:8000/api/',
-        dev: 'http://46.101.127.68/api/',
-        prod: 'http://46.101.127.68/api/',
+        dev: 'http://127.0.0.1:8000/api/',
+        prod: 'https://demo.eq.nova.st/api/',
       },
       nova: {
         dev: 'https://cms.nova.st/api/',
@@ -49,7 +48,7 @@ export default {
   },
   
   auth: {
-    api: (u, p) => $api.auth.login(u, p),
+    api: (l, p) => $api.auth.login(l, p),
     getToken: (response) => {
       return response.data.content.token
     },

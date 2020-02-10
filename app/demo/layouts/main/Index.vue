@@ -4,7 +4,7 @@
       <template #logo>{{ names['logo'] }}</template>
       <template #logo-min>{{ names['logoMin'] }}</template>
       <template #avatar><img :src="avatar" /></template>
-      <template #name>Осипов Владимир Николаевич{{ $app.auth.user() ? $app.auth.user().name : '' }}</template>
+      <template #name>{{ $app.auth.user() ? $app.auth.user().fullName : '' }}</template>
       <div slot="content">
         <page-title />
         <router-view />
@@ -44,11 +44,12 @@ export default {
     ],
     menu: [
       { name: 'index', },
-      { name: 'company.group', icon: 'building', children: [
-        { name: 'company.info', },
-        { name: 'company.staff', },
-        { name: 'company.admins', },
-      ], },
+      { name: 'company.list', },
+      // { name: 'company.group', icon: 'building', children: [
+      //   { name: 'company.info', },
+      //   { name: 'company.staff', },
+      //   { name: 'company.admins', },
+      // ], },
       { name: 'projects.list', },
       { name: 'journals.my', },
     ],

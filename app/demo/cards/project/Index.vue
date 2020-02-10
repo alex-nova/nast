@@ -85,7 +85,9 @@ export default {
     },
   },
   created() {
-    this.load()
+    if (this.$route.query.modal === 'project') {
+      this.load()
+    }
   },
   methods: {
     load() {
@@ -107,7 +109,7 @@ export default {
           this.model.endedAt = $app.date.format(this.model.endedAt, 'date')
           this.$form.init(this.model, false)
           this.$var('loading', false)
-          $d.load.projects().then()
+          this.$d.reloadTag('projects')
         }).catch(() => {
           this.$var('loading', false)
         })

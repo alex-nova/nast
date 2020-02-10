@@ -1,13 +1,11 @@
 <template>
-  <div class="page-user-index">
+  <div class="page-company-index">
     <n-card :loading="$var('loading')">
       <div class="items">
-        <n-input title="Компания" v-bind="$form.input('company.name')" text />
-        <n-input title="ФИО" v-bind="$form.input('fullName')" />
-        <n-input title="ИИН" v-bind="$form.input('iin')" />
-        <n-input title="E-mail" v-bind="$form.input('email')" />
-        <n-input title="Телефон" v-bind="$form.input('phone')" />
-        <n-input title="Должность" v-bind="$form.input('position')" />
+        <n-input title="Название" v-bind="$form.input('name')" />
+        <n-input title="ИИН / БИН" v-bind="$form.input('bin')" />
+        <n-input title="Описаие" v-bind="$form.input('description')" />
+        <n-input title="Адрес" v-bind="$form.input('address')" />
       </div>
       <n-items>
         <n-button v-if="!$form.editable()" color="primary" @click="$form.edit">Редактировать</n-button>
@@ -20,15 +18,12 @@
 
 <script>
 export default {
-  name: 'PageUserIndex',
+  name: 'PageCompanyIndex',
   data: () => ({
   }),
   mounted() {
     this.$var('loading', true)
-    const relations = {
-      company: { fields: [ 'id', 'title', ], },
-    }
-    $api.users.get(this.$route.params.id).with(relations).then((request) => {
+    $api.companies.get(1).then((request) => {
       this.$var('loading', false)
       this.$form.init(request.data, false)
     })
@@ -48,7 +43,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page-user-index {
+.page-company-index {
   
   .items {
     &>* {

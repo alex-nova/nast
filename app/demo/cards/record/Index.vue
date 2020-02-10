@@ -24,15 +24,63 @@
       <template #tab.items>
         <TabItems />
       </template>
+      <template #tab.spec1>
+        <n-items>
+          <n-form-item title="Ген подрядчик" active>
+            <div>Ожидает проверки</div>
+          </n-form-item>
+          <n-form-item title="Авторский надзор" active>
+            <div class="success">Проверено</div>
+          </n-form-item>
+          <n-form-item title="Технический надзор" active>
+            <div class="error">Отклонено</div>
+          </n-form-item>
+        </n-items>
+      </template>
+      <template #tab.control>
+        <n-card>
+          <n-items>
+            <div v-if="$app.auth.user().iin === 123456789012" style="float: right">
+              <n-link :to="{name: 'records.create', params: {id:1},}" wide><n-button>Создать запись об устранении</n-button></n-link>
+            </div>
+            <n-form-item title="Статус" active inline>
+              <div class="error">Не решен</div>
+            </n-form-item>
+            <n-input title="Выявленные отступления от проектно-сметной документации" value="Неправильно сделано" text />
+            <n-input title="Указания об устранении выявленных отступлений или нарушений и сроки их выполнения" value="Надо переделать" text />
+            <n-form-item title="Фото/видео материалы" active>
+              <div class="images">
+                <n-image mock />
+                <n-image mock />
+              </div>
+            </n-form-item>
+          </n-items>
+          <div class="info">Технический надзор, 10 февраля 2020</div>
+        </n-card>
+        <n-card>
+          <n-items>
+            <n-form-item title="Статус" active>
+              <div class="success">Решен</div>
+            </n-form-item>
+            <n-input title="Выявленные отступления от проектно-сметной документации" value="Неправильно сделано" text />
+            <n-input title="Указания об устранении выявленных отступлений или нарушений и сроки их выполнения" value="Надо переделать" text />
+            <n-form-item title="Фото/видео материалы" active>
+              <div class="images">
+                <n-image mock />
+                <n-image mock />
+                <n-image mock />
+              </div>
+            </n-form-item>
+            <n-form-item title="Ответ" active>
+              <n-link :to="{ name: 'journals.index', params: { id: 1, }, }">Запись в журнале</n-link>
+            </n-form-item>
+          </n-items>
+          <div class="info">Авторский надзор, 8 февраля 2020</div>
+        </n-card>
+      </template>
       <template #footer="{tab}">
         <n-divide>
           <n-button @click="() => $router.push({query: {}})">Закрыть</n-button>
-          <n-items v-if="tab.callback" inline>
-            <n-button v-if="!$form.editable() && tab.name === 'info'" color="primary" @click="$form.edit()">Редактировать</n-button>
-            <n-button v-if="!$form.editable() && tab.name === 'structure'" color="primary" @click="$form.edit()">Сортировать</n-button>
-            <n-button v-if="$form.editable()" @click="$form.cancel()">Отмена</n-button>
-            <n-button v-if="$form.editable()" color="success" @click="tab.callback">Сохранить</n-button>
-          </n-items>
         </n-divide>
       </template>
     </n-modal-card>
@@ -48,9 +96,9 @@ export default {
     return {
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
-        { name: 'spec1', title: 'Журнал бетонных работ', },
         { name: 'items', title: 'Расход', },
         { name: 'control', title: 'Надзор', },
+        { name: 'spec1', title: 'Согласование', },
       ],
       materials: [
         { id: 1, name: 'Бетон', unit: 'м3', count: 10, desc: '', },
@@ -82,6 +130,27 @@ export default {
       width: 150px;
       margin-right: 20px;
     }
+  }
+  
+  .error {
+    color: var(--danger);
+  }
+  .success {
+    color: var(--success);
+  }
+  
+  .images {
+    & > div {
+      display: inline-block;
+      margin-right: 10px;
+      max-width: 100px;
+      max-height: 100px;
+    }
+  }
+  .info {
+    margin-top: 10px;
+    font-size: .8em;
+    opacity: .9;
   }
 
 }

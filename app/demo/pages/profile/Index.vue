@@ -1,14 +1,12 @@
 <template>
   <div class="page-user-index">
-    <n-card :loading="$toggler.loading">
+    <n-card :loading="$var('loading')">
       <template #header><h3>Основная информация</h3></template>
       <div class="items">
-        <n-input title="Компания" v-bind="$form.input('company.name')" text />
+        <n-input title="ИИН" v-bind="$form.input('iin')" text />
         <n-input title="ФИО" v-bind="$form.input('fullName')" />
-        <n-input title="ИИН" v-bind="$form.input('iin')" />
         <n-input title="E-mail" v-bind="$form.input('email')" />
         <n-input title="Телефон" v-bind="$form.input('phone')" />
-        <n-input title="Должность" v-bind="$form.input('position')" />
       </div>
       <n-items>
         <n-button v-if="!$form.editable()" color="primary" @click="$form.edit">Редактировать</n-button>
@@ -16,8 +14,7 @@
         <n-button v-if="$form.editable()" flat @click="() => { $form.reset(); $form.edit() }">Отмена</n-button>
       </n-items>
     </n-card>
-    
-    <n-card :loading="$toggler.loadingPassword">
+    <n-card :loading="$var('loadingPassword')">
       <template #header><h3>Смена пароля</h3></template>
       <div class="items">
         <n-input title="Старый пароль" type="password" v-bind="$form.input('oldPassword', 'password')" />
@@ -36,7 +33,7 @@ export default {
   name: 'PageUserIndex',
   data: () => ({}),
   created() {
-    this.$form.init(this.$store.state.app.user, false)
+    this.$form.init($app.auth.user(), false)
     this.$form.init({
       oldPassword: '',
       password: '',
@@ -50,34 +47,22 @@ export default {
   methods: {
     save() {
       if (this.$form.check()) {
-        this.$toggle('loading', true)
-        setTimeout(() => {
+        this.$var('loading', true)
+        $api.users.edit($app.auth.user().id, this.$form.get()).then((response) => {
+          $app.auth.user(response.data.content)
           this.$form.edit(false)
-          this.$toggle('loading', false)
-        }, 1500)
+          this.$var('loading', false)
+        }).catch(() => {
+          this.$form.edit(false)
+          this.$var('loading', false)
+        })
       }
     },
     savePassword() {
       if (this.$form.check(undefined, 'password')) {
-        this.$nextTick(() => {
-          if (this.$form.get('oldPassword', 'password') !== '123456') {
-            this.$set(this.inputs_errors, 'password', {
-              oldPassword: [ 'Неверный пароль', ],
-            })
-            return
-          }
-          if (this.$form.get('password', 'password') !== this.$form.get('passwordConfirm', 'password')) {
-            this.$set(this.inputs_errors, 'password', {
-              passwordConfirm: [ 'Пароли не совпадают', ],
-            })
-            return
-          }
-          this.$toggle('loadingPassword', true)
-          setTimeout(() => {
-            this.$form.edit(false)
-            this.$toggle('loadingPassword', false)
-            this.$form.reset('password')
-          }, 1500)
+        $api.users.editPassword($app.auth.user().id, this.$form.get(undefined, 'password')).then(() => {
+          this.$var('loadingPassword', false)
+          this.$form.reset('password')
         })
       }
     },

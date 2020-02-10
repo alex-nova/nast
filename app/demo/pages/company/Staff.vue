@@ -1,8 +1,8 @@
 <template>
   <div class="page-company-staff">
-    <n-card :loading="$toggler.loading">
+    <n-card :loading="$var('loading')">
       <div class="tools">
-        <n-button icon="plus" @click="$toggle('add', true)">Добавить сотрудника</n-button>
+        <n-button icon="plus" @click="$var('add', true)">Добавить сотрудника</n-button>
       </div>
       <n-table :data="staff" :columns="columns">
         <template #tools="{item}">
@@ -11,7 +11,7 @@
       </n-table>
     </n-card>
     
-    <n-modal v-if="$toggler.add" :loading="$toggler.loadingAdd" @close="$toggle('add', false)">
+    <n-modal v-if="$var('add')" :loading="$var('loadingAdd')" @close="$var('add', false)">
       <div class="items">
         <n-input title="ИИН" v-bind="$form.input('iin')" />
         <n-input title="E-mail" v-bind="$form.input('email')" />
@@ -51,20 +51,20 @@ export default {
     })
   },
   mounted() {
-    this.$toggle('loading', true)
-    $api.users.get().then((response) => {
+    this.$var('loading', true)
+    $api.company.workers.get().then((response) => {
       this.staff = response.data
-      this.$toggle('loading', false)
+      this.$var('loading', false)
     })
   },
   methods: {
     submit(e) {
       if (this.$form.check()) {
-        this.$toggle('loadingAdd', true)
+        this.$var('loadingAdd', true)
         setTimeout(() => {
-          this.$toggle('loadingAdd', false)
+          this.$var('loadingAdd', false)
           setTimeout(() => {
-            this.$toggle('add', false)
+            this.$var('add', false)
           }, 300)
         }, 1000)
       }

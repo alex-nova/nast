@@ -5,7 +5,7 @@
     </div>
     <n-card class="auth-form" :loading="$var('loading')">
       <form class="content" @submit="submit">
-        <n-input title="ИИН" v-bind="$form.input('iin')" />
+        <n-input title="ИИН" v-bind="$form.input('login')" />
         <n-input title="Пароль" type="password" v-bind="$form.input('password')" />
         <n-button color="primary" type="submit" wide>Войти</n-button>
       </form>
@@ -35,11 +35,11 @@ export default {
   }),
   created() {
     this.$form.init({
-      iin: '123456789012',
+      login: '123456789012',
       password: '!Q2w3e4r',
     })
     this.$form.rules({
-      iin: [ 'required', ],
+      login: [ 'required', ],
       password: [ 'required', ],
     })
   },
@@ -48,7 +48,7 @@ export default {
       e.preventDefault()
       if (this.$form.check()) {
         this.$var('loading', true)
-        $app.auth.login(this.$form.get('iin'), this.$form.get('password')).then(() => {
+        $app.auth.login(this.$form.get('login'), this.$form.get('password')).then(() => {
           this.$var('loading', false)
           this.$router.push({ name: 'index', })
         }).catch(() => {

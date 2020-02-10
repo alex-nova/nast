@@ -5,7 +5,7 @@ import mocks from './mocks'
  */
 export default class CustomApi {
   auth = {
-    login: (username, password) => $app.api.post('auth/login').data({ email: username, password, }),
+    login: (login, password) => $app.api.post('auth/login').data({ login, password, }),
   }
   
   locale = {
@@ -16,15 +16,31 @@ export default class CustomApi {
     },
   }
   
+  my = {
+    companies: () => $app.api.get('my/companies'),
+  }
+  
   users = {
     get: (id) => $app.api.get([ 'users*', id, ]),
     create: (data) => $app.api.post('users').data(data),
     edit: (id, data) => $app.api.put([ 'users*', id, ]).data(data),
+    editPassword: (id, data) => $app.api.patch([ 'users*/password', id, ]).data(data),
     delete: (id) => $app.api.delete([ 'users*', id, ]),
   }
   
   companies = {
-    get: (id) => $app.api.get([ 'companies', id, ]),
+    get: (id) => $app.api.get([ 'companies*', id, ]),
+    create: (data) => $app.api.post('companies').data(data),
+    edit: (id, data) => $app.api.put([ 'companies*', id, ]).data(data),
+    workers: {
+      get: (id) => $app.api.get([ 'companies*/workers', id, ]),
+      getSimple: (id) => $app.api.get([ 'companies*/noadmins', id, ]),
+    },
+    admins: {
+      get: (id) => $app.api.get([ 'companies*/admins', id, ]),
+      add: (companyId, userId) => $app.api.post([ 'companies*/admins/*', companyId, userId, ]),
+      remove: (companyId, userId) => $app.api.delete([ 'companies*/admins/*', companyId, userId, ]),
+    },
   }
   
   projects = {
@@ -52,7 +68,7 @@ export default class CustomApi {
     },
     materials: {
       get(id) {
-        return $app.api.get([ 'projects/{}/files', id, ]).mock(() => {
+        return $app.api.get([ 'projects*/materials', id, ]).mock(() => {
           return $n.reverse(mocks.materials)
         })
       },

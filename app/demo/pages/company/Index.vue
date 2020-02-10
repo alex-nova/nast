@@ -1,18 +1,29 @@
 <template>
   <div class="page-company-index">
-    <n-card :loading="$toggler.loading">
-      <div class="items">
-        <n-input title="Название" v-bind="$form.input('name')" />
-        <n-input title="ИИН / БИН" v-bind="$form.input('bin')" />
-        <n-input title="Описаие" v-bind="$form.input('description')" />
-        <n-input title="Адрес" v-bind="$form.input('address')" />
-      </div>
-      <n-items>
-        <n-button v-if="!$form.editable()" color="primary" @click="$form.edit">Редактировать</n-button>
-        <n-button v-if="$form.editable()" color="success" @click="save">Сохранить</n-button>
-        <n-button v-if="$form.editable()" flat @click="() => { $form.reset(); $form.edit() }">Отмена</n-button>
-      </n-items>
+    <n-card>
+      <n-divide class="tools" style="margin-bottom: 10px;">
+        <div></div>
+        <div><n-button icon="plus" @click="$var('create', true)">Создать компанию</n-button></div>
+      </n-divide>
+      <n-table :data="$d.get('companies')" :loading="$d.loading('companies')" :columns="columns">
+        <template #tools="{item}">
+          <n-link :to="{ query: { modal: 'company', id: item.id, },}"><n-button icon="pen" flat round /></n-link>
+        </template>
+      </n-table>
     </n-card>
+    
+    <n-modal v-if="$var('create')" @close="$var('create', false)">
+      <form @submit="create">
+        <n-items>
+          <n-input title="БИН" v-bind="$form.input('bin')" />
+          <n-input title="Название" v-bind="$form.input('name')" />
+          <n-input title="Описание" v-bind="$form.input('description')" />
+          <n-input title="Адрес" v-bind="$form.input('address')" />
+          <n-input title="Моя должность в компании" v-bind="$form.input('position')" />
+          <n-button type="submit" wide color="primary">Создать</n-button>
+        </n-items>
+      </form>
+    </n-modal>
   </div>
 </template>
 
@@ -20,22 +31,45 @@
 export default {
   name: 'PageCompanyIndex',
   data: () => ({
+    columns: [
+      { name: 'bin', title: 'БИН', },
+      { name: 'name', title: 'Название', },
+      { name: 'description', title: 'Описание', },
+      { name: 'address', title: 'Адрес', },
+      { name: 'tools', title: '', },
+    ],
   }),
-  mounted() {
-    this.$toggle('loading', true)
-    $api.companies.get(1).then((request) => {
-      this.$toggle('loading', false)
-      this.$form.init(request.data, false)
+  load(router) {
+    return {
+      companies: {
+        api: $api.my.companies(),
+        tag: 'companies',
+      },
+    }
+  },
+  created() {
+    this.$form.init({
+      bin: '',
+      name: '',
+      position: '',
+      description: '',
+      address: '',
+    })
+    this.$form.rules({
+      bin: [ 'required', ],
+      name: [ 'required', ],
+      position: [ 'required', ],
     })
   },
   methods: {
-    save() {
+    create(e) {
+      e.preventDefault()
       if (this.$form.check()) {
-        this.$toggle('loading', true)
-        setTimeout(() => {
-          this.$form.edit(false)
-          this.$toggle('loading', false)
-        }, 1500)
+        $api.companies.create(this.$form.get()).then((response) => {
+          this.$d.reload('companies')
+          this.$var('create', false)
+          this.$form.reset()
+        })
       }
     },
   },
@@ -44,21 +78,6 @@ export default {
 
 <style lang="scss" scoped>
 .page-company-index {
-  
-  .items {
-    &>* {
-      margin: 15px 0;
-      &:first-child {
-        margin-top: 0;
-      }
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-  
-  .n-items {
-    margin-top: 25px;
-  }
+
 }
 </style>

@@ -27,7 +27,7 @@ class Auth extends AuthInterface {
     return {
       login: (username, password) => this._login(username, password),
       logout: () => this._logout(),
-      user: () => this._user(),
+      user: (user) => this._user(user),
       loggedIn: () => this._loggedIn(),
     }
   }
@@ -59,6 +59,9 @@ class Auth extends AuthInterface {
         logout(state) {
           state.user = null
           state.token = ''
+        },
+        setUser(state, { user, }) {
+          state.user = user
         },
       },
     }
@@ -108,9 +111,13 @@ class Auth extends AuthInterface {
   
   /**
    * @private
+   * @param {Object} user
    * @return {Object}
    */
-  _user() {
+  _user(user) {
+    if (user) {
+      this._store.mutation('auth.setUser', { user, })
+    }
     return this._store.getter('auth.user')
   }
   

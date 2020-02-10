@@ -2,7 +2,11 @@
   <div class="page-journals-index">
     <n-card>
       <div class="tools">
-        <n-button icon="plus" color="success" @click="$var('create', true)">Добавить запись</n-button>
+        <n-button v-if="$app.auth.user().iin === 123456789012" icon="plus" color="success" @click="$var('create', true)">Добавить запись</n-button>
+  
+        <n-link v-else :to="{name: 'records.create1', params: {id:1},}" wide>
+          <n-button icon="plus" color="success">Добавить запись авторского надзора</n-button>
+        </n-link>
       </div>
       <n-table :data="$d.get('records')" :columns="columns" :loading="$d.loading('records')">
         <template #lastRecord="{item}">

@@ -43,6 +43,9 @@ export default {
     $d.reload.materials()
   },
   methods: {
+    load() {
+      $api.projects.materials.get()
+    },
     submit() {
       const data = {
         ...this.$form.get(),
