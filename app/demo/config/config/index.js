@@ -45,6 +45,18 @@ export default {
     titles() {
       return pages()
     },
+    navigation: [
+      { name: 'index', },
+      { name: 'company.list', },
+      // { name: 'company.group', icon: 'building', children: [
+      //   { name: 'company.info', },
+      //   { name: 'company.staff', },
+      //   { name: 'company.admins', },
+      // ], },
+      { name: 'projects.list', },
+      { name: 'journals.my', },
+      { name: 'journal', },
+    ],
   },
   
   auth: {

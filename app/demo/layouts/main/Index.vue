@@ -42,21 +42,10 @@ export default {
       { title: 'Профиль', icon: 'user', route: 'profile', },
       { title: 'Выход', icon: 'sign-out-alt', route: 'login', },
     ],
-    menu: [
-      { name: 'index', },
-      { name: 'company.list', },
-      // { name: 'company.group', icon: 'building', children: [
-      //   { name: 'company.info', },
-      //   { name: 'company.staff', },
-      //   { name: 'company.admins', },
-      // ], },
-      { name: 'projects.list', },
-      { name: 'journals.my', },
-    ],
   }),
   computed: {
     navigation() {
-      return $app.router.navigation(this.menu)
+      return $app.router.navigation($config('router.navigation'))
     },
   },
   watch: {

@@ -222,18 +222,18 @@ class Router extends RouterInterface {
       return this._translate(rewrite, data)
     }
     let value = ''
-    if (type === 'breadcrumbs') {
-      value = this._translate($config('router.pageTitle')(page.name, type), data)
-      if (value) {
-        return value
+    if (type) {
+      const title = $config('router.pageTitle')(page.name, type)
+      value = this._translate(title, data)
+      if (value === title) {
+        const titleP = $config('router.pageTitle')(page.name, 'pages')
+        value = this._translate(titleP, data)
+        if (value === titleP) {
+          return title
+        }
       }
-    } else if (type === 'navigation') {
-      value = this._translate($config('router.pageTitle')(page.name, type), data)
-      if (value) {
-        return value
-      }
+      return value
     }
-    
     return this._translate($config('router.pageTitle')(page.name, 'pages'), data)
   }
   
@@ -245,7 +245,7 @@ class Router extends RouterInterface {
    */
   _translate(name, data = {}) {
     if ($n.size(this._titles)) {
-      return $n.get(this._titles, name, '')
+      return $n.get(this._titles, name, name)
     }
     return ($n.isFunction(__) ? __(name, data) : name)
   }
