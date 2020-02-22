@@ -22,43 +22,28 @@
         <template #chapter5>
           <MainChapter5 />
         </template>
-        <template #chapter6>
-          <MainChapter6 />
-        </template>
-        <template #chapter7>
-          <MainChapter7 />
-        </template>
-        <template #info>
-          <MainInfo />
-        </template>
       </n-tabs-content>
     </n-card>
   </div>
 </template>
 
 <script>
-import MainChapter1 from './main/Chapter1'
-import MainChapter2 from './main/Chapter2'
-import MainChapter3 from './main/Chapter3'
-import MainChapter4 from './main/Chapter4'
-import MainChapter5 from './main/Chapter5'
-import MainChapter6 from './main/Chapter6'
-import MainChapter7 from './main/Chapter7'
-import MainInfo from './main/Info'
+import MainChapter1 from './Chapter1'
+import MainChapter2 from './Chapter2'
+import MainChapter3 from './Chapter3'
+import MainChapter4 from './Chapter4'
+import MainChapter5 from './Chapter5'
 
 export default {
   name: 'PageJournal',
-  components: { MainInfo, MainChapter7, MainChapter6, MainChapter5, MainChapter4, MainChapter3, MainChapter2, MainChapter1, },
+  components: { MainChapter5, MainChapter4, MainChapter3, MainChapter2, MainChapter1, },
   data: () => ({
     tabs: [
-      { name: 'chapter1', title: 'Раздел 1', },
-      { name: 'chapter2', title: 'Раздел 2', },
-      { name: 'chapter3', title: 'Раздел 3', },
-      { name: 'chapter4', title: 'Раздел 4', },
-      { name: 'chapter5', title: 'Раздел 5', },
-      { name: 'chapter6', title: 'Раздел 6', },
-      { name: 'chapter7', title: 'Раздел 7', },
-      { name: 'info', title: 'Правила', },
+      { name: 'chapter1', title: 'Форма 1', },
+      { name: 'chapter2', title: 'Форма 2', },
+      { name: 'chapter3', title: 'Форма 3', },
+      { name: 'chapter4', title: 'Форма 4', },
+      { name: 'chapter5', title: 'Форма 5', },
     ],
   
     projects: [

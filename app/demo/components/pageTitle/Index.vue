@@ -16,9 +16,9 @@ export default {
   computed: {
     breadcrumbs() {
       return $app.router.breadcrumbs({
-        'journals.index': (page) => ({
-          route: page.data.journalId ? { name: page.name, params: { id: page.data.journalId, }, } : 'journals.my',
-        }),
+        // 'journals.index': (page) => ({
+        //   route: page.data.journalId ? { name: page.name, params: { id: page.data.journalId, }, } : 'journals.my',
+        // }),
       })
     },
   },

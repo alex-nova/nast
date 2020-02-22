@@ -3,7 +3,11 @@
     <div class="chapter-title">
       Перечень специальных журналов работ
     </div>
-    <n-table :columns="columns" />
+    <n-table :columns="columns" :data="data">
+      <template #tools="{item}">
+        <n-link :to="item.link"><n-button icon="eye" /></n-link>
+      </template>
+    </n-table>
   </div>
 </template>
 
@@ -12,9 +16,15 @@ export default {
   name: 'MainChapter5',
   data: () => ({
     columns: [
-      { name: 'one', title: 'Наименование специального журнала работ и дата его выдачи', },
-      { name: 'one1', title: 'Организация, ведущая специальный журнал работ, должность, фамилия, инициалы ответственного лица', },
-      { name: 'one2', title: 'Дата сдачи-приемки специального журнала работ и подпись должностного лица', },
+      { name: 'name', title: 'Наименование', },
+      { name: 'createdAt', title: 'Дата выдачи', },
+      { name: 'responsible', title: 'Ответственный', },
+      { name: 'endedAt', title: 'Дата сдачи-приемки', },
+      { name: 'tools', title: '', },
+    ],
+    data: [
+      { name: 'Журнал ухода за бетоном', createdAt: '10.11.2019', responsible: 'Гарматюк Игорь Васильевич', endedAt: '', link: { name: 'journals.j1', }, },
+      { name: 'Журнал бетонных работ', createdAt: '10.11.2019', responsible: 'Гарматюк Игорь Васильевич', endedAt: '', link: { name: 'journals.j2', }, },
     ],
   }),
 }

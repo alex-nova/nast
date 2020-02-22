@@ -13,7 +13,7 @@
         </n-divide>
       </template>
       <template #tab.info>
-        <n-items vertical>
+        <n-items>
           <n-input title="БИН" v-bind="$form.input('bin')" text />
           <n-input title="Название" v-bind="$form.input('name')" />
           <n-input title="Описание" v-bind="$form.input('description')" />
@@ -21,14 +21,14 @@
         </n-items>
       </template>
       <template #tab.staff>
-        <TabStaff />
+        <tab-workers :company-id="companyId" />
       </template>
       <template #tab.admins>
         <TabAdmins />
       </template>
       <template #footer="{tab}">
         <n-divide>
-          <n-button @click="() => $router.push({query: {}})">Закрыть</n-button>
+          <n-button @click="() => $router.back()">Закрыть</n-button>
           <n-items v-if="tab.callback" inline>
             <n-button v-if="!$form.editable() && tab.name === 'info'" color="primary" @click="$form.edit()">Редактировать</n-button>
             <n-button v-if="$form.editable()" @click="$form.cancel()">Отмена</n-button>
@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import TabStaff from './Workers'
+import TabWorkers from './Workers'
 import TabAdmins from './Admins'
 
 export default {
   name: 'CardCompany',
-  components: { TabAdmins, TabStaff, },
+  components: { TabAdmins, TabWorkers, },
   data() {
     return {
       tabs: [
@@ -57,9 +57,16 @@ export default {
       model: {},
     }
   },
+  computed: {
+    companyId() {
+      return this.$route.query.id
+    },
+  },
   watch: {
     '$route.query.id'() {
-      this.load()
+      if (this.$route.query.modal === 'company') {
+        this.load()
+      }
     },
   },
   created() {
@@ -70,7 +77,7 @@ export default {
   methods: {
     load() {
       this.$var('loading', true)
-      $api.companies.get(this.$route.query.id).then((response) => {
+      $api.companies.get(this.companyId).then((response) => {
         this.model = response.data.content
         this.$form.init(this.model, false)
         this.$var('loading', false)
@@ -79,7 +86,7 @@ export default {
     save() {
       if (this.$form.check()) {
         this.$var('loading', true)
-        $api.companies.edit(this.$route.query.id, this.$form.get()).then((response) => {
+        $api.companies.edit(this.companyId, this.$form.get()).then((response) => {
           this.model = response.data.content
           this.$form.init(this.model, false)
           this.$var('loading', false)
@@ -95,21 +102,6 @@ export default {
 
 <style lang="scss" scoped>
 .card-company {
-  .body {
-    .content {
-      --n-items-margin: 10px;
-    }
-    
-    & > .n-items > * {
-      vertical-align: middle;
-    }
-    
-    .avatar {
-      width: 80px;
-      height: 80px;
-      --n-image-border: 3px solid #fff;
-    }
-  }
 
 }
 </style>

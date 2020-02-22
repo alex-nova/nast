@@ -4,8 +4,17 @@ import mocks from './mocks'
  *
  */
 export default class CustomApi {
+  temp = {
+    myAdminCompanies: () => $app.api.get([ 'companies/myAdmin', ]),
+  }
+  
   auth = {
-    login: (login, password) => $app.api.post('auth/login').data({ login, password, }),
+    invite: {
+      get: (token) => $app.api.get( [ 'auth/invite*', token, ]),
+    },
+    login: (data) => $app.api.post('auth/login').data(data),
+    register: (data, token = '') => $app.api.post([ 'auth/register*', token, ]).data(data),
+    registerCompany: (data, token = '') => $app.api.post([ 'auth/registerCompany*', token, ]).data(data),
   }
   
   locale = {
@@ -16,8 +25,19 @@ export default class CustomApi {
     },
   }
   
+  files = {
+    get: (id) => $app.api.get([ 'files*', id, ]),
+    create: (file) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      return $app.api.post([ 'files', ]).data(formData).config({ headers: { 'Content-Type': 'multipart/form-data', }, })
+    },
+    delete: (id) => $app.api.delete([ 'files*', id, ]),
+  }
+  
   my = {
     companies: () => $app.api.get('my/companies'),
+    projects: () => $app.api.get('my/projects'),
   }
   
   users = {
@@ -26,6 +46,10 @@ export default class CustomApi {
     edit: (id, data) => $app.api.put([ 'users*', id, ]).data(data),
     editPassword: (id, data) => $app.api.patch([ 'users*/password', id, ]).data(data),
     delete: (id) => $app.api.delete([ 'users*', id, ]),
+    documents: {
+      get: (userId, id) => $app.api.get([ 'users*/documents*', userId, id, ]),
+      create: (userId, data) => $app.api.post([ 'users*/documents', userId, ]).data(data),
+    },
   }
   
   companies = {
@@ -35,6 +59,7 @@ export default class CustomApi {
     workers: {
       get: (id) => $app.api.get([ 'companies*/workers', id, ]),
       getSimple: (id) => $app.api.get([ 'companies*/noadmins', id, ]),
+      invite: (companyId, data) => $app.api.post([ 'companies*/workers/invite', companyId, ]).data(data),
     },
     admins: {
       get: (id) => $app.api.get([ 'companies*/admins', id, ]),
@@ -44,13 +69,12 @@ export default class CustomApi {
   }
   
   projects = {
-    get(id) {
-      return $app.api.get([ 'projects', id, ]).filters({ projectId: null, })
+    get: (id) => $app.api.get([ 'projects', id, ]).filters({ projectId: null, }),
+    create: (data) => $app.api.post([ 'projects', ]).data(data),
+    edit: (id, data) => $app.api.put([ 'projects', id, ]).data(data),
+    participants: {
+      getMain: (projectId) => $app.api.get([ 'projects*/mainUsers', projectId, ]),
     },
-    edit(id, data) {
-      return $app.api.put([ 'projects', id, ]).data(data)
-    },
-    
     docs: {
       post(id, data) {
         return $app.api.post([ 'projects*/files', id, ], data).mock(() => {

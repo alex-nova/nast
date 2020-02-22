@@ -1,5 +1,9 @@
 <template>
   <div class="page-projects-index container">
+    <div style="margin: 10px 20px 0;">
+      <n-button @click="$var('add', true)">Создать проект</n-button>
+      <create-project v-if="$var('add')" @close="$var('add', false)" />
+    </div>
     <n-loader :loading="$d.loading('projects')" />
     <div class="projects">
       <n-card v-for="project in $d.get('projects')" :key="project.id">
@@ -23,12 +27,15 @@
 </template>
 
 <script>
+import CreateProject from './modals/CreateProject'
+
 export default {
   name: 'PageProjectsIndex',
+  components: { CreateProject, },
   load(route) {
     return {
       projects: {
-        api: $api.projects.get().fromQuery(route.query),
+        api: $api.my.projects().fromQuery(route.query),
         tag: 'projects',
       },
     }

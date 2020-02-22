@@ -31,6 +31,9 @@
       <template #tab.projectDocs>
         <tab-project-docs />
       </template>
+      <template #tab.mainUsers>
+        <tab-main-users :model-id="model.id" />
+      </template>
       <template #tab.jobs>
         <tab-jobs />
       </template>
@@ -58,17 +61,19 @@ import TabStartingDocs from './StartingDocs'
 import TabProjectDocs from './ProjectDocs'
 import TabJobs from './Jobs'
 import TabMaterials from './Materials'
+import TabMainUsers from './MainUsers'
 
 export default {
   name: 'CardProject',
-  components: { TabMaterials, TabJobs, TabProjectDocs, TabStartingDocs, TabStructure, },
+  components: { TabMainUsers, TabMaterials, TabJobs, TabProjectDocs, TabStartingDocs, TabStructure, },
   data() {
     return {
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
+        { name: 'mainUsers', title: 'Ответственные лица', },
         { name: 'structure', title: 'Структура', },
-        { name: 'startingDocs', title: 'Исходная документация', },
-        { name: 'projectDocs', title: 'Чертежи', },
+        { name: 'startingDocs', title: 'РД', },
+        { name: 'projectDocs', title: 'ПСД', },
         // { name: 'documents', title: 'Документы', },
         // { name: 'pj', title: 'ЖПР', },
         // { name: 'responsible', title: 'Ответственные лица', },
@@ -103,7 +108,7 @@ export default {
     save() {
       if (this.$form.check()) {
         this.$var('loading', true)
-        $api.projects.edit(this.$route.query.id, this.$form.get()).then((response) => {
+        $api.projects.edit(this.$route.query.id, this.$form.diff()).then((response) => {
           this.model = response.data.content
           this.model.startedAt = $app.date.format(this.model.startedAt, 'date')
           this.model.endedAt = $app.date.format(this.model.endedAt, 'date')

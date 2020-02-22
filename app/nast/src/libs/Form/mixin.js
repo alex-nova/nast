@@ -23,6 +23,7 @@ export default (config) => {
           input: this.form_input,
           editable: this.form_getEditable,
           edit: this.form_edit,
+          diff: this.form_diff,
         }
       },
     },
@@ -48,6 +49,14 @@ export default (config) => {
         }
       
         return name ? $n.get(this.form_inputs[form], name) : this.form_inputs[form]
+      },
+      form_diff(form = 'default') {
+        return $n.reduce(this.form_inputs[form], (r, v, k) => {
+          if (v !== $n.get(this.form_initial[form], k)) {
+            r[k] = v
+          }
+          return r
+        }, {})
       },
       form_set(name, value, form = 'default') {
         if (this.form_inputs[form] === undefined) {

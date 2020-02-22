@@ -19,21 +19,25 @@
             <n-input class="wind" title="Скорость ветра" value="4 м/с" inline text />
           </div>
           <n-input title="Меры в особых условиях" :value="record.measures" text />
+  
+          <n-input title="Работа" value="Заливка бетона" text />
+          <n-input title="Объем работ" value="48% (12т)" text />
+          <n-form-item title="Материалы" active>
+            <n-table class="table" :columns="columns" :data="materials">
+              <template #count="{item}">
+                {{ item.count + ' ' + item.unit }}
+              </template>
+            </n-table>
+          </n-form-item>
         </n-items>
-      </template>
-      <template #tab.items>
-        <TabItems />
       </template>
       <template #tab.spec1>
         <n-items>
-          <n-form-item title="Ген подрядчик" active>
+          <n-form-item title="Руководитель, Боранбаев М.С." active>
+            <div class="success">Подписано</div>
+          </n-form-item>
+          <n-form-item title="Начальник, Комбатуров С.Т." active>
             <div>Ожидает проверки</div>
-          </n-form-item>
-          <n-form-item title="Авторский надзор" active>
-            <div class="success">Проверено</div>
-          </n-form-item>
-          <n-form-item title="Технический надзор" active>
-            <div class="error">Отклонено</div>
           </n-form-item>
         </n-items>
       </template>
@@ -88,17 +92,14 @@
 </template>
 
 <script>
-import TabItems from './Items'
 export default {
   name: 'CardRecord',
-  components: { TabItems, },
   data() {
     return {
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
-        { name: 'items', title: 'Расход', },
-        { name: 'control', title: 'Надзор', },
-        { name: 'spec1', title: 'Согласование', },
+        { name: 'control', title: 'Замечание', },
+        { name: 'spec1', title: 'Подписи', },
       ],
       materials: [
         { id: 1, name: 'Бетон', unit: 'м3', count: 10, desc: '', },

@@ -39,7 +39,7 @@ export default {
       { name: 'tools', title: '', },
     ],
     data: [
-      { id: 1, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '50', done: '', createdAt: Date.now(),
+      { id: 1, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '50', done: '', createdAt: Date.now(), one3: 'Использовался бетон с химическими добавками',
         content: 'Устройство гидроизоляции по бетонной подготовке ленточных ростверков фундаментов блока №4 в осях А/2-А/1-А/4 на отм. -4,200.', },
       { id: 2, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '34', done: '60м3', createdAt: Date.now(),
         content: 'Бетонирование столбчатых ростверков фундаментов блока №4', },

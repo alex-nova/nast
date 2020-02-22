@@ -7,7 +7,7 @@ export default {
   name: 'App',
   html() {
     return {
-      title: '123',
+      title: 'E-Qurylys',
       meta: [
         { mid: 'theme-color', name: 'theme-color', content: '#3e4095', },
       ],

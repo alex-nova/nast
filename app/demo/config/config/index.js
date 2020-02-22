@@ -54,8 +54,8 @@ export default {
       //   { name: 'company.admins', },
       // ], },
       { name: 'projects.list', },
-      { name: 'journals.my', },
-      { name: 'journal', },
+      // { name: 'journals.my', },
+      { name: 'journals.index', },
     ],
   },
   

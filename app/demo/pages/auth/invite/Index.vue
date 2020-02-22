@@ -42,11 +42,9 @@ export default {
   created() {
     this.$form.init({
       email: '',
-      fio: '',
+      fullName: '',
       iin: '',
-      position: '',
       password: '',
-      password2: '',
     })
     this.$form.rules({
       email: [ 'required', ],

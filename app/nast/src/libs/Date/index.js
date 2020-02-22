@@ -29,6 +29,9 @@ class Date extends DateInterface {
    * @return {string}
    */
   format(datetime, type = 'datetime') {
+    if (!datetime) {
+      return ''
+    }
     const formats = {
       date: 'DD.MM.YYYY',
       time: 'HH:mm',

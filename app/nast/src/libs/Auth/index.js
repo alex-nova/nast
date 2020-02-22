@@ -25,7 +25,7 @@ class Auth extends AuthInterface {
    */
   installGlobals() {
     return {
-      login: (username, password) => this._login(username, password),
+      login: (user, token) => this._login(user, token),
       logout: () => this._logout(),
       user: (user) => this._user(user),
       loggedIn: () => this._loggedIn(),
@@ -78,20 +78,12 @@ class Auth extends AuthInterface {
   
   /**
    * @private
-   * @param {String} username
-   * @param {String} password
-   * @return {Promise}
+   * @param {Object} user
+   * @param {String} token
    */
-  _login(username, password) {
-    return $config('auth.api')(username, password).then((response) => {
-      const token = $config('auth.getToken')(response)
-      const user = $config('auth.getUser')(response)
-      
-      this._store.mutation('auth.login', { user, token, })
-      this._apiLogin(token)
-      
-      return response
-    })
+  _login(user, token) {
+    this._store.mutation('auth.login', { user, token, })
+    this._apiLogin(token)
   }
   
   /**

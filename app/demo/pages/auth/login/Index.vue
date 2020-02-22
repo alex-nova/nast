@@ -22,11 +22,6 @@
 <script>
 export default {
   name: 'PageLogin',
-  html() {
-    return {
-      title: 'Вход в систему',
-    }
-  },
   data: () => ({
     links: [
       { title: 'Регистрация', link: 'register', },
@@ -35,7 +30,7 @@ export default {
   }),
   created() {
     this.$form.init({
-      login: '123456789012',
+      login: '111222333441',
       password: '!Q2w3e4r',
     })
     this.$form.rules({
@@ -48,9 +43,10 @@ export default {
       e.preventDefault()
       if (this.$form.check()) {
         this.$var('loading', true)
-        $app.auth.login(this.$form.get('login'), this.$form.get('password')).then(() => {
-          this.$var('loading', false)
+        $api.auth.login(this.$form.get()).then((response) => {
+          $app.auth.login(response.data.content.user, response.data.content.token)
           this.$router.push({ name: 'index', })
+          this.$var('loading', false)
         }).catch(() => {
           this.$set(this.form_errors, 'default', {
             'iin': [ 'Неверный ИИН или пароль', ],

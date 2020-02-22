@@ -3,7 +3,11 @@
     <div class="chapter-title">
       Замечания лиц, контролирующих производство строительно-монтажных работ и их безопасность
     </div>
-    <n-table :columns="columns" />
+    <div style="margin: 10px 0; text-align: right">
+      <n-link :to="{name: 'journals.j3',}" style="margin-right: 10px;"><n-button>Журнал авторского надзора</n-button></n-link>
+      <n-link :to="{name: 'journals.j4',}"><n-button>Журнал технического надзора</n-button></n-link>
+    </div>
+    <n-table :columns="columns" :data="data" />
   </div>
 </template>
 
@@ -12,10 +16,13 @@ export default {
   name: 'MainChapter6',
   data: () => ({
     columns: [
-      { name: 'one', title: 'Дата', },
-      { name: 'one1', title: 'Должность, фамилия, инициалы лица, контролирующего производство и безопасность работ', },
-      { name: 'one2', title: 'Замечание лица, контролирующего производство и безопасность работ, либо ссылка на предписание об устранении замечаний', },
+      { name: 'createdAt', title: 'Дата', },
+      { name: 'author', title: 'Лицо контролирующее производство и безопасность работ', },
+      { name: 'record', title: 'Замечание, либо ссылка на предписание об устранении замечаний', },
       { name: 'one3', title: 'Отметка о принятии замечаний к исполнению и об их устранении', },
+    ],
+    data: [
+      { createdAt: '10.01.2020', author: 'ТОО "Комапния Тех. Надзор", Иванов Н.Н.', record: 'Неправильно сделано', },
     ],
   }),
 }

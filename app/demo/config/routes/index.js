@@ -14,19 +14,23 @@ export default [
       
       { path: 'projects', name: 'projects.list', icon: 'user', parent: 'index', component: () => import('pages/projects/index/Index'), },
       
-      { path: 'my/journals', name: 'journals.my', icon: 'user', parent: 'index', component: () => import('pages/journals/my/Index'), },
-      { path: 'journals/:id', name: 'journals.index', icon: 'user', parent: 'journals.my', component: () => import('pages/journals/index/Index'), },
+      // { path: 'my/journals', name: 'journals.my', icon: 'user', parent: 'index', component: () => import('pages/journals/my/Index'), },
+      // { path: 'journals/:id', name: 'journals.index', icon: 'user', parent: 'journals.my', component: () => import('pages/journals/index/Index'), },
       { path: 'journals/:id/add', name: 'records.create', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index'), },
       { path: 'journals/:id/add1', name: 'records.create1', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index1'), },
       { path: 'journals/:id/add2', name: 'records.create2', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index2'), },
     
       
-      { path: 'journal', name: 'journal', icon: 'book', parent: 'index', component: () => import('pages/journal/index/Index'), },
+      { path: 'journal', name: 'journals.index', icon: 'book', parent: 'index', component: () => import('pages/journal/index/Index'), },
+      { path: 'journal/1', name: 'journals.j1', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j1/Index'), },
+      { path: 'journal/2', name: 'journals.j2', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j2/Index'), },
+      { path: 'journal/3', name: 'journals.j3', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j3/Index'), },
+      { path: 'journal/44', name: 'journals.j4', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j4/Index'), },
     ], },
     
     { path: '', component: () => import('layouts/auth/Index'), children: [
       { path: 'login', name: 'login', component: () => import('pages/auth/login/Index'), },
-      { path: 'register', name: 'register', component: () => import('pages/auth/register/Index'), },
+      { path: 'register/:token?', name: 'register', component: () => import('pages/auth/register/Index'), },
       { path: 'invite', name: 'invite', component: () => import('pages/auth/invite/Index'), },
       { path: 'recover', name: 'recover', component: () => import('pages/auth/password/Recover'), },
       { path: 'password', name: 'password', component: () => import('pages/auth/password/Change'), },

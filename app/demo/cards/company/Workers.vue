@@ -9,21 +9,18 @@
         <n-link :to="{ query: { modal: 'user', id: item.id, },}"><n-button icon="pen" flat round /></n-link>
       </template>
     </n-table>
-  
-    <n-modal v-if="$var('add')" :loading="$var('loadingAdd')" @close="$var('add', false)">
-      <n-items>
-        <n-input title="ИИН" v-bind="$form.input('iin')" />
-        <n-input title="E-mail" v-bind="$form.input('email')" />
-        <n-input title="Должность" v-bind="$form.input('position')" />
-        <n-button color="primary" wide @click="submit">Отправить приглашение</n-button>
-      </n-items>
-    </n-modal>
+    
+    <CardCompanyInvite v-if="$var('add')" :company-id="companyId" @close="$var('add', false)" />
   </div>
 </template>
 
 <script>
+import CardCompanyInvite from './modals/Invite'
+
 export default {
-  name: 'TabStaff',
+  name: 'TabWorkers',
+  components: { CardCompanyInvite, },
+  props: [ 'companyId', ],
   data() {
     return {
       staff: [],

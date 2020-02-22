@@ -4,13 +4,10 @@
  */
 export default class AuthGlobalInterface {
   /**
-   * @param {String} username
-   * @param {String} password
-   * @return {Promise}
+   * @param {Object} user
+   * @param {String} token
    */
-  login(username, password) {
-    return new Promise(() => {})
-  }
+  login(user, token) {}
   
   /**
    *
