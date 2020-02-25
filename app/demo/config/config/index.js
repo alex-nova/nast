@@ -56,6 +56,7 @@ export default {
       { name: 'projects.list', },
       // { name: 'journals.my', },
       { name: 'journals.index', },
+      { name: 'notifications.list', },
     ],
   },
   

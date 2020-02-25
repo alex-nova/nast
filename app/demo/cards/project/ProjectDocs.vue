@@ -5,7 +5,7 @@
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить файл</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.get.projectFiles2($route.params.id) || []" :loading="$d.projectFiles2.loading($route.params.id)">
+    <n-table :columns="columns" :data="data" :loading="$var('load')">
       <template #createdAt="{item}">
         16.01.2020
       </template>

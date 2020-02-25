@@ -45,6 +45,7 @@ export default {
       this.$var('loading', true)
       $api.projects.create({ companyId: this.company.id, ...this.$form.get(), }).then((response) => {
         this.$emit('close')
+        this.$d.reloadTag('projects')
       }).finally(() => {
         this.$var('loading', false)
       })

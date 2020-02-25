@@ -1,14 +1,14 @@
 <template>
   <div class="page-journal">
     <n-card>
-      <n-select title="Проект" :data="projects" :value.sync="project" inline />
+      <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
     </n-card>
     
     <n-card>
       <n-tabs :data="tabs" />
       <n-tabs-content class="content">
         <template #chapter1>
-          <MainChapter1 :project="project" />
+          <MainChapter1 :project="project || {}" />
         </template>
         <template #chapter2>
           <MainChapter2 />
@@ -61,22 +61,23 @@ export default {
       { name: 'info', title: 'Правила', },
     ],
   
-    projects: [
-      { title: 'Проект 1', value: 1, children: [
-        { title: 'Проект 1', value: 11, address: 'Абая 31', },
-        { title: 'Блок 1', value: 2, address: 'Абая 31а', },
-        { title: 'Блок 2', value: 3, address: 'Абая 31б', },
-        { title: 'Блок 3', value: 4, address: 'Абая 31в', },
-      ], },
-      { title: 'Проект 2', value: 5, children: [
-        { title: 'Проект 2', value: 55, address: 'Жамбыла 12', },
-        { title: 'Блок 1', value: 6, address: 'Жамбыла 12а', },
-        { title: 'Блок 2', value: 7, address: 'Жамбыла 12б', },
-        { title: 'Блок 3', value: 8, address: 'Жамбыла 12в', },
-      ], },
-    ],
-    project: { title: 'Блок 2', value: 3, address: 'Абая 31б', },
+    projects: [],
+    project: null,
   }),
+  created() {
+    this.load()
+  },
+  methods: {
+    load() {
+      this.$var('loadProjects', true)
+      $api.my.projects().then((response) => {
+        this.projects = response.data.content
+        this.project = this.projects[0]
+      }).finally(() => {
+        this.$var('loadProjects', true)
+      })
+    },
+  },
 }
 </script>
 

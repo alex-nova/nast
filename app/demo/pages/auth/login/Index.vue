@@ -30,8 +30,8 @@ export default {
   }),
   created() {
     this.$form.init({
-      login: '111222333441',
-      password: '!Q2w3e4r',
+      login: '',
+      password: '',
     })
     this.$form.rules({
       login: [ 'required', ],

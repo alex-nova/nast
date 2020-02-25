@@ -13,6 +13,7 @@ export default class ApiObject {
   _mock = undefined
   _mockTimeout = 500
   _beforeCallbacks = {}
+  // TODO add then catch and finally
   _callbacks = {}
   
   _page = 0

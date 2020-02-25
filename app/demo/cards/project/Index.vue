@@ -26,10 +26,10 @@
         <tab-structure :model="model" :form="$form" />
       </template>
       <template #tab.startingDocs>
-        <tab-starting-docs />
+        <tab-starting-docs :model-id="model.id" />
       </template>
       <template #tab.projectDocs>
-        <tab-project-docs />
+        <tab-project-docs :model-id="model.id" />
       </template>
       <template #tab.mainUsers>
         <tab-main-users :model-id="model.id" />
@@ -61,7 +61,7 @@ import TabStartingDocs from './StartingDocs'
 import TabProjectDocs from './ProjectDocs'
 import TabJobs from './Jobs'
 import TabMaterials from './Materials'
-import TabMainUsers from './MainUsers'
+import TabMainUsers from './mainUsers/Index'
 
 export default {
   name: 'CardProject',
@@ -71,7 +71,7 @@ export default {
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
         { name: 'mainUsers', title: 'Ответственные лица', },
-        { name: 'structure', title: 'Структура', },
+        // { name: 'structure', title: 'Структура', },
         { name: 'startingDocs', title: 'РД', },
         { name: 'projectDocs', title: 'ПСД', },
         // { name: 'documents', title: 'Документы', },

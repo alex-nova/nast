@@ -38,6 +38,7 @@ export default class CustomApi {
   my = {
     companies: () => $app.api.get('my/companies'),
     projects: () => $app.api.get('my/projects'),
+    notifications: () => $app.api.get('my/notifications'),
   }
   
   users = {
@@ -72,8 +73,13 @@ export default class CustomApi {
     get: (id) => $app.api.get([ 'projects', id, ]).filters({ projectId: null, }),
     create: (data) => $app.api.post([ 'projects', ]).data(data),
     edit: (id, data) => $app.api.put([ 'projects', id, ]).data(data),
+    partners: {
+      invite: (projectId, data) => $app.api.post([ 'projects*/partners/invite', projectId, ]).data(data),
+      acceptInvite: (projectId) => $app.api.post([ 'projects*/partners/invite/accept', projectId, ]),
+    },
     participants: {
       getMain: (projectId) => $app.api.get([ 'projects*/mainUsers', projectId, ]),
+      getMainInvites: (projectId) => $app.api.get([ 'projects*/invites/mainUsers', projectId, ]),
     },
     docs: {
       post(id, data) {

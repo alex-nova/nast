@@ -5,7 +5,7 @@
       <div></div>
       <div><n-button @click="$var('add', true)">Добавить файл</n-button></div>
     </n-divide>
-    <n-table :columns="columns" :data="$d.get.projectFiles($route.params.id) || []" :loading="$d.loading.projectFiles($route.params.id)">
+    <n-table :columns="columns" :data="data" :loading="$var('load')">
       <template #name="{item}">
         {{ item.type === 1 ? item.name : types[item.type - 1].title }}
       </template>
@@ -32,7 +32,7 @@
 <script>
 export default {
   name: 'TabStartingDocs',
-  props: [ 'model', 'form', ],
+  props: [ 'modelId', 'form', ],
   data() {
     return {
       types: [
@@ -59,18 +59,25 @@ export default {
       desc: '',
       file: null,
     })
-  
-    $d.reload.projectFiles(this.$route.params.id)
+    this.load()
   },
   methods: {
+    load() {
+      this.$var('load', true)
+      $app.api.get([ 'projects/{}/files', this.modelId, ]).then((response) => {
+        this.data = response.data.content
+      }).finally(() => {
+        this.$var('load', false)
+      })
+    },
     submit() {
       const data = {
         ...this.$form.get(),
         type: this.type.value,
         typeName: this.type.title,
       }
-      $api.projects.docs.post(this.$route.params.id, data).then((response) => {
-        $d.reload.projectFiles(this.$route.params.id)
+      $api.projects.docs.post(this.modelId, data).then((response) => {
+        this.load()
         this.$var('add', false)
       })
     },
