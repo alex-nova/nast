@@ -48,8 +48,8 @@ class Router extends RouterInterface {
    */
   installGlobals() {
     return {
-      setPage: (name, params = undefined) => this._setPage(name, params),
       current: () => this._getCurrent(),
+      setPage: (name, params = undefined) => this._setPage(name, params),
       breadcrumbs: (settings) => this._getParents(settings),
       navigation: (values) => this._navigation(values),
     }

@@ -3,19 +3,19 @@
  */
 export default class RouterGlobalInterface {
   /**
+   * @return {RouterPageInterface}
+   */
+  current() {
+    return {}
+  }
+  
+  /**
    * Usage examples: ({ data: {}, }) or ('index', { data: {}, })
    * If params count = 1, name = this route
    * @param {String|Object} name
    * @param {Object} params
    */
   _setPage(name, params = undefined) {}
-  
-  /**
-   * @return {RouterPageInterface}
-   */
-  current() {
-    return {}
-  }
   
   /**
    * @param {Object} settings  { name: () => {}, }

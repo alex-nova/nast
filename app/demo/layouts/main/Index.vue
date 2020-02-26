@@ -45,7 +45,7 @@ export default {
   }),
   computed: {
     navigation() {
-      return $app.router.navigation($config('router.navigation'))
+      return $app.router.navigation($config('router.navigation')())
     },
   },
   watch: {
