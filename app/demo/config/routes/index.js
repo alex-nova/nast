@@ -24,10 +24,7 @@ export default [
     
       
       { path: 'journal', name: 'journals.index', icon: 'book', parent: 'index', component: () => import('pages/journal/index/Index'), },
-      { path: 'journal/1', name: 'journals.j1', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j1/Index'), },
-      { path: 'journal/2', name: 'journals.j2', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j2/Index'), },
-      { path: 'journal/3', name: 'journals.j3', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j3/Index'), },
-      { path: 'journal/44', name: 'journals.j4', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/j4/Index'), },
+      { path: 'journal/:id/project/:projectId', name: 'journals.spec', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/spec/Index'), },
     ], },
     
     { path: '', component: () => import('layouts/auth/Index'), children: [

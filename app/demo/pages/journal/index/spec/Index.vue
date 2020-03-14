@@ -1,17 +1,17 @@
 <template>
   <div class="page-journal">
-    <n-card>
-      <n-select title="Проект" :data="projects" :value.sync="project" inline />
-    </n-card>
+    <!--    <n-card>-->
+    <!--      <n-select title="Проект" :data="projects" :value.sync="project" inline />-->
+    <!--    </n-card>-->
     
-    <n-card>
+    <n-card :loading="$var('loadJournal')">
       <n-tabs :data="tabs" />
-      <n-tabs-content class="content">
+      <n-tabs-content v-if="project.id" class="content">
         <template #chapter1>
           <MainChapter1 :project="project" />
         </template>
         <template #chapter2>
-          <MainChapter2 />
+          <MainChapter2 :project="project" />
         </template>
         <template #info>
           <MainInfo />
@@ -40,23 +40,31 @@ export default {
       { name: 'info', title: 'Правила', },
       { name: 'signs', title: 'Подписи', },
     ],
-  
-    projects: [
-      { title: 'Проект 1', value: 1, children: [
-        { title: 'Проект 1', value: 11, address: 'Абая 31', },
-        { title: 'Блок 1', value: 2, address: 'Абая 31а', },
-        { title: 'Блок 2', value: 3, address: 'Абая 31б', },
-        { title: 'Блок 3', value: 4, address: 'Абая 31в', },
-      ], },
-      { title: 'Проект 2', value: 5, children: [
-        { title: 'Проект 2', value: 55, address: 'Жамбыла 12', },
-        { title: 'Блок 1', value: 6, address: 'Жамбыла 12а', },
-        { title: 'Блок 2', value: 7, address: 'Жамбыла 12б', },
-        { title: 'Блок 3', value: 8, address: 'Жамбыла 12в', },
-      ], },
-    ],
-    project: { title: 'Блок 2', value: 3, address: 'Абая 31б', },
+    project: {},
   }),
+  created() {
+    this.loadProject()
+    this.loadJournal()
+  },
+  methods: {
+    loadProject() {
+      this.$var('loadJournal', true)
+      $api.projects.get(this.$route.params.projectId).then((response) => {
+        this.project = response.data.content
+      }).finally(() => {
+        this.$var('loadJournal', false)
+      })
+    },
+    loadJournal() {
+      this.$var('loadJournal', true)
+      $api.journals.get(this.$route.params.id).then((response) => {
+        this.journal = response.data.content
+        $app.router.setPage({ title: this.journal.title, })
+      }).finally(() => {
+        this.$var('loadJournal', false)
+      })
+    },
+  },
 }
 </script>
 
@@ -86,6 +94,7 @@ export default {
     }
     .content {
       padding: 20px 0 0;
+      position: relative;
     }
   }
 </style>

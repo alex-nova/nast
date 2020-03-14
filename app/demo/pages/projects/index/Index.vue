@@ -2,7 +2,6 @@
   <div class="page-projects-index container" style="position: relative">
     <div style="margin: 10px 20px 0;">
       <n-button @click="$var('add', true)">Создать проект</n-button>
-      <create-project v-if="$var('add')" @close="$var('add', false)" />
     </div>
     <n-loader :loading="$d.loading('projects')" />
     <div class="projects">
@@ -23,6 +22,8 @@
         </div>
       </n-card>
     </div>
+  
+    <create-project v-if="$var('add')" :submit="() => $d.reload('projects')" @close="$var('add', false)" />
   </div>
 </template>
 

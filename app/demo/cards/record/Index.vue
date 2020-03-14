@@ -1,28 +1,20 @@
 <template>
   <div class="card-record">
-    <n-modal-card :tabs="tabs" name="record" :loading="$var('loading')">
+    <n-modal-card :tabs="tabs" name="record" :loading="$var('load')">
       <template #header>Запись в журнале</template>
       <template #body>
         <div class="body">
-          <div class="object">Блок 1 <span>[ЖК Koktobe city]</span></div>
-          <div>Вид работ: Бетонные работы</div>
-          <div>Дата: 27.01.2020</div>
+          <!-- TODO !!! -->
+          <div class="object">{{ $store.state.app.project.name }}</div>
+          <!--          <div>Вид работ: Бетонные работы</div>-->
+          <div>Дата: {{ $app.date.format($form.get('createdAt'), 'date') }}</div>
         </div>
       </template>
       <template #tab.info>
         <n-items>
-          <n-input title="Описание работ" :value="record.content" text />
-          <n-input title="Место" :value="record.place" text />
-          <div class="weather">
-            <n-input class="env" title="Погодные условия" value="Пасмурно" inline text />
-            <n-input class="temperature" title="Температура" value="4/-2 t" inline text />
-            <n-input class="wind" title="Скорость ветра" value="4 м/с" inline text />
-          </div>
-          <n-input title="Меры в особых условиях" :value="record.measures" text />
-  
-          <n-input title="Работа" value="Заливка бетона" text />
-          <n-input title="Объем работ" value="48% (12т)" text />
-          <n-form-item title="Материалы" active>
+          <n-input v-for="field in fields" :key="field.id" :title="field.title" v-bind="$form.input(field.name)" text />
+          
+          <n-form-item v-if="journal.type === 'main'" title="Материалы" active>
             <n-table class="table" :columns="columns" :data="materials">
               <template #count="{item}">
                 {{ item.count + ' ' + item.unit }}
@@ -96,9 +88,12 @@ export default {
   name: 'CardRecord',
   data() {
     return {
+      journal: {},
+      record: {},
+      fields: [],
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
-        { name: 'control', title: 'Замечание', },
+        { name: 'control', title: 'Замечания', },
         { name: 'spec1', title: 'Подписи', },
       ],
       materials: [
@@ -110,15 +105,34 @@ export default {
       ],
     }
   },
-  computed: {
-    record() {
-      return { id: 1, weather: 'Пасмурно', temp: '+10/0', wind: 'СВ 8-10 м/с', percent: '50', done: '', createdAt: Date.now(),
-        place: 'А/2-А/1-А/4 на отм. -4,200',
-        measures: 'Бетон с химическими добавками',
-        content: 'Устройство гидроизоляции по бетонной подготовке ленточных ростверков фундаментов блока №4', }
+  watch: {
+    '$route.query.id'() {
+      if (this.$route.query.modal === 'record') {
+        this.load()
+      }
     },
   },
+  created() {
+    if (this.$route.query.modal === 'record') {
+      this.load()
+    }
+  },
   methods: {
+    load() {
+      this.$var('load', true)
+      const query = this.$route.query
+      const promises = [
+        $api.journals.records.get(query.id, query.journal, query.type),
+        $api.journals.get(query.journal),
+      ]
+      Promise.all(promises).then((result) => {
+        this.$form.init(result[0].data.content)
+        this.fields = result[0].data.columns
+        this.journal = result[1].data.content
+      }).finally(() => {
+        this.$var('load', false)
+      })
+    },
   },
 }
 </script>

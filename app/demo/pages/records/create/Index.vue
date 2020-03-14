@@ -1,19 +1,18 @@
 <template>
   <div class="page-record-create">
     <div class="line">
-      <n-card class="info">
+      <n-card class="info" :loading="$var('loadInfo')">
         <template #header>
           <h3>Информация</h3>
         </template>
         <n-items>
-          <n-input title="Дата заполнения" value="27.01.2020" />
-          <n-input title="Вид работ" value="Бетонные работы" text />
-          <n-input title="Проект" value="ЖК Koktobe city" text />
-          <n-input title="Объект" value="Блок 1" text />
+          <n-input title="Дата заполнения" :value="$app.date.format($app.date.now(), 'date')" />
+          <n-input v-if="journal.type === 'main'" title="Вид работ" :value="workType.name" text />
+          <n-input title="Проект" :value="project.name" text />
         </n-items>
       </n-card>
   
-      <n-card class="items">
+      <n-card v-if="journal.type === 'main'" class="items">
         <template #header>
           <h3>Расходы</h3>
         </template>
@@ -35,65 +34,38 @@
       </n-card>
     </div>
     
-    <n-card>
+    <n-card :loading="$var('loadFields')">
       <template #header>
-        <h3>Журнал производственных работ</h3>
+        <h3>{{ journal.title }}</h3>
       </template>
       <n-items>
-        <n-input title="Описание работ" />
-        <n-input title="Место" />
-        <div class="weather">
-          <n-select title="Погодные условия" :data="weathers" :value.sync="weather" inline />
-          <n-input class="temperature" title="Температура" inline />
-          <span class="unit">t</span>
-          <n-input class="wind" title="Скорость ветра" inline />
-          <span class="unit">м/с</span>
-        </div>
-        <n-input title="Меры в особых условиях" />
-        <n-select title="Чертежи" :data="docs" :value.sync="doc" />
+        <n-input v-for="field in fields" :key="field.id" :title="field.title" v-bind="$form.input(field.name)" />
       </n-items>
     </n-card>
     
-    <n-card>
-      <template #header>
-        <h3>Журнал бетонных работ</h3>
-      </template>
-      <n-items>
-        <n-input title="Маркировка контрольных образцов бетона и их число" />
-        <n-input title="№ акта об изготовлении контрольных образцов" />
-        <n-input title="Примечание" />
-        <div class="weather">
-          <div style="margin-bottom: 5px">Результаты испытания контрольных образцов</div>
-          <n-input title="При распалубливании" inline />
-          <n-input class="temperature" title="Дата" inline /><br />
-          <n-input style="margin-top: 15px" title="Через 28 суток" inline disabled />
-        </div>
-      </n-items>
-    </n-card>
-    
-    <n-card>
-      <template #header>
-        <h3>Журнал ухода за бетоном</h3>
-      </template>
-      <n-items>
-        <n-input title="Наименование забетонированной части сооружения" />
-        <n-input title="Объем бетона" />
-        <n-input title="Модуль поверхности, м2/м3" />
-        <n-input title="Метод выдерживания бетона" />
-        <n-input title="Дата и время окончания укладки бетона" />
-        <div class="weather">
-          <div>Начало выдерживания бетона</div>
-          <n-input title="Время" inline />
-          <n-input style="width: 200px; margin: 0 10px" title="Температура бетона" inline />
-          <n-input style="width: 200px;" title="Температура наружного воздуха" inline />
-        </div>
-      </n-items>
-    </n-card>
+    <!--    <n-card>-->
+    <!--      <template #header>-->
+    <!--        <h3>Журнал производственных работ</h3>-->
+    <!--      </template>-->
+    <!--      <n-items>-->
+    <!--        <n-input title="Описание работ" />-->
+    <!--        <n-input title="Место" />-->
+    <!--        <div class="weather">-->
+    <!--          <n-select title="Погодные условия" :data="weathers" :value.sync="weather" inline />-->
+    <!--          <n-input class="temperature" title="Температура" inline />-->
+    <!--          <span class="unit">t</span>-->
+    <!--          <n-input class="wind" title="Скорость ветра" inline />-->
+    <!--          <span class="unit">м/с</span>-->
+    <!--        </div>-->
+    <!--        <n-input title="Меры в особых условиях" />-->
+    <!--        <n-select title="Чертежи" :data="docs" :value.sync="doc" />-->
+    <!--      </n-items>-->
+    <!--    </n-card>-->
     
     <n-card>
       <n-divide>
         <div></div>
-        <n-link :to="{name: 'journals.index', params: { id: 1,}, query: { modal: 'record', id: 1,}}"><n-button color="success">Сохранить</n-button></n-link>
+        <n-button color="success" :loading="$var('loadSubmit')" @click="submit">Сохранить</n-button>
       </n-divide>
     </n-card>
   </div>
@@ -104,12 +76,14 @@ export default {
   name: 'PageRecordCreate',
   data() {
     return {
+      journal: [],
+      fields: [],
+      project: {},
+      workType: {},
+      
       doc: [],
       docs: [
         'Чертеж 1',
-        'Чертеж 2',
-        'Чертеж 3',
-        'Чертеж 4',
       ],
       work: {},
       selectedMaterials: [
@@ -118,9 +92,6 @@ export default {
       weather: '',
       weathers: [
         'Ясно',
-        'Облачно',
-        'Дождь',
-        'Снег',
       ],
     }
   },
@@ -135,10 +106,48 @@ export default {
     }
   },
   created() {
-    $app.router.setPage({ data: { object: 'sd', project: 'dsfdf', }, })
-    $app.router.setPage('journals.index', { data: { journalId: this.$route.params.id, }, })
+    // $app.router.setPage({ data: { object: 'sd', project: 'dsfdf', }, })
+    // $app.router.setPage('journals.index', { data: { journalId: this.$route.params.id, }, })
+    this.loadFields()
+    this.loadInfo()
   },
   methods: {
+    loadFields() {
+      this.$var('loadFields', true)
+      $api.journals.getColumns(this.$route.query.project, this.$route.params.id, 'records').then((response) => {
+        this.fields = response.data.content
+        this.$form.init({})
+      }).finally(() => {
+        this.$var('loadFields', false)
+      })
+    },
+    loadInfo() {
+      this.$var('loadInfo', true)
+      const promises = [
+        $api.journals.get(this.$route.params.id),
+        $api.projects.get(this.$route.query.project),
+        $api.types.get(this.$route.query.type),
+      ]
+      Promise.all(promises).then((response) => {
+        this.journal = response[0].data.content
+        this.project = response[1].data.content
+        this.workType = response[2].data.content
+      }).finally(() => {
+        this.$var('loadInfo', false)
+      })
+    },
+    submit() {
+      this.$var('loadSubmit', true)
+      $api.journals.records.create(this.$route.query.project, this.$route.params.id, 'records', this.$form.get()).then((response) => {
+        if (this.journal.type === 'main') {
+          this.$router.push({ name: 'journals.index', })
+        } else {
+          this.$router.push({ name: 'journals.spec', params: { id: this.journal.id, projectId: this.project.id, }, })
+        }
+      }).finally(() => {
+        this.$var('loadSubmit', false)
+      })
+    },
     addMaterial() {
       this.selectedMaterials.push({})
     },

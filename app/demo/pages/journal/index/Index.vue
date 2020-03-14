@@ -1,6 +1,6 @@
 <template>
   <div class="page-journal">
-    <n-card>
+    <n-card :loading="$var('loadProjects')">
       <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
     </n-card>
     
@@ -8,7 +8,7 @@
       <n-tabs :data="tabs" />
       <n-tabs-content class="content">
         <template #chapter1>
-          <MainChapter1 :project="project || {}" />
+          <MainChapter1 :project="project" />
         </template>
         <template #chapter2>
           <MainChapter2 />
@@ -17,10 +17,10 @@
           <MainChapter3 />
         </template>
         <template #chapter4>
-          <MainChapter4 />
+          <MainChapter4 :project="project" />
         </template>
         <template #chapter5>
-          <MainChapter5 />
+          <MainChapter5 :project="project" />
         </template>
         <template #chapter6>
           <MainChapter6 />
@@ -62,19 +62,30 @@ export default {
     ],
   
     projects: [],
-    project: null,
+    project: undefined,
   }),
+  watch: {
+    project(value) {
+      if (value) {
+        $app.store.mutation('app.project', this.project)
+      }
+    },
+  },
   created() {
-    this.load()
+    this.loadProjects()
   },
   methods: {
-    load() {
+    loadProjects() {
       this.$var('loadProjects', true)
       $api.my.projects().then((response) => {
         this.projects = response.data.content
-        this.project = this.projects[0]
+        if ($app.store.state('app.project')) {
+          this.project = $app.store.state('app.project')
+        } else {
+          this.project = this.projects[0]
+        }
       }).finally(() => {
-        this.$var('loadProjects', true)
+        this.$var('loadProjects', false)
       })
     },
   },
@@ -107,6 +118,7 @@ export default {
     }
     .content {
       padding: 20px 0 0;
+      position: relative;
     }
   }
 </style>

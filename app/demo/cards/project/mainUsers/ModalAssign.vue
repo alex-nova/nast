@@ -1,5 +1,5 @@
 <template>
-  <n-modal class="modal-assign" :load="$var('load')" @close="$emit('close')">
+  <n-modal class="modal-assign" :loading="$var('load')" @close="$emit('close')">
     <h3>Назначить на роль: {{ role.title }}</h3>
     <n-form @submit="submit">
       <n-items>

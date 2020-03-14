@@ -1,11 +1,12 @@
 <template>
   <div class="main-chapter1">
+    <n-loader :loading="$var('load')" />
     <div class="chapter-title">
       Перечень специальных журналов работ
     </div>
     <n-table :columns="columns" :data="data">
       <template #tools="{item}">
-        <n-link :to="item.link"><n-button icon="eye" /></n-link>
+        <n-link :to="{name:'journals.spec', params:{ id: item.id, projectId: project.id, }}"><n-button icon="eye" /></n-link>
       </template>
     </n-table>
   </div>
@@ -14,19 +15,30 @@
 <script>
 export default {
   name: 'MainChapter5',
+  props: [ 'project', ],
   data: () => ({
     columns: [
-      { name: 'name', title: 'Наименование', },
+      { name: 'title', title: 'Наименование', },
       { name: 'createdAt', title: 'Дата выдачи', },
       { name: 'responsible', title: 'Ответственный', },
       { name: 'endedAt', title: 'Дата сдачи-приемки', },
       { name: 'tools', title: '', },
     ],
-    data: [
-      { name: 'Журнал ухода за бетоном', createdAt: '10.11.2019', responsible: 'Гарматюк Игорь Васильевич', endedAt: '', link: { name: 'journals.j1', }, },
-      { name: 'Журнал бетонных работ', createdAt: '10.11.2019', responsible: 'Гарматюк Игорь Васильевич', endedAt: '', link: { name: 'journals.j2', }, },
-    ],
+    data: [],
   }),
+  created() {
+    this.load()
+  },
+  methods: {
+    load() {
+      this.$var('load', true)
+      $api.journals.getSpec(this.project.id).then((response) => {
+        this.data = response.data.content
+      }).finally(() => {
+        this.$var('load', false)
+      })
+    },
+  },
 }
 </script>
 

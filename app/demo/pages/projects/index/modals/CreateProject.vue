@@ -1,7 +1,7 @@
 <template>
   <n-modal class="create-project" :loading="$var('loading')" @close="$emit('close')">
     <h3>Создать проект</h3>
-    <n-form @submit="submit">
+    <n-form @submit="s_submit">
       <n-items>
         <n-select title="Заказчик" :data="companies" :value.sync="company" item-value="id" option-title="name" selected-title="name" />
         <n-input title="Название" v-bind="$form.input('name')" />
@@ -18,6 +18,7 @@
 <script>
 export default {
   name: 'CreateProject',
+  props: [ 'submit', ],
   data: () => ({
     companies: [],
     company: {},
@@ -41,11 +42,12 @@ export default {
         this.$var('loading', false)
       })
     },
-    submit() {
+    s_submit() {
       this.$var('loading', true)
       $api.projects.create({ companyId: this.company.id, ...this.$form.get(), }).then((response) => {
-        this.$emit('close')
         this.$d.reloadTag('projects')
+        this.$emit('close')
+        this.submit()
       }).finally(() => {
         this.$var('loading', false)
       })

@@ -70,17 +70,28 @@ export default class CustomApi {
   }
   
   projects = {
-    get: (id) => $app.api.get([ 'projects', id, ]).filters({ projectId: null, }),
+    get: (id) => $app.api.get([ 'projects', id, ]),
     create: (data) => $app.api.post([ 'projects', ]).data(data),
-    edit: (id, data) => $app.api.put([ 'projects', id, ]).data(data),
+    edit: (id, data) => $app.api.patch([ 'projects', id, ]).data(data),
+    delete: (id) => $app.api.delete([ 'projects', id, ]),
+    getStructure: (id) => $app.api.get([ 'projects*/structure', id, ]),
+    createSub: (parentId, data) => $app.api.post([ 'projects*/sub', parentId, ]).data(data),
+    
+    delegations: {
+      get: (projectId) => $app.api.get([ 'projects*/delegations', projectId, ]),
+      create: (projectId, data) => $app.api.post([ 'projects*/delegations', projectId, ]).data(data),
+    },
     partners: {
       invite: (projectId, data) => $app.api.post([ 'projects*/partners/invite', projectId, ]).data(data),
       acceptInvite: (projectId) => $app.api.post([ 'projects*/partners/invite/accept', projectId, ]),
     },
     participants: {
+      get: (projectId) => $app.api.get([ 'projects*/participants', projectId, ]),
+      create: (projectId, data) => $app.api.post([ 'projects*/participants', projectId, ]).data(data),
       getMain: (projectId) => $app.api.get([ 'projects*/mainUsers', projectId, ]),
       getMainInvites: (projectId) => $app.api.get([ 'projects*/invites/mainUsers', projectId, ]),
     },
+    
     docs: {
       post(id, data) {
         return $app.api.post([ 'projects*/files', id, ], data).mock(() => {
@@ -123,49 +134,26 @@ export default class CustomApi {
   }
   
   journals = {
-    get(id) {
-      return $app.api.get([ 'journals', id, ])
-        .mock(() => id ? $n.find(mocks.journals, [ 'id', id*1, ]) : mocks.journals)
-    },
-    
+    get: (id) => $app.api.get([ 'projects/journals*', id, ]),
+    getSpec: (projectId) => $app.api.get([ 'projects*/journals/spec', projectId, ]),
+    getColumns: (projectId, journalId, blockName) => $app.api.get([ 'projects*/journals**/columns', projectId, journalId, blockName, ]),
+    getBlock: (projectId, journalId, blockName) => $app.api.get([ 'projects*/journals**', projectId, journalId, blockName, ]),
     records: {
-      get(journalId, id = null) {
-        return $app.api.get([ 'journals{}/records{}', journalId, id, ])
-          .mock(() => id ? $n.find(mocks.records, [ 'id', id*1, ]) : $n.reverse(mocks.records, 'id'))
-      },
+      get: (id, journalId, blockName) => $app.api.get([ 'projects/journals**/records*', journalId, blockName, id, ]),
+      create: (projectId, journalId, blockName, data) => $app.api.post([ 'projects*/journals**', projectId, journalId, blockName, ]).data(data),
     },
+  }
+  
+  sections = {
+    create: (data) => $app.api.post([ 'sections', ]).data(data),
+    edit: (id, data) => $app.api.patch([ 'sections*', id, ]).data(data),
+    delete: (id) => $app.api.delete([ 'sections*', id, ]),
   }
   
   types = {
-    get() {
-      return $app.api.get([]).mock(() => {
-        return mocks.types
-      })
-    },
+    get: (id) => $app.api.get([ 'types*', id, ]),
   }
   
-  // users: {
-  //   get(id) {
-  //     return $app.api.get([ 'v1/users{/id}', id, ], User)
-  //   },
-  //   create(model) {
-  //     return $app.api.post('v1/users', model)
-  //   },
-  //   articles: {
-  //     get(userId) {
-  //       return $app.api.get('articles').filters({ authorId: userId, })
-  //     },
-  //   },
-  // },
-  //
-  // articles: {
-  //   get(id, data) {
-  //     return $app.api.post([ 'v1/articles*', id, ]).data(data)
-  //   },
-  //   create(model) {
-  //     return $app.api.post('v1/articles', model)
-  //   },
-  // },
   //
   // locales: {
   //   get(id) {

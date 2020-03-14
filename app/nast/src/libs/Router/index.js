@@ -78,7 +78,7 @@ class Router extends RouterInterface {
             ...state['data'],
             [name]: {
               ...$n.get(state['data'], name, {}),
-              page: data,
+              ...data,
             },
           }
         },

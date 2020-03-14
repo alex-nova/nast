@@ -34,6 +34,9 @@
       <template #tab.mainUsers>
         <tab-main-users :model-id="model.id" />
       </template>
+      <template #tab.contractors>
+        <tab-contractors :project="model" />
+      </template>
       <template #tab.jobs>
         <tab-jobs />
       </template>
@@ -56,28 +59,29 @@
 </template>
 
 <script>
-import TabStructure from './Structure'
+import TabStructure from './structure/Index'
 import TabStartingDocs from './StartingDocs'
 import TabProjectDocs from './ProjectDocs'
 import TabJobs from './Jobs'
 import TabMaterials from './Materials'
 import TabMainUsers from './mainUsers/Index'
+import TabContractors from './contractors/Index'
 
 export default {
   name: 'CardProject',
-  components: { TabMainUsers, TabMaterials, TabJobs, TabProjectDocs, TabStartingDocs, TabStructure, },
+  components: { TabContractors, TabMainUsers, TabMaterials, TabJobs, TabProjectDocs, TabStartingDocs, TabStructure, },
   data() {
     return {
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
         { name: 'mainUsers', title: 'Ответственные лица', },
-        // { name: 'structure', title: 'Структура', },
-        { name: 'startingDocs', title: 'РД', },
-        { name: 'projectDocs', title: 'ПСД', },
+        { name: 'structure', title: 'Структура', },
+        // { name: 'startingDocs', title: 'РД', },
+        // { name: 'projectDocs', title: 'ПСД', },
         // { name: 'documents', title: 'Документы', },
         // { name: 'pj', title: 'ЖПР', },
         // { name: 'responsible', title: 'Ответственные лица', },
-        // { name: 'contractors', title: 'Назначение подряда', },
+        { name: 'contractors', title: 'Подряд', },
         { name: 'jobs', title: 'Работы', },
         { name: 'materials', title: 'Материалы', },
       ],
@@ -86,7 +90,9 @@ export default {
   },
   watch: {
     '$route.query.id'() {
-      this.load()
+      if (this.$route.query.modal === 'project') {
+        this.load()
+      }
     },
   },
   created() {

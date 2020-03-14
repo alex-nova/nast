@@ -41,7 +41,9 @@
 <script>
 export default {
   name: 'MainChapter1',
-  props: [ 'project', ],
+  props: {
+    project: { type: Object, default: () => ({}), },
+  },
   data: () => ({
     subcontractors: [
       { name: '', bin: '', works: '', },
@@ -69,6 +71,16 @@ export default {
         date: $app.date.format($app.date.now(), 'date'),
         org: 'ТОО "Компания", 10.10.2019, №2391239',
       }
+    },
+  },
+  watch: {
+    project() {
+      this.load()
+    },
+  },
+  methods: {
+    load() {
+      
     },
   },
 }

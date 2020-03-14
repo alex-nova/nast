@@ -328,8 +328,8 @@ export default class ApiObject {
       const sort = $n.reduce(this._sort, (result, item) => {
         result.push(`sort[]=${item}`)
         return result
-      }, [])
-      filters.push(sort.join('&'))
+      }, []).join('&')
+      if (sort) filters.push(sort)
     }
     if (this._search) {
       filters.push('search=' + this._search)
@@ -339,13 +339,23 @@ export default class ApiObject {
       const fltrs = $n.reduce(this._filters, (result, item, name) => {
         result.push(`filter[${name}]=${item}`)
         return result
-      }, [])
-      filters.push(fltrs.join('&'))
+      }, []).join('&')
+      if (fltrs) filters.push(fltrs)
     }
-    // TODO with
+    
+    if (this._with) {
+      const withs = $n.reduce(this._with, (result, value, name) => {
+        result.push(`with[${name}]`) // TODO доделать вложенность
+        return result
+      }, []).join('&')
+      if (withs) filters.push(withs)
+    }
+    
     // TODO fields
     // TODO tree
-    // TODO all
+    if (this._all) {
+      filters.push('all')
+    }
     // TODO query
     
     if (filters.length) {
