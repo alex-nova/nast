@@ -11,12 +11,12 @@
             <n-image mock />
           </div>
           <div class="content">
-            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="name">{{ project.name }}</n-link>
+            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="title">{{ project.title }}</n-link>
             <div class="address">{{ project.address }}</div>
             <div class="description"><div>{{ project.description }}</div></div>
             <div class="dates">
-              <div class="startedAt">Начало: {{ $app.date.format(project.startedAt, 'date') }}</div>
-              <div class="endedAt">Конец: {{ $app.date.format(project.endedAt, 'date') }}</div>
+              <div class="startedAt">Начало: {{ $app.date.format(project.startedAt) }}</div>
+              <div class="endedAt">Конец: {{ $app.date.format(project.endedAt) }}</div>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default {
         flex-direction: column;
         width: 100%;
         
-        .name {
+        .title {
           font-weight: 500;
           font-size: 1.2em;
         }

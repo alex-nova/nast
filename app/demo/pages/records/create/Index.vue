@@ -1,66 +1,29 @@
 <template>
   <div class="page-record-create">
     <div class="line">
-      <n-card class="info" :loading="$var('loadInfo')">
+      <n-card class="info" :loading="$var('load')">
         <template #header>
           <h3>Информация</h3>
         </template>
         <n-items>
-          <n-input title="Дата заполнения" :value="$app.date.format($app.date.now(), 'date')" />
-          <n-input v-if="journal.type === 'main'" title="Вид работ" :value="workType.name" text />
           <n-input title="Проект" :value="project.name" text />
+          <n-input title="Дата заполнения" :value="publishedAt" @input="(v) => publishedAt = v" />
         </n-items>
       </n-card>
   
-      <n-card v-if="journal.type === 'main'" class="items">
-        <template #header>
-          <h3>Расходы</h3>
-        </template>
-        <n-items>
-          <div class="materials">
-            <n-select title="Работа" :value.sync="work" :data="$d.get('works')" item-value="id" option-title="name" selected-title="name" inline />
-            <n-input class="count" title="Объем работ" inline />
-            <span class="unit">{{ work.units }}</span>
-          </div>
-          
-          <div v-for="(value, i) in selectedMaterials" :key="i" class="materials">
-            <n-select title="Материал" :value.sync="selectedMaterials[i]" :data="$d.get('materials')" item-value="id" option-title="name" selected-title="name" inline />
-            <n-input class="count" title="Количество" inline />
-            <span class="unit">{{ selectedMaterials[i].unit }}</span>
-            <span v-if="i" class="delete" @click="removeMaterial(i)"><n-icon icon="trash" /></span>
-          </div>
-          <div class="add" @click="addMaterial"><n-icon icon="plus" /> Добавить материал</div>
-        </n-items>
-      </n-card>
+      <block-works v-if="journal.name === 'main'" :project-id="projectId" class="items" @change="supplyChange" />
     </div>
     
-    <n-card :loading="$var('loadFields')">
+    <n-card :loading="$var('load')">
       <template #header>
         <h3>{{ journal.title }}</h3>
       </template>
       <n-items>
-        <n-input v-for="field in fields" :key="field.id" :title="field.title" v-bind="$form.input(field.name)" />
+        <template v-if="journal.front">
+          <n-input v-for="field in journal.front.create" :key="field.name" :title="field.title" v-bind="$form.input(field.name)" />
+        </template>
       </n-items>
     </n-card>
-    
-    <!--    <n-card>-->
-    <!--      <template #header>-->
-    <!--        <h3>Журнал производственных работ</h3>-->
-    <!--      </template>-->
-    <!--      <n-items>-->
-    <!--        <n-input title="Описание работ" />-->
-    <!--        <n-input title="Место" />-->
-    <!--        <div class="weather">-->
-    <!--          <n-select title="Погодные условия" :data="weathers" :value.sync="weather" inline />-->
-    <!--          <n-input class="temperature" title="Температура" inline />-->
-    <!--          <span class="unit">t</span>-->
-    <!--          <n-input class="wind" title="Скорость ветра" inline />-->
-    <!--          <span class="unit">м/с</span>-->
-    <!--        </div>-->
-    <!--        <n-input title="Меры в особых условиях" />-->
-    <!--        <n-select title="Чертежи" :data="docs" :value.sync="doc" />-->
-    <!--      </n-items>-->
-    <!--    </n-card>-->
     
     <n-card>
       <n-divide>
@@ -72,74 +35,70 @@
 </template>
 
 <script>
+import BlockWorks from './WorksBlock'
+
 export default {
   name: 'PageRecordCreate',
+  components: { BlockWorks, },
   data() {
     return {
-      journal: [],
-      fields: [],
+      publishedAt: $app.date.format($app.date.now()),
       project: {},
-      workType: {},
-      
-      doc: [],
-      docs: [
-        'Чертеж 1',
-      ],
-      work: {},
-      selectedMaterials: [
-        {},
-      ],
-      weather: '',
-      weathers: [
-        'Ясно',
-      ],
+      journal: {},
+      fields: [],
+      supply: null,
+      signers: {},
+      selectedSigners: {},
     }
   },
-  load() {
-    return {
-      works: {
-        api: $api.projects.works.get(),
-      },
-      materials: {
-        api: $api.projects.materials.get(),
-      },
-    }
+  computed: {
+    projectId() {
+      return this.$route.params.projectId
+    },
+    journalName() {
+      return this.$route.params.journal
+    },
   },
   created() {
     // $app.router.setPage({ data: { object: 'sd', project: 'dsfdf', }, })
-    // $app.router.setPage('journals.index', { data: { journalId: this.$route.params.id, }, })
-    this.loadFields()
+    // $app.router.setPage('journals.index', { data: { journalName: this.$route.params.id, }, })
     this.loadInfo()
   },
   methods: {
-    loadFields() {
-      this.$var('loadFields', true)
-      $api.journals.getColumns(this.$route.query.project, this.$route.params.id, 'records').then((response) => {
-        this.fields = response.data.content
-        this.$form.init({})
-      }).finally(() => {
-        this.$var('loadFields', false)
-      })
-    },
     loadInfo() {
-      this.$var('loadInfo', true)
+      this.$var('load', true)
       const promises = [
-        $api.journals.get(this.$route.params.id),
-        $api.projects.get(this.$route.query.project),
-        $api.types.get(this.$route.query.type),
+        $api.journals.get(this.projectId, this.journalName),
+        $api.projects.get(this.projectId),
+        $api.journals.records.getColumns(this.projectId, this.journalName, 'records'),
       ]
       Promise.all(promises).then((response) => {
         this.journal = response[0].data.content
         this.project = response[1].data.content
-        this.workType = response[2].data.content
+        this.fields = response[2].data.content
+        this.$form.init({})
       }).finally(() => {
-        this.$var('loadInfo', false)
+        this.$var('load', false)
       })
+    },
+    supplyChange(value) {
+      this.supply = value
     },
     submit() {
       this.$var('loadSubmit', true)
-      $api.journals.records.create(this.$route.query.project, this.$route.params.id, 'records', this.$form.get()).then((response) => {
-        if (this.journal.type === 'main') {
+      const data = {
+        record: {
+          ...this.$form.get(),
+          publishedAt: this.publishedAt,
+          ...$n.reduce(this.selectedSigners, (result, v, name) => {
+            result[name] = v.id
+            return result
+          }, {}),
+        },
+        supply: this.supply,
+      }
+      $api.journals.records.create(this.projectId, this.journalName, 'records', data).then((response) => {
+        if (this.journal.name === 'main') {
           this.$router.push({ name: 'journals.index', })
         } else {
           this.$router.push({ name: 'journals.spec', params: { id: this.journal.id, projectId: this.project.id, }, })
@@ -147,12 +106,6 @@ export default {
       }).finally(() => {
         this.$var('loadSubmit', false)
       })
-    },
-    addMaterial() {
-      this.selectedMaterials.push({})
-    },
-    removeMaterial(i) {
-      this.selectedMaterials = $n.filter(this.selectedMaterials, (item, k) => k !== i)
     },
   },
 }
@@ -178,19 +131,6 @@ export default {
       }
     }
     
-    .materials {
-      width: 100%;
-      .count {
-        margin: 0 5px 0 20px;
-        width: 100px;
-      }
-      .delete {
-        float: right;
-        font-size: .8em;
-        margin: 1.6em 0 0 0;
-        cursor: pointer;
-      }
-    }
     
     .weather {
       .unit {

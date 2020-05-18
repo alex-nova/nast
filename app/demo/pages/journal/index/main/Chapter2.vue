@@ -1,16 +1,15 @@
 <template>
   <div class="main-chapter1">
     <div class="chapter-title">Список инженерно-технического персонала, занятого на строительстве объекта</div>
-    <n-table :columns="columns" :data="peoples">
-      <template #one="{item}">
-        {{ item.position }}<br />
-        {{ item.fullName }}
+    <n-table :columns="columns" :data="data" :loading="this.$var('load')">
+      <template #participant="{item}">
+        {{ item.user.fullName }} <span style="opacity: .8;font-size: .8em">[{{ item.user.iin }}]</span>
       </template>
-      <template #two>
-        12.11.2019
+      <template #company="{item}">
+        {{ item.company.name }} <span style="opacity: .8;font-size: .8em">[{{ item.company.bin }}]</span>
       </template>
-      <template #four>
-        -
+      <template #createdAt="{item}">
+        {{ $app.date.format(item.createdAt) }}
       </template>
     </n-table>
   </div>
@@ -19,23 +18,29 @@
 <script>
 export default {
   name: 'MainChapter2',
+  props: [ 'project', ],
   data: () => ({
     columns: [
-      { name: 'one', title: 'Должность, фамилия, инициалы, участок работ', },
-      { name: 'two', title: 'Дата начала работ на строительстве объекта', },
-      { name: 'three', title: 'Отметка о получении разрешения на право производства работ, о прохождении аттестации', },
-      { name: 'four', title: 'Дата окончания работ на строительстве объекта', },
+      { name: 'participant', title: 'Сотрудник', },
+      { name: 'company', title: 'Компания', },
+      { name: 'role', title: 'Должность на проекте', },
+      { name: 'createdAt', title: 'Дата назначения', },
     ],
-    peoples: [
-      { id: 1, fullName: 'Боранбаев Мақсат Серікұлы', position: 'Проектировщик', },
-      { id: 2, fullName: 'Гарматюк Игорь Васильевич', position: 'Строитель', },
-      { id: 3, fullName: 'Гаркушкин Михаил Иванович', position: 'Мастер', },
-      { id: 4, fullName: 'Осипов Владимир Николаевич', position: 'Сварщик', },
-      { id: 5, fullName: 'Иванов Николай Николаевич', position: 'Проектировщик', },
-      { id: 6, fullName: 'Акижанов Дархан Амиргалыевич', position: 'Сварщик', },
-      { id: 7, fullName: 'Комбатуров Сагандык Толегенович', position: 'Прораб', },
-    ],
+    data: [],
   }),
+  created() {
+    this.load()
+  },
+  methods: {
+    load() {
+      this.$var('load', true)
+      $api.projects.participants.get(this.project.id).then((response) => {
+        this.data = response.data.content
+      }).finally(() => {
+        this.$var('load', false)
+      })
+    },
+  },
 }
 </script>
 

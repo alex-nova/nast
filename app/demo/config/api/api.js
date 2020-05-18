@@ -1,16 +1,51 @@
-import mocks from './mocks'
 
 /**
  *
  */
 export default class CustomApi {
-  temp = {
-    myAdminCompanies: () => $app.api.get([ 'companies/myAdmin', ]),
+  /**
+   * Companies
+   */
+  companies = {
+    get: (id) => $app.api.get([ 'companies*', id, ]),
+    create: (data) => $app.api.post('companies').data(data),
+    edit: (id, data) => $app.api.put([ 'companies*', id, ]).data(data),
+    
+    workers: {
+      get: (id) => $app.api.get([ 'companies*/workers', id, ]),
+      getSimple: (id) => $app.api.get([ 'companies*/simple', id, ]),
+      invite: (companyId, data) => $app.api.post([ 'companies*/workers', companyId, ]).data(data),
+    },
+    admins: {
+      get: (id) => $app.api.get([ 'companies*/admins', id, ]),
+      add: (id) => $app.api.post([ 'companies/workers*/admin', id, ]),
+      remove: (id) => $app.api.delete([ 'companies/workers*/admin', id, ]),
+    },
   }
+  
+  
+  /**
+   * My
+   */
+  my = {
+    companies: () => $app.api.get('my/companies'),
+    companiesAdmin: () => $app.api.get('my/companies/admin'), // todo temp
+    projects: () => $app.api.get('my/projects'),
+    structureTree: (projectId, withWorks) => $app.api.get([ 'my/projects*/structure/tree', projectId, ]).query({ works: withWorks, }),
+    partners: (projectId) => $app.api.get([ 'my/projects*/partners', projectId, ]),
+    participants: (projectId) => $app.api.get([ 'my/projects*/participants', projectId, ]),
+    signers: (projectId) => $app.api.get([ 'my/projects*/signers', projectId, ]),
+    notifications: () => $app.api.get('my/notifications'),
+  }
+  
+  
+  /**
+   * Temp
+   */
   
   auth = {
     invite: {
-      get: (token) => $app.api.get( [ 'auth/invite*', token, ]),
+      get: (token) => $app.api.get([ 'auth/invite*', token, ]),
     },
     login: (data) => $app.api.post('auth/login').data(data),
     register: (data, token = '') => $app.api.post([ 'auth/register*', token, ]).data(data),
@@ -35,12 +70,6 @@ export default class CustomApi {
     delete: (id) => $app.api.delete([ 'files*', id, ]),
   }
   
-  my = {
-    companies: () => $app.api.get('my/companies'),
-    projects: () => $app.api.get('my/projects'),
-    notifications: () => $app.api.get('my/notifications'),
-  }
-  
   users = {
     get: (id) => $app.api.get([ 'users*', id, ]),
     create: (data) => $app.api.post('users').data(data),
@@ -53,94 +82,52 @@ export default class CustomApi {
     },
   }
   
-  companies = {
-    get: (id) => $app.api.get([ 'companies*', id, ]),
-    create: (data) => $app.api.post('companies').data(data),
-    edit: (id, data) => $app.api.put([ 'companies*', id, ]).data(data),
-    workers: {
-      get: (id) => $app.api.get([ 'companies*/workers', id, ]),
-      getSimple: (id) => $app.api.get([ 'companies*/noadmins', id, ]),
-      invite: (companyId, data) => $app.api.post([ 'companies*/workers/invite', companyId, ]).data(data),
-    },
-    admins: {
-      get: (id) => $app.api.get([ 'companies*/admins', id, ]),
-      add: (companyId, userId) => $app.api.post([ 'companies*/admins/*', companyId, userId, ]),
-      remove: (companyId, userId) => $app.api.delete([ 'companies*/admins/*', companyId, userId, ]),
-    },
-  }
-  
   projects = {
     get: (id) => $app.api.get([ 'projects', id, ]),
     create: (data) => $app.api.post([ 'projects', ]).data(data),
     edit: (id, data) => $app.api.patch([ 'projects', id, ]).data(data),
     delete: (id) => $app.api.delete([ 'projects', id, ]),
-    getStructure: (id) => $app.api.get([ 'projects*/structure', id, ]),
     createSub: (parentId, data) => $app.api.post([ 'projects*/sub', parentId, ]).data(data),
     
-    delegations: {
-      get: (projectId) => $app.api.get([ 'projects*/delegations', projectId, ]),
-      create: (projectId, data) => $app.api.post([ 'projects*/delegations', projectId, ]).data(data),
-    },
     partners: {
+      get: (projectId) => $app.api.get([ 'projects*/partners', projectId, ]),
+      getByRole: (projectId, role) => $app.api.get([ 'projects*/partners/role*', projectId, role, ]),
+      getMain: (projectId) => $app.api.get([ 'projects*/partners/main', projectId, ]),
       invite: (projectId, data) => $app.api.post([ 'projects*/partners/invite', projectId, ]).data(data),
-      acceptInvite: (projectId) => $app.api.post([ 'projects*/partners/invite/accept', projectId, ]),
+      acceptInvite: (projectId, data) => $app.api.post([ 'projects*/partners/invite/accept', projectId, ]).data(data),
     },
     participants: {
       get: (projectId) => $app.api.get([ 'projects*/participants', projectId, ]),
       create: (projectId, data) => $app.api.post([ 'projects*/participants', projectId, ]).data(data),
-      getMain: (projectId) => $app.api.get([ 'projects*/mainUsers', projectId, ]),
-      getMainInvites: (projectId) => $app.api.get([ 'projects*/invites/mainUsers', projectId, ]),
     },
-    
-    docs: {
-      post(id, data) {
-        return $app.api.post([ 'projects*/files', id, ], data).mock(() => {
-          const name = data.type === 1 ? data.name : data.typeName
-          mocks.docs.push({ id: mocks.docs.length+1, name, desc: data.desc, file: '123', type: data.type, })
-        })
+    accesses: {
+      partners: {
+        get: (id) => $app.api.get([ 'projects/partners*/accesses', id, ]).with({ workTypes: {}, }),
+        create: (id, data) => $app.api.post([ 'projects/partners*/accesses', id, ]).data(data),
       },
+      participants: {
+        get: (id) => $app.api.get([ 'projects/participants*/accesses', id, ]).with({ workTypes: {}, specTypes: {}, }),
+        create: (id, data) => $app.api.post([ 'projects/participants*/accesses', id, ]).data(data),
+      },
+      delete: (id) => $app.api.delete([ 'projects/accesses*', id, ]),
     },
-    docs2: {
-      post(id, data) {
-        return $app.api.post([ 'projects*/files', id, ], data).mock(() => {
-          mocks.docs2.push({ id: mocks.docs2.length+1, name: data.name, desc: data.desc, file: '123', type: data.type, object: data.object, })
-        })
-      },
-    },
-    materials: {
-      get(id) {
-        return $app.api.get([ 'projects*/materials', id, ]).mock(() => {
-          return $n.reverse(mocks.materials)
-        })
-      },
-      post(data) {
-        return $app.api.post([ 'projects*/files', ], data).mock(() => {
-          mocks.materials.push({ id: mocks.materials.length+1, name: data.name, desc: data.desc, count: data.count, unit: data.unit, })
-        })
-      },
-    },
-    works: {
-      get(id) {
-        return $app.api.get([ 'projects/{}/files', id, ]).mock(() => {
-          return $n.reverse(mocks.works)
-        })
-      },
-      post(data) {
-        return $app.api.post([ 'projects*/files', ], data).mock(() => {
-          mocks.works.push({ id: mocks.works.length+1, name: data.name, type: data.type, object: data.object, })
-        })
-      },
+    documents: {
+      get: (projectId, type) => $app.api.get([ 'projects*/documents', projectId, ]),
     },
   }
   
-  journals = {
-    get: (id) => $app.api.get([ 'projects/journals*', id, ]),
-    getSpec: (projectId) => $app.api.get([ 'projects*/journals/spec', projectId, ]),
-    getColumns: (projectId, journalId, blockName) => $app.api.get([ 'projects*/journals**/columns', projectId, journalId, blockName, ]),
-    getBlock: (projectId, journalId, blockName) => $app.api.get([ 'projects*/journals**', projectId, journalId, blockName, ]),
-    records: {
-      get: (id, journalId, blockName) => $app.api.get([ 'projects/journals**/records*', journalId, blockName, id, ]),
-      create: (projectId, journalId, blockName, data) => $app.api.post([ 'projects*/journals**', projectId, journalId, blockName, ]).data(data),
+  works = {
+    get: (id) => $app.api.get([ 'works*', id, ]),
+    getByProject: (projectId) => $app.api.get([ 'projects*/works', projectId, ]),
+    create: (data) => $app.api.post([ 'works', ]).data(data),
+    supplies: {
+      get: (id) => $app.api.get([ 'works/supplies*', id, ]),
+      getByWork: (workId) => $app.api.get([ 'works*/supplies', workId, ]),
+      create: (workId, data) => $app.api.post([ 'works*/supplies', workId, ]).data(data),
+      edit: (id, data) => $app.api.patch([ 'works/supplies*', id, ]).data(data),
+    },
+    types: {
+      get: (id) => $app.api.get([ 'types*', id, ]).size(200),
     },
   }
   
@@ -150,8 +137,46 @@ export default class CustomApi {
     delete: (id) => $app.api.delete([ 'sections*', id, ]),
   }
   
-  types = {
-    get: (id) => $app.api.get([ 'types*', id, ]),
+  journals = {
+    get: (projectId, id) => $app.api.get([ 'projects*/journals*', projectId, id, ]),
+    records: {
+      get: (projectId, journalId, blockName, id) => $app.api.get([ 'projects*/journals***', projectId, journalId, blockName, id, ]),
+      getColumns: (projectId, journalId, blockName) => $app.api.get([ 'projects*/journals**/columns', projectId, journalId, blockName, ]),
+      getSigns: (projectId, journalId, id, blockName = 'records') =>
+        $app.api.get([ 'projects*/journals***/signs', projectId, journalId, blockName, id, ]),
+      create: (projectId, journalId, blockName, data) => $app.api.post([ 'projects*/journals**', projectId, journalId, blockName, ]).data(data),
+      sign: (projectId, journalId, id, data, blockName = 'records') =>
+        $app.api.post([ 'projects*/journals***/signs', projectId, journalId, blockName, id, ]).data(data),
+    },
+  }
+  
+  acts = {
+    get: (projectId, id) => $app.api.get([ 'projects*/acts*', projectId, id, ]).all(!id),
+    getTemplates: (projectId) => $app.api.get([ 'projects*/acts/templates', projectId, ]).all(),
+    create: (projectId, data) => $app.api.post([ 'projects*/acts', projectId, ]).data(data),
+    sign: (projectId, id, data) => $app.api.post([ 'projects*/acts*/sign', projectId, id, ]).data(data),
+    edit: (projectId, id, data) => $app.api.patch([ 'projects*/acts*', projectId, id, ]).data(data),
+    delete: (projectId, id) => $app.api.delete([ 'projects*/acts*', projectId, id, ]),
+  }
+  
+  data = {
+    get: (projectId, code) => $app.api.get([ 'projects*/data*', projectId, code, ]),
+  }
+  
+  documents = {
+    get: (id) => $app.api.get([ 'documents*', id, ]).all(),
+    create: (data) => $app.api.post([ 'documents', ]).data(data),
+    createVersion: (id, file) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      return $app.api.post([ 'documents*/version', id, ]).data(formData).config({ headers: { 'Content-Type': 'multipart/form-data', }, })
+    },
+    createPsd: (data) => $app.api.post([ 'documents/psd', ]).data(data),
+    edit: (id, data) => $app.api.patch([ 'documents*', id, ]).data(data),
+  }
+  
+  dictionaries = {
+    get: (name) => $app.api.get([ 'dictionaries*', name, ]).all(),
   }
   
   //

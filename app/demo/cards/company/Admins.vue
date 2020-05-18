@@ -6,13 +6,13 @@
     </n-divide>
     <n-table :data="admins" :columns="columns" :loading="$var('loading')">
       <template #tools="{item}">
-        <n-link :to="{ query: { modal: 'user', id: item.id, },}"><n-button icon="pen" flat round /></n-link>
+        <n-link :to="{ query: { modal: 'user', id: item.user.id, },}"><n-button icon="pen" flat round /></n-link>
         <n-button v-if="admins.length > 1" icon="minus" flat round @click="remove(item)" />
       </template>
     </n-table>
   
     <n-modal v-if="$var('add')" :loading="$var('loadingAdd')" @close="$var('add', false)">
-      <n-select :data="users" option-title="fullName" selected-title="fullName" item-value="id" :value.sync="newAdmin" title="Пользователь" />
+      <n-select :data="users" option-title="user.fullName" selected-title="user.fullName" item-value="id" :value.sync="newAdmin" title="Пользователь" />
       <n-button style="margin-top: 15px" color="primary" wide @click="submit">Добавить администратора</n-button>
     </n-modal>
   </div>
@@ -27,10 +27,10 @@ export default {
       newAdmin: null,
       admins: [],
       columns: [
-        { title: 'ФИО', name: 'fullName', },
-        { title: 'ИИН', name: 'iin', },
-        { title: 'E-mail', name: 'email', },
-        { title: 'Телефон', name: 'phone', },
+        { title: 'ФИО', name: 'user.fullName', },
+        { title: 'ИИН', name: 'user.iin', },
+        { title: 'E-mail', name: 'user.email', },
+        { title: 'Телефон', name: 'user.phone', },
         { title: 'Должность', name: 'position', },
         { title: '', name: 'tools', align: 'center', width: '100px', },
       ],
@@ -64,15 +64,16 @@ export default {
     },
     submit() {
       this.$var('loadingAdd', true)
-      $api.companies.admins.add(this.$route.query.id, this.newAdmin.id).then(() => {
+      $api.companies.admins.add(this.newAdmin.id).then(() => {
         this.load()
+      }).finally(() => {
         this.$var('add', false)
         this.$var('loadingAdd', false)
       })
     },
     remove(user) {
       this.$var('loading', true)
-      $api.companies.admins.remove(this.$route.query.id, user.id).then(() => {
+      $api.companies.admins.remove(user.user.id).then(() => {
         this.load()
       })
     },

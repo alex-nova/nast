@@ -3,6 +3,7 @@ module.exports = {
   publicPath: '/',
   outputDir: 'public',
   assetsDir: 'assets',
+  runtimeCompiler: true, // если надо компилить строку в vue компоненты
   
   pluginOptions: {
     nast: {

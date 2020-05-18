@@ -4,26 +4,26 @@
       <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
     </n-card>
     
-    <n-card>
+    <n-card :loading="$var('loadJournal')">
       <n-tabs :data="tabs" />
       <n-tabs-content class="content">
         <template #chapter1>
           <MainChapter1 :project="project" />
         </template>
         <template #chapter2>
-          <MainChapter2 />
+          <MainChapter2 :project="project" />
         </template>
         <template #chapter3>
-          <MainChapter3 />
+          <MainChapter3 :project="project" />
         </template>
         <template #chapter4>
-          <MainChapter4 :project="project" />
+          <MainChapter4 :project="project" :journal="journal" />
         </template>
         <template #chapter5>
           <MainChapter5 :project="project" />
         </template>
         <template #chapter6>
-          <MainChapter6 />
+          <MainChapter6 :project="project" />
         </template>
         <template #chapter7>
           <MainChapter7 />
@@ -63,6 +63,7 @@ export default {
   
     projects: [],
     project: undefined,
+    journal: null,
   }),
   watch: {
     project(value) {
@@ -84,8 +85,18 @@ export default {
         } else {
           this.project = this.projects[0]
         }
+        this.loadJournal()
       }).finally(() => {
         this.$var('loadProjects', false)
+      })
+    },
+    loadJournal() {
+      this.$var('loadJournal', true)
+      $api.journals.get(this.project.id, 'main').then((response) => {
+        this.journal = response.data.content
+        $app.router.setPage({ title: this.journal.title, })
+      }).finally(() => {
+        this.$var('loadJournal', false)
       })
     },
   },

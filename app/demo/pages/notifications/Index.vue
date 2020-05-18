@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     accept(projectId) {
-      $api.projects.partners.acceptInvite(projectId).then(() => {
+      $api.projects.partners.acceptInvite(projectId, { accepted: true, }).then(() => {
         this.$router.push({ name: 'projects.list', })
       })
     },

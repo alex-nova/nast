@@ -4,6 +4,10 @@ export default [
   { path: '', component: () => import('App'), children: [
     
     { path: '', component: () => import('layouts/main/Index'), children: [
+      { path: 'test', name: 'test', icon: 'tachometer-alt', component: () => import('pages/test/Index'), },
+      { path: 'test2', name: 'test2', icon: 'tachometer-alt', component: () => import('pages/test/Index2'), },
+      { path: 'card/project/1', name: 'card.project', icon: 'tachometer-alt', component: () => import('pages/cards/project/Index'), },
+      
       { path: '', name: 'index', icon: 'tachometer-alt', component: () => import('pages/index/Index'), },
       { path: 'user/:id', name: 'user', icon: 'user', parent: 'staff', component: () => import('pages/user/Index'), },
       { path: 'profile', name: 'profile', icon: 'user', parent: 'index', component: () => import('pages/profile/Index'), },
@@ -16,15 +20,9 @@ export default [
       
       { path: 'notifications', name: 'notifications.list', icon: 'bell', parent: 'index', component: () => import('pages/notifications/Index'), },
       
-      // { path: 'my/journals', name: 'journals.my', icon: 'user', parent: 'index', component: () => import('pages/journals/my/Index'), },
-      // { path: 'journals/:id', name: 'journals.index', icon: 'user', parent: 'journals.my', component: () => import('pages/journals/index/Index'), },
-      { path: 'journals/:id/add', name: 'records.create', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index'), },
-      { path: 'journals/:id/add1', name: 'records.create1', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index1'), },
-      { path: 'journals/:id/add2', name: 'records.create2', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index2'), },
-    
-      
-      { path: 'journal', name: 'journals.index', icon: 'book', parent: 'index', component: () => import('pages/journal/index/Index'), },
-      { path: 'journal/:id/project/:projectId', name: 'journals.spec', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/spec/Index'), },
+      { path: 'project/journal', name: 'journals.index', icon: 'book', parent: 'index', component: () => import('pages/journal/index/Index'), },
+      { path: 'project/:projectId?/journal/:journal', name: 'journals.spec', icon: 'book', parent: 'journals.index', component: () => import('pages/journal/index/spec/Index'), },
+      { path: 'project/:projectId/journal/:journal/record/add', name: 'records.create', icon: 'user', parent: 'journals.index', component: () => import('pages/records/create/Index'), },
     ], },
     
     { path: '', component: () => import('layouts/auth/Index'), children: [

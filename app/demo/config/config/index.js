@@ -1,5 +1,12 @@
 import pages from './pages'
 
+// todo delete
+import Vue from 'vue'
+import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-default.css'
+Vue.use(VueToast)
+//
+
 export default {
   app: {
     baseUrl: '/',
@@ -23,11 +30,27 @@ export default {
       if (!response.data.content) {
         response.data.content = response.data.data
       }
+      if (response.data.message) {
+        Vue.$toast.open({
+          message: response.data.message,
+          type: 'success',
+          position: 'top-right',
+          duration: 5000,
+        })
+      }
       return response
     },
     catch: (error) => {
-      if (error.response.status === 401) {
+      if (error.response?.status === 401) {
         $app.auth.logout()
+      } else {
+        const message = error.response?.data.message || 'Сервер недоступен'
+        Vue.$toast.open({
+          message: 'Ошибка: ' + message,
+          type: 'error',
+          position: 'top-right',
+          duration: 5000,
+        })
       }
       throw error
     },
@@ -49,13 +72,7 @@ export default {
       return [
         { name: 'index', },
         { name: 'company.list', },
-        // { name: 'company.group', icon: 'building', children: [
-        //   { name: 'company.info', },
-        //   { name: 'company.staff', },
-        //   { name: 'company.admins', },
-        // ], },
         { name: 'projects.list', },
-        // { name: 'journals.my', },
         { name: 'journals.index', },
         { name: 'notifications.list', },
       ]

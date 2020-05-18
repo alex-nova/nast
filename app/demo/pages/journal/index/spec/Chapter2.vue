@@ -10,7 +10,7 @@
         {{ $app.date.format(item.createdAt) }}
       </template>
       <template #tools="{item}">
-        <n-link :to="{query: { modal: 'record', id: item.id, journal: $route.params.id, type: 'records', }}"><n-button icon="eye" /></n-link>
+        <n-link :to="{query: { modal: 'record', id: item.id, projectId: project.id, journal: $route.params.journal, type: 'records', }}"><n-button icon="eye" /></n-link>
       </template>
     </n-table>
   </div>
@@ -19,27 +19,30 @@
 <script>
 export default {
   name: 'MainChapter4',
-  props: {
-    project: { type: Object, default: () => ({}), },
-  },
+  props: [ 'project', 'journal', ],
   data: () => ({
-    columns: [],
     data: [],
   }),
+  computed: {
+    columns() {
+      if (!this.journal.front) {
+        return []
+      } else {
+        return [
+          ...this.journal.front.index[2].content,
+          { name: 'tools', title: '', },
+        ]
+      }
+    },
+  },
   mounted() {
     this.load()
   },
   methods: {
     load() {
       this.$var('load', true)
-      $api.journals.getBlock(this.project.id, this.$route.params.id, 'records').then((response) => {
+      $api.journals.records.get(this.project.id, this.$route.params.journal, 'records').then((response) => {
         this.data = response.data.content
-        this.columns = [
-          { name: 'createdAt', title: 'Дата записи', },
-          ...response.data.columns.map(((i) => ({ name: i.name, title: i.title, }))),
-          { name: 'user', title: 'Автор записи', },
-          { name: 'tools', title: '', },
-        ]
       }).finally(() => {
         this.$var('load', false)
       })
@@ -47,9 +50,8 @@ export default {
     newRecord() {
       this.$router.push({
         name: 'records.create',
-        params: { id: this.$route.params.id, },
-        query: { project: this.project.id, }, }
-      )
+        params: { projectId: this.project.id, journal: this.$route.params.journal, },
+      })
     },
   },
 }

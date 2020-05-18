@@ -2,8 +2,14 @@
 export default {
   namespaced: true,
   state: {
-    project: null,
+    sectionTypes: {
+      project: 'Проект',
+      object: 'Объект',
+      section: 'Раздел',
+      construction: 'Конструкция',
+    },
     
+    project: null,
     loading: false,
   },
   

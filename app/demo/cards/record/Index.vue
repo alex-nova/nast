@@ -5,16 +5,18 @@
       <template #body>
         <div class="body">
           <!-- TODO !!! -->
-          <div class="object">{{ $store.state.app.project.name }}</div>
+          <div class="object" v-if="$store.state.app.project">{{ $store.state.app.project.name }}</div>
           <!--          <div>Вид работ: Бетонные работы</div>-->
-          <div>Дата: {{ $app.date.format($form.get('createdAt'), 'date') }}</div>
+          <div>Дата: {{ $app.date.format($form.get('createdAt')) }}</div>
         </div>
       </template>
       <template #tab.info>
         <n-items>
-          <n-input v-for="field in fields" :key="field.id" :title="field.title" v-bind="$form.input(field.name)" text />
+          <template v-if="journal.front">
+            <n-input v-for="field in journal.front.create" :key="field.name" :title="field.title" v-bind="$form.input(field.name)" text />
+          </template>
           
-          <n-form-item v-if="journal.type === 'main'" title="Материалы" active>
+          <n-form-item v-if="journal.types === 'main'" title="Материалы" active>
             <n-table class="table" :columns="columns" :data="materials">
               <template #count="{item}">
                 {{ item.count + ' ' + item.unit }}
@@ -23,56 +25,8 @@
           </n-form-item>
         </n-items>
       </template>
-      <template #tab.spec1>
-        <n-items>
-          <n-form-item title="Руководитель, Боранбаев М.С." active>
-            <div class="success">Подписано</div>
-          </n-form-item>
-          <n-form-item title="Начальник, Комбатуров С.Т." active>
-            <div>Ожидает проверки</div>
-          </n-form-item>
-        </n-items>
-      </template>
       <template #tab.control>
-        <n-card>
-          <n-items>
-            <div v-if="$app.auth.user().iin === 123456789012" style="float: right">
-              <n-link :to="{name: 'records.create', params: {id:1},}" wide><n-button>Создать запись об устранении</n-button></n-link>
-            </div>
-            <n-form-item title="Статус" active inline>
-              <div class="error">Не решен</div>
-            </n-form-item>
-            <n-input title="Выявленные отступления от проектно-сметной документации" value="Неправильно сделано" text />
-            <n-input title="Указания об устранении выявленных отступлений или нарушений и сроки их выполнения" value="Надо переделать" text />
-            <n-form-item title="Фото/видео материалы" active>
-              <div class="images">
-                <n-image mock />
-                <n-image mock />
-              </div>
-            </n-form-item>
-          </n-items>
-          <div class="info">Технический надзор, 10 февраля 2020</div>
-        </n-card>
-        <n-card>
-          <n-items>
-            <n-form-item title="Статус" active>
-              <div class="success">Решен</div>
-            </n-form-item>
-            <n-input title="Выявленные отступления от проектно-сметной документации" value="Неправильно сделано" text />
-            <n-input title="Указания об устранении выявленных отступлений или нарушений и сроки их выполнения" value="Надо переделать" text />
-            <n-form-item title="Фото/видео материалы" active>
-              <div class="images">
-                <n-image mock />
-                <n-image mock />
-                <n-image mock />
-              </div>
-            </n-form-item>
-            <n-form-item title="Ответ" active>
-              <n-link :to="{ name: 'journals.index', params: { id: 1, }, }">Запись в журнале</n-link>
-            </n-form-item>
-          </n-items>
-          <div class="info">Авторский надзор, 8 февраля 2020</div>
-        </n-card>
+        <block-signs :project-id="$route.query.projectId" :journal-id="$route.query.journal" :record-id="$route.query.id" />
       </template>
       <template #footer="{tab}">
         <n-divide>
@@ -84,8 +38,11 @@
 </template>
 
 <script>
+import BlockSigns from './BlockSigns'
+
 export default {
   name: 'CardRecord',
+  components: { BlockSigns, },
   data() {
     return {
       journal: {},
@@ -93,8 +50,7 @@ export default {
       fields: [],
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
-        { name: 'control', title: 'Замечания', },
-        { name: 'spec1', title: 'Подписи', },
+        { name: 'control', title: 'Проверяющие', },
       ],
       materials: [
         { id: 1, name: 'Бетон', unit: 'м3', count: 10, desc: '', },
@@ -122,8 +78,8 @@ export default {
       this.$var('load', true)
       const query = this.$route.query
       const promises = [
-        $api.journals.records.get(query.id, query.journal, query.type),
-        $api.journals.get(query.journal),
+        $api.journals.records.get(query.projectId, query.journal, query.type, query.id),
+        $api.journals.get(query.projectId, query.journal),
       ]
       Promise.all(promises).then((result) => {
         this.$form.init(result[0].data.content)
@@ -147,26 +103,6 @@ export default {
     }
   }
   
-  .error {
-    color: var(--danger);
-  }
-  .success {
-    color: var(--success);
-  }
-  
-  .images {
-    & > div {
-      display: inline-block;
-      margin-right: 10px;
-      max-width: 100px;
-      max-height: 100px;
-    }
-  }
-  .info {
-    margin-top: 10px;
-    font-size: .8em;
-    opacity: .9;
-  }
 
 }
 </style>

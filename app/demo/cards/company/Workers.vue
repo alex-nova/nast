@@ -6,11 +6,11 @@
     </n-divide>
     <n-table :data="staff" :columns="columns" :loading="$var('loading')">
       <template #tools="{item}">
-        <n-link :to="{ query: { modal: 'user', id: item.id, },}"><n-button icon="pen" flat round /></n-link>
+        <n-link :to="{ query: { modal: 'user', id: item.user.id, },}"><n-button icon="pen" flat round /></n-link>
       </template>
     </n-table>
     
-    <CardCompanyInvite v-if="$var('add')" :company-id="companyId" @close="$var('add', false)" />
+    <CardCompanyInvite v-if="$var('add')" :company-id="companyId" @close="$var('add', false)" @submit="load" />
   </div>
 </template>
 
@@ -25,10 +25,10 @@ export default {
     return {
       staff: [],
       columns: [
-        { title: 'ФИО', name: 'fullName', },
-        { title: 'ИИН', name: 'iin', },
-        { title: 'E-mail', name: 'email', },
-        { title: 'Телефон', name: 'phone', },
+        { title: 'ФИО', name: 'user.fullName', },
+        { title: 'ИИН', name: 'user.iin', },
+        { title: 'E-mail', name: 'user.email', },
+        { title: 'Телефон', name: 'user.phone', },
         { title: 'Должность', name: 'position', },
         { title: '', name: 'tools', align: 'center', width: '100px', },
       ],
@@ -47,13 +47,16 @@ export default {
     })
   },
   mounted() {
-    this.$var('loading', true)
-    $api.companies.workers.get(this.$route.query.id).then((response) => {
-      this.staff = response.data.content
-      this.$var('loading', false)
-    })
+    this.load()
   },
   methods: {
+    load() {
+      this.$var('loading', true)
+      $api.companies.workers.get(this.$route.query.id).then((response) => {
+        this.staff = response.data.content
+        this.$var('loading', false)
+      })
+    },
     submit(e) {
       if (this.$form.check()) {
         this.$var('loadingAdd', true)

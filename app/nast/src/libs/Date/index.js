@@ -28,7 +28,7 @@ class Date extends DateInterface {
    * @param {string} type
    * @return {string}
    */
-  format(datetime, type = 'datetime') {
+  format(datetime, type = 'date') {
     if (!datetime) {
       return ''
     }

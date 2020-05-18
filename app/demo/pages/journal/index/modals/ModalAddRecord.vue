@@ -24,7 +24,7 @@ export default {
   methods: {
     load(params) {
       this.$var('load', true)
-      $api.types.get().all(true).then((response) => {
+      $api.works.types.get().then((response) => {
         this.workTypes = response.data.content
       }).finally(() => {
         this.$var('load', false)

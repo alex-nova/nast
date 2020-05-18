@@ -6,10 +6,10 @@
     </n-divide>
     <n-table :data="data" :columns="columns" :loading="$var('loading')">
       <template #startedAt="{item}">
-        {{ $app.date.format(item.startedAt, 'date') }}
+        {{ $app.date.format(item.startedAt) }}
       </template>
       <template #endedAt="{item}">
-        {{ $app.date.format(item.endedAt, 'date') }}
+        {{ $app.date.format(item.endedAt) }}
       </template>
       <template #tools="{item}">
         <a :href="item.src" target="_blank">скачать</a>

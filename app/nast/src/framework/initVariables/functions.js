@@ -103,19 +103,20 @@ const reduceDeep = (container, callback, accumulator, childrenName = 'children',
   }, accumulator)
 }
 
-const objectPromiseAll = (object) => {
-  const promisedProperties = []
-  const objectKeys = Object.keys(object)
+const promiseObjects = (array, key = 'promise') => {
+  const promises = []
   
-  objectKeys.forEach((key) => promisedProperties.push(object[key]))
+  array.forEach((object) => promises.push(object[key]))
   
-  return Promise.all(promisedProperties)
-    .then((resolvedValues) => {
-      return resolvedValues.reduce((resolvedObject, property, index) => {
-        resolvedObject[objectKeys[index]] = property
-        return resolvedObject
-      }, object)
-    })
+  return Promise.all(promises).then((responses) => {
+    return responses.reduce((result, response, i) => {
+      result.push({
+        ...array[i],
+        response,
+      })
+      return result
+    }, [])
+  })
 }
 
 const isPromise = (obj) => {
@@ -165,6 +166,6 @@ export default () => {
     reduceDeep,
     eachDeep,
     isPromise,
-    objectPromiseAll,
+    promiseObjects,
   }
 }

@@ -6,7 +6,7 @@
     </div>
     <n-table :columns="columns" :data="data">
       <template #tools="{item}">
-        <n-link :to="{name:'journals.spec', params:{ id: item.id, projectId: project.id, }}"><n-button icon="eye" /></n-link>
+        <n-link :to="{name:'journals.spec', params:{ journal: item.name, projectId: project.id, }}"><n-button icon="eye" /></n-link>
       </template>
     </n-table>
   </div>
@@ -32,7 +32,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.journals.getSpec(this.project.id).then((response) => {
+      $api.journals.get(this.project.id).filters({ tag: 'spec', }).then((response) => {
         this.data = response.data.content
       }).finally(() => {
         this.$var('load', false)

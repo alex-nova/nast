@@ -6,7 +6,7 @@
       <n-card v-if="type === 'company'" class="auth-form" :loading="$var('loading')">
         <div slot="header" class="form-title">Компания</div>
         <div class="content">
-          <n-input title="Название компании" v-bind="$form.input('companyName')" />
+          <n-input title="Название компании" v-bind="$form.input('companyTitle')" />
           <n-input title="ИИН/БИН" v-bind="$form.input('bin')" />
         </div>
       </n-card>
@@ -14,7 +14,7 @@
       <n-card class="auth-form" :loading="$var('loading')">
         <div v-if="type === 'company'" slot="header" class="form-title">Ответственное лицо</div>
         <div class="content">
-          <n-input v-if="company" title="Компания" :value="company.name" text />
+          <n-input v-if="company" title="Компания" :value="company.title" text />
           <n-input v-if="company" title="Должность" :value="company.position" text />
           <n-input title="ИИН" v-bind="$form.input('iin')" />
           <n-input title="E-mail" v-bind="$form.input('email')" />
@@ -79,22 +79,23 @@ export default {
         this.type = content.type
         
         if (this.type === 'company') {
-          inputs['bin'] = ''
-          inputs['companyName'] = ''
+          inputs['bin'] = content.ibin
+          inputs['companyTitle'] = content.title
           inputs['position'] = ''
           inputs['email'] = content.email
           
           rules['bin'] = [ 'required', ]
-          rules['companyName'] = [ 'required', ]
+          rules['companyTitle'] = [ 'required', ]
           rules['position'] = [ 'required', ]
         } else {
           const content = response.data.content
           this.company = {
-            name: content.companyName,
+            title: content.companyTitle,
             position: content.position,
           }
           inputs['email'] = content.email
           inputs['iin'] = content.ibin
+          inputs['fullName'] = content.title
         }
         
         this.$form.init(inputs)

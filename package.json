@@ -19,6 +19,7 @@
     "vue": "^2.6.10",
     "vue-meta": "^2.3.1",
     "vue-router": "^3.0.6",
+    "vue-toast-notification": "^0.2.0",
     "vuetify-datetime-picker": "^2.1.1",
     "vuex": "^3.1.1",
     "vuex-persist": "^2.2.0",

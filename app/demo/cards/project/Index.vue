@@ -14,34 +14,37 @@
       </template>
       <template #tab.info>
         <n-items vertical>
-          <n-input title="Имя" v-bind="$form.input('name')" />
+          <n-input title="Имя" v-bind="$form.input('title')" />
           <n-input title="Адрес" v-bind="$form.input('address')" />
           <n-input title="Описание" v-bind="$form.input('description')" />
           <!--      <n-select :data="users" option-title="fullName" selected-title="fullName" item-value="id" :value.sync="user" title="Ответственный" :text="!form.editable()" />-->
           <n-input title="Дата начала" v-bind="$form.input('startedAt')" />
           <n-input title="Предполагаемая дата окончания" v-bind="$form.input('endedAt')" />
         </n-items>
+        <tab-main-users v-if="model.id" :project="model" />
       </template>
+      
       <template #tab.structure>
-        <tab-structure :model="model" :form="$form" />
+        <tab-structure :project="model" :form="$form" />
       </template>
+      <template #tab.psd>
+        <tab-psd :project="model" />
+      </template>
+      <template #tab.partners>
+        <tab-partners :project="model" />
+      </template>
+      <template #tab.participants>
+        <tab-participants :project="model" />
+      </template>
+      <template #tab.works>
+        <tab-works :project="model" />
+      </template>
+      
       <template #tab.startingDocs>
         <tab-starting-docs :model-id="model.id" />
       </template>
       <template #tab.projectDocs>
         <tab-project-docs :model-id="model.id" />
-      </template>
-      <template #tab.mainUsers>
-        <tab-main-users :model-id="model.id" />
-      </template>
-      <template #tab.contractors>
-        <tab-contractors :project="model" />
-      </template>
-      <template #tab.jobs>
-        <tab-jobs />
-      </template>
-      <template #tab.materials>
-        <tab-materials />
       </template>
       <template #footer="{tab}">
         <n-divide>
@@ -59,31 +62,33 @@
 </template>
 
 <script>
-import TabStructure from './structure/Index'
+import TabStructure from './tabs/structure/Index'
 import TabStartingDocs from './StartingDocs'
 import TabProjectDocs from './ProjectDocs'
-import TabJobs from './Jobs'
-import TabMaterials from './Materials'
-import TabMainUsers from './mainUsers/Index'
-import TabContractors from './contractors/Index'
+import TabWorks from './tabs/works/Index'
+import TabMainUsers from './tabs/mainUsers/Index'
+import TabPartners from './tabs/partners/Index'
+import TabParticipants from './tabs/participants/Index'
+import TabPsd from './tabs/psd/Index'
 
 export default {
   name: 'CardProject',
-  components: { TabContractors, TabMainUsers, TabMaterials, TabJobs, TabProjectDocs, TabStartingDocs, TabStructure, },
+  components: { TabPsd, TabParticipants, TabPartners, TabMainUsers, TabWorks, TabProjectDocs, TabStartingDocs, TabStructure, },
   data() {
     return {
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
-        { name: 'mainUsers', title: 'Ответственные лица', },
-        { name: 'structure', title: 'Структура', },
+        // { name: 'mainUsers', title: 'Ответственные лица', },
+        { name: 'structure', title: 'Структура, работы и материалы', },
+        // { name: 'works', title: 'Работы', },
         // { name: 'startingDocs', title: 'РД', },
-        // { name: 'projectDocs', title: 'ПСД', },
+        { name: 'psd', title: 'Документация', },
         // { name: 'documents', title: 'Документы', },
         // { name: 'pj', title: 'ЖПР', },
         // { name: 'responsible', title: 'Ответственные лица', },
-        { name: 'contractors', title: 'Подряд', },
-        { name: 'jobs', title: 'Работы', },
-        { name: 'materials', title: 'Материалы', },
+        { name: 'partners', title: 'Делегирование', },
+        { name: 'participants', title: 'Мои сотрудники', },
+        // { name: 'materials', title: 'Материалы', },
       ],
       model: {},
     }
@@ -105,8 +110,8 @@ export default {
       this.$var('loading', true)
       $api.projects.get(this.$route.query.id).then((response) => {
         this.model = response.data.content
-        this.model.startedAt = $app.date.format(this.model.startedAt, 'date')
-        this.model.endedAt = $app.date.format(this.model.endedAt, 'date')
+        this.model.startedAt = $app.date.format(this.model.startedAt)
+        this.model.endedAt = $app.date.format(this.model.endedAt)
         this.$form.init(this.model, false)
         this.$var('loading', false)
       })
@@ -116,8 +121,8 @@ export default {
         this.$var('loading', true)
         $api.projects.edit(this.$route.query.id, this.$form.diff()).then((response) => {
           this.model = response.data.content
-          this.model.startedAt = $app.date.format(this.model.startedAt, 'date')
-          this.model.endedAt = $app.date.format(this.model.endedAt, 'date')
+          this.model.startedAt = $app.date.format(this.model.startedAt)
+          this.model.endedAt = $app.date.format(this.model.endedAt)
           this.$form.init(this.model, false)
           this.$var('loading', false)
           this.$d.reloadTag('projects')

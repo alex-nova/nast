@@ -16,7 +16,7 @@
       <form @submit="create">
         <n-items>
           <n-input title="БИН" v-bind="$form.input('bin')" />
-          <n-input title="Название" v-bind="$form.input('name')" />
+          <n-input title="Название" v-bind="$form.input('title')" />
           <n-input title="Описание" v-bind="$form.input('description')" />
           <n-input title="Адрес" v-bind="$form.input('address')" />
           <n-input title="Моя должность в компании" v-bind="$form.input('position')" />
@@ -33,7 +33,7 @@ export default {
   data: () => ({
     columns: [
       { name: 'bin', title: 'БИН', },
-      { name: 'name', title: 'Название', },
+      { name: 'title', title: 'Название', },
       { name: 'description', title: 'Описание', },
       { name: 'address', title: 'Адрес', },
       { name: 'tools', title: '', },
@@ -50,14 +50,14 @@ export default {
   created() {
     this.$form.init({
       bin: '',
-      name: '',
+      title: '',
       position: '',
       description: '',
       address: '',
     })
     this.$form.rules({
       bin: [ 'required', ],
-      name: [ 'required', ],
+      title: [ 'required', ],
       position: [ 'required', ],
     })
   },

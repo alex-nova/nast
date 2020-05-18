@@ -273,7 +273,7 @@ export default class ApiObject {
    * @param {Boolean} tree
    * @return {ApiObject}
    */
-  tree(tree) {
+  tree(tree = true) {
     this._tree = tree
     return this
   }
@@ -282,7 +282,7 @@ export default class ApiObject {
    * @param {Boolean} all
    * @return {ApiObject}
    */
-  all(all) {
+  all(all = true) {
     this._all = all
     return this
   }
@@ -353,10 +353,20 @@ export default class ApiObject {
     
     // TODO fields
     // TODO tree
+    
     if (this._all) {
       filters.push('all')
     }
-    // TODO query
+  
+    if (this._query) {
+      const query = $n.reduce(this._query, (result, value, name) => {
+        if (value !== undefined) {
+          result.push(`${name}=${value}`)
+        }
+        return result
+      }, []).join('&')
+      if (query) filters.push(query)
+    }
     
     if (filters.length) {
       return '?' + filters.join('&')
