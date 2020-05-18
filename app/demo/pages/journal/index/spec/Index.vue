@@ -1,17 +1,16 @@
 <template>
   <div class="page-journal">
-    <!--    <n-card>-->
-    <!--      <n-select title="Проект" :data="projects" :value.sync="project" inline />-->
-    <!--    </n-card>-->
-    
+    <n-card :loading="$var('loadProjects')">
+      <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
+    </n-card>
     <n-card :loading="$var('loadJournal')">
       <n-tabs :data="tabs" />
-      <n-tabs-content v-if="project.id" class="content">
+      <n-tabs-content class="content">
         <template #chapter1>
           <MainChapter1 :project="project" />
         </template>
         <template #chapter2>
-          <MainChapter2 :project="project" />
+          <MainChapter2 :project="project" :journal="journal" />
         </template>
         <template #info>
           <MainInfo />
@@ -37,27 +36,41 @@ export default {
     tabs: [
       { name: 'chapter1', title: 'Общие сведения', },
       { name: 'chapter2', title: 'Записи', },
-      { name: 'info', title: 'Правила', },
-      { name: 'signs', title: 'Подписи', },
+      // { name: 'info', title: 'Правила', },
+      // { name: 'signs', title: 'Подписи', },
     ],
-    project: {},
+    journal: null,
+    project: null,
+    projects: [],
   }),
+  watch: {
+    project(value) {
+      if (value) {
+        $app.store.mutation('app.project', this.project)
+      }
+    },
+  },
   created() {
-    this.loadProject()
-    this.loadJournal()
+    this.loadProjects()
   },
   methods: {
-    loadProject() {
-      this.$var('loadJournal', true)
-      $api.projects.get(this.$route.params.projectId).then((response) => {
-        this.project = response.data.content
+    loadProjects() {
+      this.$var('loadProjects', true)
+      $api.my.projects().then((response) => {
+        this.projects = response.data.content
+        if ($app.store.state('app.project')) {
+          this.project = $app.store.state('app.project')
+        } else {
+          this.project = this.projects[0]
+        }
+        this.loadJournal()
       }).finally(() => {
-        this.$var('loadJournal', false)
+        this.$var('loadProjects', false)
       })
     },
     loadJournal() {
       this.$var('loadJournal', true)
-      $api.journals.get(this.$route.params.id).then((response) => {
+      $api.journals.get(this.project.id, this.$route.params.journal).then((response) => {
         this.journal = response.data.content
         $app.router.setPage({ title: this.journal.title, })
       }).finally(() => {
