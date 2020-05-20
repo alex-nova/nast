@@ -4,7 +4,6 @@
     <n-form @submit="submit">
       <n-items>
         <n-input title="ИИН" v-bind="$form.input('iin')" />
-        <n-input title="ФИО" v-bind="$form.input('fullName')" />
         <n-input title="Должность" v-bind="$form.input('position')" />
         <n-input title="E-mail" v-bind="$form.input('email')" />
         <n-button color="primary" wide type="submit">Отправить приглашение</n-button>
@@ -22,14 +21,12 @@ export default {
       iin: '',
       email: '',
       position: '',
-      fullName: '',
     })
   },
   methods: {
     submit() {
       this.$var('loading', true)
       $api.companies.workers.invite(this.companyId, this.$form.get()).then((response) => {
-        this.$emit('submit')
         this.$emit('close')
       }).finally(() => {
         this.$var('loading', false)

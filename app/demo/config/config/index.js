@@ -41,12 +41,11 @@ export default {
       return response
     },
     catch: (error) => {
-      if (error.response?.status === 401) {
+      if (error.response.status === 401) {
         $app.auth.logout()
       } else {
-        const message = error.response?.data.message || 'Сервер недоступен'
         Vue.$toast.open({
-          message: 'Ошибка: ' + message,
+          message: 'Ошибка: ' + error.response.data.message,
           type: 'error',
           position: 'top-right',
           duration: 5000,

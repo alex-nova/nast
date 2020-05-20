@@ -12,7 +12,7 @@
     </n-table>
   
     <n-modal v-if="$var('add')" :loading="$var('loadingAdd')" @close="$var('add', false)">
-      <n-select :data="users" option-title="user.fullName" selected-title="user.fullName" item-value="id" :value.sync="newAdmin" title="Пользователь" />
+      <n-select :data="users" option-title="fullName" selected-title="fullName" item-value="id" :value.sync="newAdmin" title="Пользователь" />
       <n-button style="margin-top: 15px" color="primary" wide @click="submit">Добавить администратора</n-button>
     </n-modal>
   </div>
@@ -64,16 +64,15 @@ export default {
     },
     submit() {
       this.$var('loadingAdd', true)
-      $api.companies.admins.add(this.newAdmin.id).then(() => {
+      $api.companies.admins.add(this.$route.query.id, this.newAdmin.id).then(() => {
         this.load()
-      }).finally(() => {
         this.$var('add', false)
         this.$var('loadingAdd', false)
       })
     },
     remove(user) {
       this.$var('loading', true)
-      $api.companies.admins.remove(user.user.id).then(() => {
+      $api.companies.admins.remove(this.$route.query.id, user.user.id).then(() => {
         this.load()
       })
     },

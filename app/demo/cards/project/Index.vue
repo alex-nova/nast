@@ -14,7 +14,7 @@
       </template>
       <template #tab.info>
         <n-items vertical>
-          <n-input title="Имя" v-bind="$form.input('title')" />
+          <n-input title="Имя" v-bind="$form.input('name')" />
           <n-input title="Адрес" v-bind="$form.input('address')" />
           <n-input title="Описание" v-bind="$form.input('description')" />
           <!--      <n-select :data="users" option-title="fullName" selected-title="fullName" item-value="id" :value.sync="user" title="Ответственный" :text="!form.editable()" />-->

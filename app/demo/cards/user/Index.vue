@@ -1,7 +1,7 @@
 <template>
   <div class="card-user">
     <n-modal-card :tabs="tabs" name="user" :loading="$var('loading')">
-      <template #header>Карточка пользователя</template>
+      <template #header>Карточка человека</template>
       <template #body>
         <n-divide class="body">
           <n-items class="content">

@@ -4,7 +4,7 @@
     <n-items>
       <n-form-item v-for="(title, role) in roles" :key="role" :title="title">
         <template v-if="data[role] && data[role].partner">
-          {{ data[role].partner.company.title }}
+          {{ data[role].partner.company.name }}
           <span style="opacity: .9; font-size: .9em;">[{{ data[role].partner.company.bin }}]</span>
         </template>
         <template v-else>

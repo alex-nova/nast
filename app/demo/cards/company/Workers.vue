@@ -10,7 +10,7 @@
       </template>
     </n-table>
     
-    <CardCompanyInvite v-if="$var('add')" :company-id="companyId" @close="$var('add', false)" @submit="load" />
+    <CardCompanyInvite v-if="$var('add')" :company-id="companyId" @close="$var('add', false)" />
   </div>
 </template>
 
@@ -47,16 +47,13 @@ export default {
     })
   },
   mounted() {
-    this.load()
+    this.$var('loading', true)
+    $api.companies.workers.get(this.$route.query.id).then((response) => {
+      this.staff = response.data.content
+      this.$var('loading', false)
+    })
   },
   methods: {
-    load() {
-      this.$var('loading', true)
-      $api.companies.workers.get(this.$route.query.id).then((response) => {
-        this.staff = response.data.content
-        this.$var('loading', false)
-      })
-    },
     submit(e) {
       if (this.$form.check()) {
         this.$var('loadingAdd', true)

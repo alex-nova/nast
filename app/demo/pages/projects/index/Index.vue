@@ -11,7 +11,7 @@
             <n-image mock />
           </div>
           <div class="content">
-            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="title">{{ project.title }}</n-link>
+            <n-link :to="{ query: { modal: 'project', id: project.id, },}" class="name">{{ project.name }}</n-link>
             <div class="address">{{ project.address }}</div>
             <div class="description"><div>{{ project.description }}</div></div>
             <div class="dates">
@@ -66,7 +66,7 @@ export default {
         flex-direction: column;
         width: 100%;
         
-        .title {
+        .name {
           font-weight: 500;
           font-size: 1.2em;
         }

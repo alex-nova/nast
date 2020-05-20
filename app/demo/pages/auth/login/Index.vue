@@ -4,11 +4,11 @@
       <h1>Вход в систему</h1>
     </div>
     <n-card class="auth-form" :loading="$var('loading')">
-      <n-form class="content" @submit="submit">
+      <form class="content" @submit="submit">
         <n-input title="ИИН" v-bind="$form.input('login')" />
         <n-input title="Пароль" type="password" v-bind="$form.input('password')" />
         <n-button color="primary" type="submit" wide>Войти</n-button>
-      </n-form>
+      </form>
     </n-card>
     <div class="links">
       <template v-for="(link, i) in links">
@@ -39,7 +39,8 @@ export default {
     })
   },
   methods: {
-    submit() {
+    submit(e) {
+      e.preventDefault()
       if (this.$form.check()) {
         this.$var('loading', true)
         $api.auth.login(this.$form.get()).then((response) => {

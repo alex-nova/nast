@@ -3,7 +3,7 @@
     <n-loader :loading="$var('loading')" />
     <n-list :data="structure">
       <template #item="{ item, }">
-        <span class="type">[{{ getTypeTitle(item._model, item.type) }}]</span> {{ item.title }}
+        <span class="type">[{{ getTypeTitle(item._model, item.type) }}]</span> {{ item.name }}
       </template>
       <template #tools="{ item, }">
         <n-dropdown :data="getTools(item)" side="right" @update:value="(v) => toolsClick(v, item)">
@@ -58,16 +58,6 @@ export default {
         return 'Проект'
       } else if (modelType === 'work') {
         return 'Работа'
-      } else if (modelType === 'supply') {
-        const types = {
-          material: 'Материал',
-          equipment: 'Оборудование',
-          construction: 'Конструкция',
-          shipping: 'Перевозка груза',
-          mechanism: 'Механизм',
-          work: 'Затраты труда строителей',
-        }
-        return types[type]
       } else {
         const types = {
           object: 'Объект',

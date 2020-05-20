@@ -1,47 +1,12 @@
+import mocks from './mocks'
 
 /**
  *
  */
 export default class CustomApi {
-  /**
-   * Companies
-   */
-  companies = {
-    get: (id) => $app.api.get([ 'companies*', id, ]),
-    create: (data) => $app.api.post('companies').data(data),
-    edit: (id, data) => $app.api.put([ 'companies*', id, ]).data(data),
-    
-    workers: {
-      get: (id) => $app.api.get([ 'companies*/workers', id, ]),
-      getSimple: (id) => $app.api.get([ 'companies*/simple', id, ]),
-      invite: (companyId, data) => $app.api.post([ 'companies*/workers', companyId, ]).data(data),
-    },
-    admins: {
-      get: (id) => $app.api.get([ 'companies*/admins', id, ]),
-      add: (id) => $app.api.post([ 'companies/workers*/admin', id, ]),
-      remove: (id) => $app.api.delete([ 'companies/workers*/admin', id, ]),
-    },
+  temp = {
+    myAdminCompanies: () => $app.api.get([ 'companies/myAdmin', ]),
   }
-  
-  
-  /**
-   * My
-   */
-  my = {
-    companies: () => $app.api.get('my/companies'),
-    companiesAdmin: () => $app.api.get('my/companies/admin'), // todo temp
-    projects: () => $app.api.get('my/projects'),
-    structureTree: (projectId, withWorks) => $app.api.get([ 'my/projects*/structure/tree', projectId, ]).query({ works: withWorks, }),
-    partners: (projectId) => $app.api.get([ 'my/projects*/partners', projectId, ]),
-    participants: (projectId) => $app.api.get([ 'my/projects*/participants', projectId, ]),
-    signers: (projectId) => $app.api.get([ 'my/projects*/signers', projectId, ]),
-    notifications: () => $app.api.get('my/notifications'),
-  }
-  
-  
-  /**
-   * Temp
-   */
   
   auth = {
     invite: {
@@ -70,6 +35,16 @@ export default class CustomApi {
     delete: (id) => $app.api.delete([ 'files*', id, ]),
   }
   
+  my = {
+    structureTree: (projectId, withWorks) => $app.api.get([ 'my/projects*/structure/tree', projectId, ]).query({ works: withWorks, }),
+    partners: (projectId) => $app.api.get([ 'my/projects*/partners', projectId, ]),
+    participants: (projectId) => $app.api.get([ 'my/projects*/participants', projectId, ]),
+    signers: (projectId) => $app.api.get([ 'my/projects*/signers', projectId, ]),
+    companies: () => $app.api.get('my/companies'),
+    projects: () => $app.api.get('my/projects'),
+    notifications: () => $app.api.get('my/notifications'),
+  }
+  
   users = {
     get: (id) => $app.api.get([ 'users*', id, ]),
     create: (data) => $app.api.post('users').data(data),
@@ -79,6 +54,22 @@ export default class CustomApi {
     documents: {
       get: (userId, id) => $app.api.get([ 'users*/documents*', userId, id, ]),
       create: (userId, data) => $app.api.post([ 'users*/documents', userId, ]).data(data),
+    },
+  }
+  
+  companies = {
+    get: (id) => $app.api.get([ 'companies*', id, ]),
+    create: (data) => $app.api.post('companies').data(data),
+    edit: (id, data) => $app.api.put([ 'companies*', id, ]).data(data),
+    workers: {
+      get: (id) => $app.api.get([ 'companies*/workers', id, ]),
+      getSimple: (id) => $app.api.get([ 'companies*/noadmins', id, ]),
+      invite: (companyId, data) => $app.api.post([ 'companies*/workers/invite', companyId, ]).data(data),
+    },
+    admins: {
+      get: (id) => $app.api.get([ 'companies*/admins', id, ]),
+      add: (companyId, userId) => $app.api.post([ 'companies*/admins/*', companyId, userId, ]),
+      remove: (companyId, userId) => $app.api.delete([ 'companies*/admins/*', companyId, userId, ]),
     },
   }
   

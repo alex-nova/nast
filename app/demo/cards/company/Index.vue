@@ -7,7 +7,7 @@
           <n-items class="content">
             <n-image class="avatar" mock alt="avatar" round />
             <div>
-              <div>{{ model.title }}</div>
+              <div>{{ model.name }}</div>
             </div>
           </n-items>
         </n-divide>
@@ -15,7 +15,7 @@
       <template #tab.info>
         <n-items>
           <n-input title="БИН" v-bind="$form.input('bin')" text />
-          <n-input title="Название" v-bind="$form.input('title')" />
+          <n-input title="Название" v-bind="$form.input('name')" />
           <n-input title="Описание" v-bind="$form.input('description')" />
           <n-input title="Адрес" v-bind="$form.input('address')" />
         </n-items>

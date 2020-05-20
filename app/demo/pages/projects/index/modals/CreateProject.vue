@@ -36,7 +36,7 @@ export default {
   methods: {
     loadCompanies() {
       this.$var('loading', true)
-      return $api.my.companiesAdmin().then((response) => {
+      return $api.temp.myAdminCompanies().then((response) => {
         this.companies = response.data.content
       }).finally(() => {
         this.$var('loading', false)
