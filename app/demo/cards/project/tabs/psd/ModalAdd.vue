@@ -3,23 +3,16 @@
     <h3>Добавить документ</h3>
     <n-form @submit="submit">
       <n-items>
-        <n-select title="Тип" :data="types" :value.sync="type" />
-        <template v-if="type.value === 'permit'">
-          <n-select title="Тип документа" :data="permitTypes" :value.sync="permitType"
-                    item-value="id" option-title="title" selected-title="title" />
-        </template>
-        <template v-if="type.value === 'psd'">
-          <n-select title="Тип документа" :data="psdTypes" :value.sync="psdType"
-                    item-value="id" option-title="title" selected-title="title" />
-        </template>
-        <template v-else-if="type.value === 'figure'">
+        <n-select title="Тип" :data="types" :value.sync="type" item-value="id" option-title="title" selected-title="title" />
+        
+        <template v-if="type.name === 'figure'">
           <n-select title="Классификатор" :data="classes" :value.sync="selectedClass"
                     item-value="id" option-title="title" selected-title="title" />
           <n-input title="Шифр" v-bind="$form.input('code')" />
           <n-select title="Проектная компания" :data="projectors" :value.sync="projector"
-                    item-value="id" option-title="company.name" selected-title="company.name" />
+                    item-value="id" option-title="company.title" selected-title="company.title" />
         </template>
-        <template v-if="type.value">
+        <template v-if="type.id">
           <n-upload title="Файлы" :value.sync="files" multi />
         </template>
         
@@ -34,46 +27,34 @@ export default {
   name: 'ModalAdd',
   props: [ 'project', ],
   data: () => ({
-    types: [
-      { value: 'psd', title: 'Проектная документация', },
-      { value: 'estimation', title: 'Смета', },
-      { value: 'permit', title: 'Разрешительная документация', },
-      { value: 'input', title: 'Входной контроль', },
-      { value: 'lab', title: 'Лабораторные испытания', },
-      { value: 'schemas', title: 'Исполнительные схемы', },
-    ],
+    types: [],
     classes: [],
-    psdTypes: [],
-    permitTypes: [],
     projectors: [],
     
     type: {},
     selectedClass: {},
-    psdType: {},
-    permitType: {},
     projector: {},
     files: null,
   }),
   created() {
     this.loadData()
     this.$form.init({
-      code: '',
+      code: undefined,
+      endedAt: undefined,
     })
   },
   methods: {
     loadData() {
       this.$var('load', true)
       const apis = [
-        $api.dictionaries.get('figureClasses'),
-        $api.dictionaries.get('psdTypes'),
-        $api.dictionaries.get('permitTypes'),
-        $api.projects.partners.getByRole(this.project.id, 'projector'),
+        $api.documents.getTypes(),
+        $api.documents.getClasses(),
+        $api.projects.partners.get(this.project.id).filter({ role: 'projector', }),
       ]
       Promise.all(apis).then((response) => {
-        this.classes = response[0].data.content
-        this.psdTypes = response[1].data.content
-        this.permitTypes = response[2].data.content
-        this.projectors = response[3].data.content
+        this.types = response[0].data.content
+        this.classes = response[1].data.content
+        this.projectors = response[2].data.content
       }).finally(() => {
         this.$var('load', false)
       })
@@ -87,28 +68,25 @@ export default {
         })
         return result
       }, [])
+      
       $n.promiseObjects(api).then((files) => {
-        const classId = this.type.value === 'figure' ? this.selectedClass.id : (this.type.value === 'psd' ? this.psdType.id : this.permitType.id)
         const data = {
-          projectId: this.project.id,
+          ownerId: this.project.id,
+          ownerType: 'project',
           partnerId: this.projector.id,
-          classId,
-          type: this.type.value,
+          typeId: this.type.id,
+          classId: this.selectedClass.id,
           files: files.map((item) => ({ file: item.response.data.content.id, title: item.title, })),
+          code: this.$form.get('code'),
+          endedAt: this.$form.get('endedAt'),
         }
-        if (this.type.value === 'figure') {
-          data['code'] = this.$form.get('code')
-        }
-        if (this.$form.get('endedAt')) {
-          data['endedAt'] = this.$form.get('endedAt')
-        }
-        $api.documents.createPsd(data).then((result) => {
+        $api.documents.create(data).then((result) => {
           this.$emit('submit')
           this.$emit('close')
         }).finally(() => {
           this.$var('load', false)
         })
-      }).catch(() => {
+      }).finally(() => {
         this.$var('load', false)
       })
     },

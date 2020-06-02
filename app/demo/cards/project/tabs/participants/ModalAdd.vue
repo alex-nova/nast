@@ -4,8 +4,8 @@
     <n-form @submit="submit">
       <n-items>
         <n-select title="Сотрудник" :data="workers" :value.sync="worker"
-                  item-value="id" option-title="user.fullName" selected-title="user.fullName" />
-        <n-input title="Должность на проекте" v-bind="$form.input('role')" />
+                  item-value="id" option-title="user.fullName" selected-title="user.fullName" @update:value="select" />
+        <n-input title="Должность на проекте" v-bind="$form.input('position')" />
         <n-upload title="Договор" :value.sync="file" />
         
         <n-button color="primary" wide type="submit">Назначить</n-button>
@@ -26,23 +26,25 @@ export default {
   created() {
     this.loadData()
     this.$form.init({
-      role: '',
+      position: '',
     })
   },
   methods: {
     loadData() {
       this.$var('load', true)
-      $api.companies.workers.get().then((result) => {
-        this.workers = result.data.content
-      }).finally(() => {
-        this.$var('load', false)
-      })
+      $api.companies.workers.get($app.store.getter('app.company').id)
+        .filter({ project: 'not:' + this.project.id, })
+        .then((result) => {
+          this.workers = result.data.content
+        }).finally(() => {
+          this.$var('load', false)
+        })
     },
     submit() {
       this.$var('load', true)
       const data = {
         workerId: this.worker.id,
-        role: this.$form.get('role'),
+        position: this.$form.get('position'),
       }
       $api.projects.participants.create(this.project.id, data).then((response) => {
         this.$emit('submit', response.data.content)
@@ -50,6 +52,10 @@ export default {
       }).finally(() => {
         this.$var('load', false)
       })
+    },
+    select(value) {
+      this.$form.set('position', value.position)
+      // this.worker = value
     },
   },
 }

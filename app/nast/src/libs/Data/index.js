@@ -158,9 +158,9 @@ class Data extends DataInterface {
       return
     }
   
-    const promisAll = Promise.all(Object.values(promises))
+    const promiseAll = Promise.all(Object.values(promises))
     if ($config('data.preload')) {
-      promisAll.then(() => next()).catch(next)
+      promiseAll.then(() => next()).catch(next)
     } else {
       setTimeout(() => {
         next()

@@ -5,7 +5,7 @@
       <div v-if="act" class="content">
         <h3 class="title">{{ act.title }}</h3>
         <p class="info">
-          <span>&nbsp;</span>
+          <span>г. Нур-Султан</span>
 <!--          <span class="date">«_____» ______________ 20_____ г.</span>-->
           <span class="date" style="font-size: 1.2em">{{ $app.date.format(act.createdAt || $app.date.now()) }}</span>
         </p>

@@ -27,10 +27,10 @@ export default {
     submit() {
       this.$var('load', true)
       const data = {
-        role: this.role.name,
+        mainRole: this.role.name,
         ...this.$form.get(),
       }
-      $api.projects.partners.invite(this.project.id, data).then((response) => {
+      $api.projects.partners.create(this.project.id, data).then((response) => {
         this.$emit('submit')
         this.$emit('close')
       }).finally(() => {

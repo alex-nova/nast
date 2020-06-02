@@ -1,12 +1,12 @@
 <template>
   <div class="page-journal">
     <n-card :loading="$var('loadProjects')">
-      <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
+      <n-select title="Проект" :data="projects" :value.sync="project" option-title="title" selected-title="title" item-value="id" inline />
     </n-card>
     
     <n-card :loading="$var('loadJournal')">
-      <n-tabs :data="tabs" />
-      <n-tabs-content class="content">
+      <n-tabs :data="tabs" :active.sync="activeTab" />
+      <n-tabs-content v-if="project" class="content" :active.sync="activeTab">
         <template #chapter1>
           <MainChapter1 :project="project" />
         </template>
@@ -50,6 +50,7 @@ export default {
   name: 'PageJournal',
   components: { MainInfo, MainChapter7, MainChapter6, MainChapter5, MainChapter4, MainChapter3, MainChapter2, MainChapter1, },
   data: () => ({
+    activeTab: 'chapter4',
     tabs: [
       { name: 'chapter1', title: 'Раздел 1', },
       { name: 'chapter2', title: 'Раздел 2', },

@@ -14,7 +14,7 @@ export default {
   methods: {
     s_submit() {
       this.$var('load', true)
-      $api.sections.delete(this.model.id).then((response) => {
+      $api.projects.sections.delete(this.model.id).then((response) => {
         this.$emit('close')
         this.submit()
       }).finally(() => {

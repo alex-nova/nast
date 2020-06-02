@@ -3,29 +3,22 @@
     <h3>Информация о документе</h3>
     <n-loader :loading="$var('load')" />
     <n-form>
-      <n-items>
+      <n-items v-if="document">
         <n-form-item v-if="document.partner" title="Проектная организация" active>
-          {{ document.partner.company.name }}
+          {{ document.partner.company.title }}
           <span style="font-size: .9em; opacity: .9;">[{{ document.partner.company.bin }}]</span>
         </n-form-item>
         
         <n-form-item v-if="document.type" title="Документ" active>
-          <template v-if="document.type === 'figure'">
-            {{ types[document.type] }} <span style="font-size: .9em; opacity: .9;">[{{ classes[document.classId].title }}]</span>
-          </template>
-          <template v-else-if="document.type === 'psd'">
-            {{ psdTypes[document.classId].title }}
-          </template>
-          <template v-else-if="document.type === 'permit'">
-            {{ permitTypes[document.classId].title }}
-          </template>
+          {{ document.type.title }}
+          <span v-if="document.class" style="font-size: .9em; opacity: .9;">[{{ document.class.title }}]</span>
         </n-form-item>
-        <n-link :to="document.src" type="external" target="_blank">Скачать</n-link>
   
         <n-input title="Название" v-bind="$form.input('title')" text />
-        <n-input v-if="document.type === 'figure'" title="Шифр" v-bind="$form.input('code')" text />
         
-        <n-form-item v-if="document.versions" title="Версии" active>
+        <n-input v-if="document.type.name === 'figure'" title="Шифр" v-bind="$form.input('code')" text />
+        
+        <n-form-item v-if="document.type.hasVersions" title="Версии" active>
           <n-button style="font-size: .8em; margin-bottom: 5px" @click="$var('add', document)">Загрузить новую версию</n-button>
           <n-table :data="document.versions" :columns="columns" style="font-size: .8em;">
             <template #version="{item}">
@@ -39,6 +32,8 @@
             </template>
           </n-table>
         </n-form-item>
+        <n-link v-else :to="document.src" type="external" target="_blank">Скачать</n-link>
+
       </n-items>
       <n-divide>
         <div></div>
@@ -56,9 +51,9 @@ import ModalAddVersion from './ModalAddVersion'
 export default {
   name: 'ModalEdit',
   components: { ModalAddVersion, },
-  props: [ 'project', 'documentId', 'classes', 'psdTypes', 'permitTypes', 'types', ],
+  props: [ 'project', 'documentId', ],
   data: () => ({
-    document: {},
+    document: null,
     columns: [
       { name: 'version', title: 'Версия', },
       { name: 'createdAt', title: 'Дата загрузки', },
@@ -66,12 +61,12 @@ export default {
     ],
   }),
   created() {
-    this.loadData()
+    this.load()
   },
   methods: {
-    loadData() {
+    load() {
       this.$var('load', true)
-      $api.documents.get(this.documentId).with({ partner: {}, versions: {}, }).then((result) => {
+      $api.documents.get(this.documentId).with({ versions: {}, }).then((result) => {
         this.document = result.data.content
         this.$form.init({
           title: this.document.title,
@@ -82,7 +77,7 @@ export default {
       })
     },
     submit() {
-      this.loadData()
+      this.load()
       this.$emit('submit')
     },
   },

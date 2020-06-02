@@ -1,6 +1,6 @@
 <template>
   <div class="tab-main-users" style="position: relative">
-    <n-loader :loading="$var('loadMain')" />
+    <n-loader :loading="$var('loadMain')"/>
     <n-items>
       <n-form-item v-for="(title, role) in roles" :key="role" :title="title">
         <template v-if="data[role] && data[role].partner">
@@ -8,16 +8,19 @@
           <span style="opacity: .9; font-size: .9em;">[{{ data[role].partner.company.bin }}]</span>
         </template>
         <template v-else>
-          Не назначен <n-button @click="$var('selectedRole', role)">Назначить</n-button>
+          Не назначен
+          <n-button @click="$var('selectedRole', role)">Назначить</n-button>
         </template>
       </n-form-item>
     </n-items>
-    <modal-assign v-if="$var('selectedRole')" :project="project" :role="selectedRole" @submit="loadMain" @close="$var('selectedRole', null)" />
+    <modal-assign v-if="$var('selectedRole')" :project="project" :role="selectedRole" @submit="loadMain"
+                  @close="$var('selectedRole', null)"/>
   </div>
 </template>
 
 <script>
 import ModalAssign from './ModalAssign'
+
 export default {
   name: 'TabMainUsers',
   components: { ModalAssign, },
@@ -39,7 +42,7 @@ export default {
       const roleName = this.$var('selectedRole')
       return roleName ? {
         name: roleName,
-        title: this.roles[roleName],
+        title: this.roles[ roleName ],
       } : {}
     },
   },
@@ -62,6 +65,7 @@ export default {
 <style lang="scss" scoped>
   .tab-main-users {
     font-size: .9em;
+    
     .tools {
       margin-bottom: 10px;
     }

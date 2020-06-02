@@ -2,11 +2,11 @@
   <div class="main-chapter1">
     <div class="chapter-title">Общие сведения</div>
     <n-items v-if="project">
-      <n-input title="Строительная организация" :value="data.gpName" text />
-      <n-input title="Наименование объекта строительства" :value="project.name" text />
-      <n-input title="Место нахождения объекта строительства" :value="project.address" text />
-      <n-input title="Начальник лаборатории, ответственный за ведение журнала" :value="data.lab" text />
-      <n-input title="Лаборант" :value="data.lab1" text />
+<!--      <n-input title="Строительная организация" :value="data.gpName" text />-->
+<!--      <n-input title="Наименование объекта строительства" :value="project.name" text />-->
+<!--      <n-input title="Место нахождения объекта строительства" :value="project.address" text />-->
+<!--      <n-input title="Начальник лаборатории, ответственный за ведение журнала" :value="data.lab" text />-->
+<!--      <n-input title="Лаборант" :value="data.lab1" text />-->
     </n-items>
   </div>
 </template>

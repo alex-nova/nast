@@ -39,6 +39,9 @@ export default (Vue, libs) => {
       $config() {
         return $config
       },
+      $n() {
+        return $n
+      },
     },
   })
 }

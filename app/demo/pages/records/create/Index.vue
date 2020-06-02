@@ -6,7 +6,7 @@
           <h3>Информация</h3>
         </template>
         <n-items>
-          <n-input title="Проект" :value="project.name" text />
+          <n-input title="Проект" :value="project.title" text />
           <n-input title="Дата заполнения" :value="publishedAt" @input="(v) => publishedAt = v" />
         </n-items>
       </n-card>
@@ -22,6 +22,9 @@
         <template v-if="journal.front">
           <n-input v-for="field in journal.front.create" :key="field.name" :title="field.title" v-bind="$form.input(field.name)" />
         </template>
+        <n-select title="Чертежи" :data="figures" :value.sync="selectedFigures" option-title="title" selected-title="title" item-value="id" />
+        <div style="width: 100%"><n-upload title="Фото/видео файлы" :value.sync="files" multi /></div>
+        <div><n-upload title="Исполнительные схемы" :value.sync="schemas" multi /></div>
       </n-items>
     </n-card>
     
@@ -46,9 +49,13 @@ export default {
       project: {},
       journal: {},
       fields: [],
+      files: [],
+      schemas: [],
       supply: null,
       signers: {},
       selectedSigners: {},
+      figures: [],
+      selectedFigures: [],
     }
   },
   computed: {
@@ -71,11 +78,13 @@ export default {
         $api.journals.get(this.projectId, this.journalName),
         $api.projects.get(this.projectId),
         $api.journals.records.getColumns(this.projectId, this.journalName, 'records'),
+        $api.documents.getByProject(this.projectId).filter({ type: 'figure', }),
       ]
       Promise.all(promises).then((response) => {
         this.journal = response[0].data.content
         this.project = response[1].data.content
         this.fields = response[2].data.content
+        this.figures = response[3].data.content
         this.$form.init({})
       }).finally(() => {
         this.$var('load', false)
@@ -86,26 +95,66 @@ export default {
     },
     submit() {
       this.$var('loadSubmit', true)
-      const data = {
-        record: {
-          ...this.$form.get(),
-          publishedAt: this.publishedAt,
-          ...$n.reduce(this.selectedSigners, (result, v, name) => {
-            result[name] = v.id
+  
+      let api = $n.reduce(this.files, (result, file) => {
+        result.push({
+          promise: $api.files.create(file),
+          type: 'file',
+        })
+        return result
+      }, [])
+      api = $n.reduce(this.schemas, (result, file) => {
+        result.push({
+          promise: $api.files.create(file),
+          type: 'schema',
+        })
+        return result
+      }, api)
+      
+      const callback = (files, schemas) => {
+        const data = {
+          record: {
+            ...this.$form.get(),
+            publishedAt: this.publishedAt,
+            ...$n.reduce(this.selectedSigners, (result, v, name) => {
+              result[name] = v.id
+              return result
+            }, {}),
+          },
+          supply: this.supply,
+          files,
+          schemas,
+          figures: $n.reduce(this.selectedFigures, (result, v) => {
+            result.push(v.id)
             return result
-          }, {}),
-        },
-        supply: this.supply,
-      }
-      $api.journals.records.create(this.projectId, this.journalName, 'records', data).then((response) => {
-        if (this.journal.name === 'main') {
-          this.$router.push({ name: 'journals.index', })
-        } else {
-          this.$router.push({ name: 'journals.spec', params: { id: this.journal.id, projectId: this.project.id, }, })
+          }, []),
         }
-      }).finally(() => {
-        this.$var('loadSubmit', false)
-      })
+        $api.journals.records.create(this.projectId, this.journalName, 'records', data).then((response) => {
+          if (this.journal.name === 'main') {
+            this.$router.push({ name: 'journals.index', })
+          } else {
+            this.$router.push({ name: 'journals.spec', params: { id: this.journal.id, projectId: this.project.id, }, })
+          }
+        }).finally(() => {
+          this.$var('loadSubmit', false)
+        })
+      }
+  
+      if (api.length) {
+        $n.promiseObjects(api).then((result) => {
+          const files = []
+          const schemas = []
+          $n.each(result, (file) => {
+            if (file.type === 'file') files.push(file.response.data.content.id)
+            if (file.type === 'schema') schemas.push(file.response.data.content.id)
+          })
+          callback(files, schemas)
+        }).finally(() => {
+          this.$var('loadSubmit', false)
+        })
+      } else {
+        callback([], [])
+      }
     },
   },
 }

@@ -4,9 +4,9 @@
       <n-table :data="$d.get('companies')" :loading="$d.loading('companies')" :columns="columns">
         <template #type="{item}">
           <template v-if="item.type === 'project.invite.company'">
-            Вас пригласили на проект {{ item.project.name }}.
-            <n-button @click="accept(item.project.id)">Принять</n-button>
-            <n-button>Отклонить</n-button>
+            Вашу компанию {{ item.company.title }} пригласили на проект {{ item.project.title }}.
+            <n-button @click="resolveInvite(item, true)">Принять</n-button>
+            <n-button @click="resolveInvite(item, false)">Отклонить</n-button>
           </template>
           <n-link :to="{ query: { modal: 'company', id: item.id, },}"><n-button icon="pen" flat round /></n-link>
         </template>
@@ -49,8 +49,9 @@ export default {
     })
   },
   methods: {
-    accept(projectId) {
-      $api.projects.partners.acceptInvite(projectId, { accepted: true, }).then(() => {
+    resolveInvite(item, accepted) {
+      $app.store.mutation('app.company', item.company)
+      $api.projects.partners.acceptInvite(item.project.id, { accepted, }).then(() => {
         this.$router.push({ name: 'projects.list', })
       })
     },

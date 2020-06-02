@@ -14,7 +14,7 @@
         {{ item.user.fullName }} <span style="opacity: .8;font-size: .8em">[{{ item.user.iin }}]</span>
       </template>
       <template #company="{item}">
-        {{ item.company.name }} <span style="opacity: .8;font-size: .8em">[{{ item.company.bin }}]</span>
+        {{ item.company.title }} <span style="opacity: .8;font-size: .8em">[{{ item.company.bin }}]</span>
       </template>
       <template #createdAt="{item}">
         {{ $app.date.format(item.createdAt) }}
@@ -70,10 +70,10 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      const api = this.showAll ?
-        $api.projects.participants.get(this.project.id) :
-        $api.my.participants(this.project.id)
-      
+      const api = $api.projects.participants.get(this.project.id)
+      if (!this.showAll) {
+        api.filter({ company: $app.store.getter('app.company').id, })
+      }
       api.then((response) => {
         this.data = response.data.content
       }).finally(() => {

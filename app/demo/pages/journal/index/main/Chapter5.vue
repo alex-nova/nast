@@ -5,6 +5,9 @@
       Перечень специальных журналов работ
     </div>
     <n-table :columns="columns" :data="data">
+      <template #endedAt="{item}">
+        {{ $app.date.format(item.endedAt) }}
+      </template>
       <template #tools="{item}">
         <n-link :to="{name:'journals.spec', params:{ journal: item.name, projectId: project.id, }}"><n-button icon="eye" /></n-link>
       </template>
@@ -19,8 +22,8 @@ export default {
   data: () => ({
     columns: [
       { name: 'title', title: 'Наименование', },
-      { name: 'createdAt', title: 'Дата выдачи', },
-      { name: 'responsible', title: 'Ответственный', },
+      // { name: 'createdAt', title: 'Дата выдачи', },
+      // { name: 'responsible', title: 'Ответственный', },
       { name: 'endedAt', title: 'Дата сдачи-приемки', },
       { name: 'tools', title: '', },
     ],
@@ -32,7 +35,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.journals.get(this.project.id).filters({ tag: 'spec', }).then((response) => {
+      $api.journals.get(this.project.id).filter({ tag: 'spec', }).then((response) => {
         this.data = response.data.content
       }).finally(() => {
         this.$var('load', false)

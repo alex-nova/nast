@@ -40,10 +40,9 @@ export default {
       const data = {
         ...this.$form.get(),
         type: this.type.value,
-        projectId: this.project.id,
         parentId: this.parent._model === 'section' ? this.parent.id : undefined,
       }
-      $api.sections.create(data).then((response) => {
+      $api.projects.sections.create(this.project.id, data).then((response) => {
         this.$emit('close')
         this.update()
       }).finally(() => {

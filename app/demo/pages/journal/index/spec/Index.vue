@@ -4,8 +4,8 @@
       <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
     </n-card>
     <n-card :loading="$var('loadJournal')">
-      <n-tabs :data="tabs" />
-      <n-tabs-content class="content">
+      <n-tabs :data="tabs" :active.sync="activeTab" />
+      <n-tabs-content v-if="project" class="content" :active.sync="activeTab">
         <template #chapter1>
           <MainChapter1 :project="project" />
         </template>
@@ -33,6 +33,7 @@ export default {
   name: 'PageJournal',
   components: { MainSigns, MainInfo, MainChapter2, MainChapter1, },
   data: () => ({
+    activeTab: 'chapter2',
     tabs: [
       { name: 'chapter1', title: 'Общие сведения', },
       { name: 'chapter2', title: 'Записи', },

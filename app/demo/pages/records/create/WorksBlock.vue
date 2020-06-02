@@ -4,10 +4,21 @@
       <h3>Расходы</h3>
     </template>
     <n-items>
-      <n-select title="Вид работ" :data="workTypes" :value.sync="workType" item-value="id" option-title="name" selected-title="name" />
-      
-      <div v-if="workType" class="materials">
-        <n-select title="Работа" :value.sync="work" :data="structure" item-value="id" option-title="name" selected-title="name" inline />
+      <div class="work">
+        <n-select title="Работа" :value.sync="work" :data="structure" item-value="id" option-title="title" selected-title="title" inline>
+          <template #group="{item}">
+            <span>
+              <span class="sub">[{{ getTypeTitle(item) }}]</span>
+              {{ item.title }}
+            </span>
+          </template>
+          <template #item="{item}">
+            <span>
+              <span class="sub">[{{ getTypeTitle(item) }}]</span>
+              {{ item.title }}
+            </span>
+          </template>
+        </n-select>
         <template v-if="work">
           <n-input class="count" :value="workCount" title="Объем работ" inline @input="changeWorkCount" />
           <span class="unit">{{ work.unit }}</span>
@@ -15,13 +26,10 @@
       </div>
       
       <template v-if="work">
-        <n-select title="Материалы" :value.sync="selectedSupplies" :data="supplies" item-value="id" option-title="name" selected-title="name" />
-        <div v-for="(value, i) in selectedSupplies" :key="i" class="materials">
-          <template v-if="selectedSupplies[i]">
-            <n-input title="Материал" :value="value.name" text inline />
-            <n-input class="count" :value="suppliesCount[value.id]" title="Количество" inline @input="(v) => changeSupplyCount(value.id, v)" />
-            <span class="unit">{{ selectedSupplies[i].unit }}</span>
-          </template>
+        <div v-for="(item, i) in supplies" :key="i" class="materials">
+          <n-input :value="item.title" text inline />
+          <n-input class="count" :value="suppliesCount[item.id]" title="Количество" inline @input="(v) => changeSupplyCount(item.id, v)" />
+          <span class="unit">{{ item.unit }}</span>
         </div>
       </template>
     </n-items>
@@ -33,22 +41,13 @@ export default {
   name: 'BlockWorks',
   props: [ 'projectId', ],
   data: () => ({
-    workTypes: [],
-    workType: null,
     structure: [],
     work: null,
-    workCount: undefined,
+    workCount: 0,
     supplies: [],
-    selectedSupplies: [],
     suppliesCount: {},
   }),
   watch: {
-    workType(value) {
-      if (value) {
-        this.loadStructure()
-      }
-      this.work = null
-    },
     work(value) {
       this.change()
       if (value) {
@@ -60,16 +59,33 @@ export default {
   },
   mounted() {
     this.change()
-    this.loadWorkTypes()
+    this.loadStructure()
   },
   methods: {
-    loadWorkTypes() {
-      this.$var('loadWorkTypes', false)
-      $api.works.types.get().then((response) => {
-        this.workTypes = response.data.content
-      }).finally(() => {
-        this.$var('loadWorkTypes', false)
-      })
+    getSupplyCount(supply) {
+      return supply.using.count * (this.workCount / this.work.count)
+    },
+    getTypeTitle(item) {
+      if (item._model === 'work') {
+        return 'Работа'
+      } else if (item._model === 'supply') {
+        const types = {
+          material: 'Материал',
+          equipment: 'Оборудование',
+          construction: 'Конструкция',
+          shipping: 'Перевозка груза',
+          mechanism: 'Механизм',
+          work: 'Затраты труда строителей',
+        }
+        return types[item.type]
+      } else {
+        const types = {
+          object: 'Объект',
+          section: 'Раздел',
+          construction: 'Конструкция',
+        }
+        return types[item.type]
+      }
     },
     loadStructure() {
       this.$var('loadStructure', false)
@@ -81,14 +97,21 @@ export default {
     },
     loadSupplies() {
       this.$var('loadSupplies', false)
-      $api.works.supplies.getByWork(this.work.id).then((response) => {
+      this.suppliesCount = {}
+      $api.projects.works.supplies.get(this.projectId, this.work.id).then((response) => {
         this.supplies = response.data.content
+        this.supplies.map((item) => {
+          this.suppliesCount[item.id] = this.getSupplyCount(item)
+        })
       }).finally(() => {
         this.$var('loadSupplies', false)
       })
     },
     changeWorkCount(value) {
       this.workCount = value
+      this.supplies.map((item) => {
+        this.suppliesCount[item.id] = this.getSupplyCount(item)
+      })
       this.change()
     },
     changeSupplyCount(id, value) {
@@ -118,6 +141,14 @@ export default {
 <style lang="scss" scoped>
   .block-works {
   
+    .work {
+      --n-input-width: 500px;
+      .count {
+        margin: 0 5px 0 20px;
+        width: 100px;
+      }
+    }
+    
     .materials {
       width: 100%;
       .count {

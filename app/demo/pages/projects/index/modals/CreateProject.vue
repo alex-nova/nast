@@ -3,8 +3,7 @@
     <h3>Создать проект</h3>
     <n-form @submit="s_submit">
       <n-items>
-        <n-select title="Заказчик" :data="companies" :value.sync="company" item-value="id" option-title="name" selected-title="name" />
-        <n-input title="Название" v-bind="$form.input('name')" />
+        <n-input title="Название" v-bind="$form.input('title')" />
         <n-input title="Адрес" v-bind="$form.input('address')" />
         <n-input title="Описание" v-bind="$form.input('description')" />
         <n-input title="Начало строительства" v-bind="$form.input('startedAt')" />
@@ -20,12 +19,10 @@ export default {
   name: 'CreateProject',
   props: [ 'submit', ],
   data: () => ({
-    companies: [],
-    company: {},
   }),
   created() {
     this.$form.init({
-      name: undefined,
+      title: undefined,
       address: undefined,
       description: undefined,
       startedAt: undefined,
@@ -44,7 +41,7 @@ export default {
     },
     s_submit() {
       this.$var('loading', true)
-      $api.projects.create({ companyId: this.company.id, ...this.$form.get(), }).then((response) => {
+      $api.projects.create(this.$form.get()).then((response) => {
         this.$d.reloadTag('projects')
         this.$emit('close')
         this.submit()

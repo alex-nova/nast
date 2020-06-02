@@ -10,7 +10,7 @@
     
     <n-table :data="data" :columns="columns">
       <template #company="{item}">
-        {{ item.company.name }} <span style="opacity: .8;font-size: .8em">[{{ item.company.bin }}]</span>
+        {{ item.company.title }} <span style="opacity: .8;font-size: .8em">[{{ item.company.bin }}]</span>
       </template>
       <template #createdAt="{item}">
         {{ $app.date.format(item.createdAt) }}
@@ -56,10 +56,11 @@ export default {
   },
   methods: {
     load() {
-      const api = this.showAll ?
-        $api.projects.partners.get(this.project.id) :
-        $api.my.partners(this.project.id)
       this.$var('load', true)
+      const api = $api.projects.partners.get(this.project.id)
+      if (!this.showAll) {
+        api.filter({ delegator: $app.store.getter('app.company').id, })
+      }
       api.then((response) => {
         this.data = response.data.content
       }).finally(() => {

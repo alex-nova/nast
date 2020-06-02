@@ -91,6 +91,7 @@ export default {
           this.$form.init(this.model, false)
           this.$var('loading', false)
           this.$d.reloadTag('companies')
+          this.$router.go()
         }).catch(() => {
           this.$var('loading', false)
         })

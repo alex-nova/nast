@@ -8,15 +8,8 @@
     
     <n-table :data="data" :columns="columns">
       <template #type="{item}">
-        <template v-if="item.type === 'figure'">
-          {{ types[item.type] }} <span style="font-size: .9em; opacity: .9;">[{{ classes[item.classId].title }}]</span>
-        </template>
-        <template v-else-if="item.type === 'psd'">
-          {{ psdTypes[item.classId].title }}
-        </template>
-        <template v-else-if="item.type === 'permit'">
-          {{ permitTypes[item.classId].title }}
-        </template>
+        {{ item.type.title }}
+        <span v-if="item.class" style="font-size: .9em; opacity: .9;">[{{ item.class.title }}]</span>
       </template>
       <template #download="{item}">
         <n-link :to="item.src" type="external" target="_blank">Скачать</n-link>
@@ -27,8 +20,7 @@
     </n-table>
   
     <modal-add v-if="$var('add')" :project="project" @submit="change" @close="$var('add', false)" />
-    <modal-edit v-if="$var('edit')" :document-id="$var('edit')" :project="project"
-                :classes="classes" :psd-types="psdTypes" :permit-types="permitTypes" :types="types" @submit="change" @close="$var('edit', false)" />
+    <modal-edit v-if="$var('edit')" :document-id="$var('edit')" :project="project" @submit="change" @close="$var('edit', false)" />
   </div>
 </template>
 
@@ -42,14 +34,6 @@ export default {
   props: [ 'project', ],
   data() {
     return {
-      types: {
-        psd: 'Проектная документация',
-        figure: 'Чертежи',
-        permit: 'Разрешительная документация',
-      },
-      classes: {},
-      psdTypes: {},
-      permitTypes: {},
       data: [],
       columns: [
         { name: 'type', title: 'Документ', },
@@ -72,23 +56,8 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      const apis = [
-        $api.projects.documents.get(this.project.id),
-        $api.dictionaries.get('figureClasses'),
-        $api.dictionaries.get('psdTypes'),
-        $api.dictionaries.get('permitTypes'),
-      ]
-      Promise.all(apis).then((response) => {
-        this.data = response[0].data.content
-        this.classes = $n.reduce(response[1].data.content, (result, i) => {
-          result[i.id] = i; return result
-        }, {})
-        this.psdTypes = $n.reduce(response[2].data.content, (result, i) => {
-          result[i.id] = i; return result
-        }, {})
-        this.permitTypes = $n.reduce(response[3].data.content, (result, i) => {
-          result[i.id] = i; return result
-        }, {})
+      $api.documents.getByProject(this.project.id).then((response) => {
+        this.data = response.data.content
       }).finally(() => {
         this.$var('load', false)
       })

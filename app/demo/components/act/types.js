@@ -27,10 +27,16 @@ export default {
       return `assignee,${params[1]}`
     },
   },
+  // people,partnerAccessName,participantAccessName,isMain
+  // 'people': {
+  //   url: (field, values, params) => {
+  //     return `assignee,${params[1]}`
+  //   },
+  // },
   default: {
     select: true,
     component: 'input',
     url: (field, values) => field.api,
-    value: (value) => value.title,
+    value: (value) => value.display === undefined ? value.title : value.display,
   },
 }

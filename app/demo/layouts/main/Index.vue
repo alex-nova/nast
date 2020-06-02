@@ -1,23 +1,24 @@
 <template>
   <div class="layout-main">
-    <n-layout-cool :menu="navigation" :profile="profile">
+    <n-layout-cool :menu="navigation" :profile="profile" :companies="$d.get('companies')" :select-company="selectCompany">
       <template #logo>{{ names['logo'] }}</template>
       <template #logo-min>{{ names['logoMin'] }}</template>
-      <template #avatar><img :src="avatar"/></template>
+      <template #avatar><img :src="avatar" /></template>
       <template #name>{{ $app.auth.user() ? $app.auth.user().fullName : '' }}</template>
+      <template #company-name>{{ company.title }}</template>
       <div slot="content">
-        <page-title/>
-        <router-view/>
+        <page-title />
+        <router-view />
       </div>
       <div slot="footer">
         {{ names['product'] }}
-        <br/>
+        <br />
         {{ names['company'] }}
-        <br/>
+        <br />
         <n-link to="#">Сообщить об ошибке</n-link>
       </div>
     </n-layout-cool>
-    <cards/>
+    <cards />
   </div>
 </template>
 
@@ -32,10 +33,11 @@ export default {
   components: { Cards, PageTitle, },
   html() {
     return {
-      title: this.names[ 'product' ],
+      title: this.names['product'],
     }
   },
   data: () => ({
+    show: false,
     names: names(),
     avatar,
     profile: [
@@ -43,7 +45,31 @@ export default {
       { title: 'Выход', icon: 'sign-out-alt', route: 'login', },
     ],
   }),
+  load() {
+    return {
+      companies: {
+        api: $api.my.companies(),
+        def: [],
+        tag: 'company',
+        callback: (data) => {
+          if ($n.size(data)) {
+            const current = $app.store.getter('app.company')
+            let next = null
+            if (current) {
+              next = $n.find(data, [ 'id', current.id, ]) || data[0]
+            } else {
+              next = data[0]
+            }
+            $app.store.mutation('app.company', next)
+          }
+        },
+      },
+    }
+  },
   computed: {
+    company() {
+      return $app.store.getter('app.company')
+    },
     navigation() {
       return $app.router.navigation($config('router.navigation')())
     },
@@ -63,6 +89,10 @@ export default {
         return false
       }
       return true
+    },
+    selectCompany(company) {
+      $app.store.mutation('app.company', company)
+      this.$router.go()
     },
   },
 }
@@ -102,7 +132,12 @@ export default {
       padding: 10px;
     }
   }
-
+  
+  .sub {
+    font-size: .9em;
+    opacity: .9;
+  }
+  
   .table-tools {
     margin-bottom: 10px;
   }

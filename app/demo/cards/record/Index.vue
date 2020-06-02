@@ -5,7 +5,7 @@
       <template #body>
         <div class="body">
           <!-- TODO !!! -->
-          <div class="object" v-if="$store.state.app.project">{{ $store.state.app.project.name }}</div>
+          <div v-if="$store.state.app.project" class="object">Проект: {{ $store.state.app.project.title }}</div>
           <!--          <div>Вид работ: Бетонные работы</div>-->
           <div>Дата: {{ $app.date.format($form.get('createdAt')) }}</div>
         </div>
@@ -16,10 +16,22 @@
             <n-input v-for="field in journal.front.create" :key="field.name" :title="field.title" v-bind="$form.input(field.name)" text />
           </template>
           
-          <n-form-item v-if="journal.types === 'main'" title="Материалы" active>
-            <n-table class="table" :columns="columns" :data="materials">
-              <template #count="{item}">
-                {{ item.count + ' ' + item.unit }}
+          <n-form-item v-if="$n.size(record.files)" title="Файлы" active>
+            <n-image v-for="file in record.files" :key="file.id" title="Фото/видео файлы" :src="file.src" />
+          </n-form-item>
+          
+          <n-form-item v-if="journal.name === 'main' && $n.size(record.work)" title="Работа" active>
+            {{ record.work.work.title }}, {{ record.work.done }}
+            <span class="sub">{{ record.work.work.unit }}</span>
+          </n-form-item>
+          
+          <n-form-item v-if="journal.name === 'main' && $n.size(record.supplies)" title="Материалы" active>
+            <n-table class="table" :columns="columns" :data="record.supplies">
+              <template #done="{item}">
+                <span style="white-space: nowrap">
+                  {{ item.done }}
+                  <span class="sub">{{ item.supply.unit }}</span>
+                </span>
               </template>
             </n-table>
           </n-form-item>
@@ -47,17 +59,13 @@ export default {
     return {
       journal: {},
       record: {},
-      fields: [],
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
         { name: 'control', title: 'Проверяющие', },
       ],
-      materials: [
-        { id: 1, name: 'Бетон', unit: 'м3', count: 10, desc: '', },
-      ],
       columns: [
-        { title: 'Название', name: 'name', },
-        { title: 'Количество', name: 'count', },
+        { title: 'Название', name: 'supply.title', },
+        { title: 'Расход', name: 'done', },
       ],
     }
   },
@@ -83,7 +91,7 @@ export default {
       ]
       Promise.all(promises).then((result) => {
         this.$form.init(result[0].data.content)
-        this.fields = result[0].data.columns
+        this.record = result[0].data
         this.journal = result[1].data.content
       }).finally(() => {
         this.$var('load', false)

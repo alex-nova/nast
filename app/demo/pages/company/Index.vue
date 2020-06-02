@@ -67,6 +67,7 @@ export default {
       if (this.$form.check()) {
         $api.companies.create(this.$form.get()).then((response) => {
           this.$d.reload('companies')
+          this.$router.go()
           this.$var('create', false)
           this.$form.reset()
         })

@@ -29,8 +29,8 @@
       <div v-if="sign.value === null" style="float: right">
         <n-button @click="$var('sign', sign)">Ответить</n-button>
       </div>
-      <div v-if="sign.value === false" style="float: right">
-        <n-link :to="{name: 'records.create', params: {id:1},}"><n-button>Создать запись об устранении</n-button></n-link>
+      <div v-if="sign.value === false" style="float: right;position:relative;z-index:10;">
+        <n-link :to="{name: 'records.create', params: {projectId:$store.state.app.project.id,journal: 'main'}, }"><n-button>Создать запись об устранении</n-button></n-link>
       </div>
       <div v-if="sign.date" class="info">{{ $app.date.format(sign.date) }}</div>
     </n-card>

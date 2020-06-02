@@ -1,9 +1,9 @@
 import mocks from './mocks'
 
 export default class CustomApiData {
-  projects = () => $api.projects.get().filters({ projectId: null, }).sort([ 'id,asc', ])
+  projects = () => $api.projects.get().filter({ projectId: null, }).sort([ 'id,asc', ])
   project = (id) => $api.projects.get(id)
-  objects = (projectId) => $api.projects.get().filters({ projectId, })
+  objects = (projectId) => $api.projects.get().filter({ projectId, })
   
   types = () => {
     return $app.api.get([ 'types', ]).mock(() => {

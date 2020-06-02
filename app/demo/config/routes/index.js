@@ -6,7 +6,6 @@ export default [
     { path: '', component: () => import('layouts/main/Index'), children: [
       { path: 'test', name: 'test', icon: 'tachometer-alt', component: () => import('pages/test/Index'), },
       { path: 'test2', name: 'test2', icon: 'tachometer-alt', component: () => import('pages/test/Index2'), },
-      { path: 'card/project/1', name: 'card.project', icon: 'tachometer-alt', component: () => import('pages/cards/project/Index'), },
       
       { path: '', name: 'index', icon: 'tachometer-alt', component: () => import('pages/index/Index'), },
       { path: 'user/:id', name: 'user', icon: 'user', parent: 'staff', component: () => import('pages/user/Index'), },

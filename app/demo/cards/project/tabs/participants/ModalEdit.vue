@@ -6,36 +6,29 @@
         <n-input title="Сотрудник" :value="participant.user.fullName" text />
         <n-input title="Должность на проекте" :value="participant.role" text />
         <!--        <n-upload title="Договор" :value.sync="file" />-->
-        <n-form-item title="Обязанности" active>
+        <n-form-item title="Полномочия" active>
           <n-divide class="table-tools" style="font-size: .8em">
             <n-button @click="$var('addAccess', true)">Добавить</n-button>
             <div></div>
           </n-divide>
           <n-table :data="accesses" :columns="columns" :loading="$var('load')" style="font-size: .8em">
             <template #type="{item}">
-              {{ typeNames[item.type] }}
+              {{ item.type.title }}
             </template>
-            <template #scope="{item}">
-              <template v-if="item.type === 'special'">
-                <template v-if="item.specTypes.length">
-                  <div v-for="i in item.specTypes" :key="i" style="line-height: 1.1; padding-bottom: 5px">{{ specTypeNames[i] }}</div>
-                </template>
-                <template v-else>Все роли в спец. журналах</template>
+            <template #section="{item}">
+              <template v-if="item.section">
+                <span style="font-size: .9em; opacity: .9;">[{{ structureNames[item.section.type] }}]</span>
+                {{ item.section.title }}
               </template>
-              <template v-else-if="[ 'assignee', 'manager', ].includes(item.type)">-</template>
               <template v-else>
-                <span style="font-size: .9em; opacity: .9;">[{{ structureNames[item.section ? item.section.types : 'project'] }}]</span>
-                {{ item.section ? item.section.name : project.name }}
+                Весь проект
               </template>
             </template>
             <template #workTypes="{item}">
-              <template v-if="[ 'special', 'assignee', 'manager', ].includes(item.type)">-</template>
-              <template v-else>
-                <template v-if="item.workTypes.length">
-                  <div v-for="i in item.workTypes" :key="i.id" style="line-height: 1.1; padding-bottom: 5px">{{ i.name }}</div>
-                </template>
-                <template v-else>Все виды работ</template>
+              <template v-if="item.workTypes.length">
+                <div v-for="i in item.workTypes" :key="i.id" style="line-height: 1.1; padding-bottom: 5px">{{ i.title }}</div>
               </template>
+              <template v-else>Все виды работ</template>
             </template>
             <template #tools="{item}">
               <n-button flat round icon="trash" @click="remove(item)" />
@@ -65,31 +58,14 @@ export default {
     accesses: [],
     columns: [
       { name: 'type', title: 'Тип', },
-      { name: 'scope', title: 'Область ответственности', },
+      { name: 'section', title: 'Область ответственности', },
       { name: 'workTypes', title: 'Виды работ', },
       { name: 'tools', title: '', },
     ],
-    specTypeNames: {
-      priemka_antikorroziinih_rabot: 'Ответственный за приемку антикоррозийных работ',
-      brigadir_po_postanovke_boltov: 'Бригадир команды по постановке болтов',
-      otvetstvennii_za_postanovku_boltov: 'Ответсвенный за постановку болтов',
-      brigadir_po_zamonolichivaniy: 'Бригадир команды по замоноличиванию монтажных стыков и узлов',
-    },
-    typeNames: {
-      assignee: 'Представитель организации',
-      manager: 'Редактирование проекта',
-      executor: 'Ведение журнала',
-      approver: 'Утверждение записей в журнале',
-      special: 'Спец. журналы',
-      author: 'Авторский надзор',
-      tech: 'Технический надзор',
-      projector: 'Проектировщик',
-    },
     structureNames: {
       section: 'Раздел',
       construction: 'Конструкция',
       object: 'Объект',
-      project: 'Проект',
     },
   }),
   created() {

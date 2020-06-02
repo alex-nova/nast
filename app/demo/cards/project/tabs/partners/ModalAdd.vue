@@ -31,7 +31,7 @@ export default {
   methods: {
     submit() {
       this.$var('load', true)
-      $api.projects.partners.invite(this.project.id, this.$form.get()).then((response) => {
+      $api.projects.partners.create(this.project.id, this.$form.get()).then((response) => {
         this.$emit('submit', response.data.content)
         this.$emit('close')
       }).finally(() => {

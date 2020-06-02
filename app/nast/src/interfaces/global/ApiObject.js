@@ -20,7 +20,7 @@ export default class ApiObject {
   _size = 0
   _sort = []
   _search = ''
-  _filters = {}
+  _filter = {}
   
   _with = {}
   _fields = []
@@ -246,8 +246,8 @@ export default class ApiObject {
    * @param {Object} filters
    * @return {ApiObject}
    */
-  filters(filters) {
-    this._filters = $n.merge(this._filters, filters)
+  filter(filters) {
+    this._filter = $n.merge(this._filter, filters)
     return this
   }
   
@@ -335,12 +335,14 @@ export default class ApiObject {
       filters.push('search=' + this._search)
     }
     
-    if (this._filters) {
-      const fltrs = $n.reduce(this._filters, (result, item, name) => {
-        result.push(`filter[${name}]=${item}`)
+    if (this._filter) {
+      const filter = $n.reduce(this._filter, (result, item, name) => {
+        if (item !== undefined) {
+          result.push(`filter[${name}]=${item}`)
+        }
         return result
       }, []).join('&')
-      if (fltrs) filters.push(fltrs)
+      if (filter) filters.push(filter)
     }
     
     if (this._with) {
@@ -352,7 +354,10 @@ export default class ApiObject {
     }
     
     // TODO fields
-    // TODO tree
+    
+    if (this._tree) {
+      filters.push('tree=true')
+    }
     
     if (this._all) {
       filters.push('all')

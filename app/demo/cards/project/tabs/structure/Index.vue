@@ -11,6 +11,10 @@
         </n-dropdown>
       </template>
     </n-list>
+    <template v-if="!$n.size(structure) && !$var('loading')">
+      Структура проекта пуста
+    </template>
+    
     <modal-add v-if="$var('add')" :project="project" :parent="$var('add')" :update="load" @close="$var('add', false)" />
     <modal-section-edit v-if="$var('edit')" :model="$var('edit')" :update="load" @close="$var('edit', false)" />
     <modal-section-delete v-if="$var('delete')" :model="$var('delete')" :submit="load" @close="$var('delete', false)" />
