@@ -1,0 +1,187 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script type="text/javascript" src="js/jquery.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/jquery.blockUI.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/ncalayer.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/process-ncalayer-calls.js" charset="utf-8"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <title>Тестирование функционала NCALayer</title>
+    </head>
+    <body class="bg-light">
+        <div class="container py-5">            
+            <h1 class="text-center pb-5">Примеры использования методов NCALayer</h1>
+            Выберите необходимый тип носителя
+            <input value="Добавить доступные токены" onclick="getActiveTokensCall();" type="button" class="mb-3" />
+            <select id="storageSelect" class="custom-select">
+                <option value="PKCS12" selected>PKCS12</option>
+            </select>
+            <h3 class="pb-2">1. Данные ключа</h3>			
+            <input value="Получить данные ключа" onclick="getKeyInfoCall();" type="button" class="mb-3" />			
+            <div class="form-group row">								
+                <label for="alias" class="col-2 col-form-label">Алиас ключа</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="Alias" id="alias" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="keyId" class="col-2 col-form-label">Идентификатор ключа</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="keyId" id="keyId" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="algorithm" class="col-2 col-form-label">Алгоритм ключа</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="algorithm" id="algorithm" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="subjectCn" class="col-2 col-form-label">Общепринятое имя субъекта</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="subjectCN" id="subjectCn" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="subjectDn" class="col-2 col-form-label">Уникальное имя субъекта</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="subjectDN" id="subjectDn" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="issuerCn" class="col-2 col-form-label">Общепринятое имя издателя</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="issuerCN" id="issuerCn" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="issuerDn" class="col-2 col-form-label">Уникальное имя издателя</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="issuerDN" id="issuerDn" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="serialNumber" class="col-2 col-form-label">Серийный номер сертификата</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="serialNumber" id="serialNumber" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="notbefore" class="col-2 col-form-label">Дата начала действия сертификата</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="NotBefore" id="notbefore" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="notafter" class="col-2 col-form-label">Дата окончания действия сертификата</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="NotAfter" id="notafter" readonly>
+                </div>
+            </div>            
+            <div class="form-group row">								
+                <label for="authorityKeyIdentifier" class="col-2 col-form-label">Идентификатор ключа УЦ</label>
+                <div class="col-10 my-auto">
+                    <input class="form-control" type="text" value="authorityKeyIdentifier" id="authorityKeyIdentifier" readonly>
+                </div>
+            </div>
+            <div class="form-group row">								
+                <label for="pem" class="col-2 col-form-label">Сертификат в формате PEM</label>
+                <div class="col-10 my-auto">
+                    <textarea class="form-control" id="pem" rows="3" readonly></textarea>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="container py-5">
+            <h3 class="pb-2">2. Подпись XML</h3>
+            <div class="form-group row">
+                <div class="col-9">
+                    <textarea class="form-control" id="xmlToSign" rows="3">Введите XML</textarea>
+                </div>
+                <div class="col-3">
+                    <input value="Подписать XML" onclick="signXmlCall();" type="button"  />
+                </div>                
+            </div>
+            <textarea class="form-control" id="signedXml" rows="6" readonly>Подписанный XML</textarea>
+        </div>
+		<hr />
+        <div class="container py-5">
+            <h3 class="pb-2">3. Подпись массива XML</h3>
+            <div class="form-group row">
+                <div class="col-9">					
+					<label for="xmlToSign1">XML #1:</label>
+                    <textarea class="form-control mb-3" id="xmlToSign1" rows="3">Введите XML</textarea>					
+					<label for="xmlToSign2">XML #2:</label>
+					<textarea class="form-control" id="xmlToSign2" rows="3">Введите XML</textarea>
+					Примечание: Количество XML может быть больше, так как они передаются в виде массива
+                </div>           
+            </div>
+			<input value="Подписать XML" onclick="signXmlsCall();" type="button" style="width:50%;" />
+            <textarea class="form-control mb-3 mt-3" id="signedXml1" rows="6" readonly>Подписанный XML</textarea>
+			<textarea class="form-control" id="signedXml2" rows="6" readonly>Подписанный XML</textarea>
+        </div>
+        <hr />
+        <div class="container py-5">
+            <h3 class="pb-2">4. Подпись файла в формате CMS</h3>
+            <div class="form-group row">
+                <div class="col-3">
+                    <input value="Выбрать файл для подписи" onclick="showFileChooserCall();" type="button" />
+                </div>                
+                <div class="col-9 my-auto">
+                    <input class="form-control" type="text" value="" id="filePath" readonly>
+                </div>
+            </div>
+            <div>
+                <input type="checkbox" id="flag" /> Включить данные в подпись
+            </div>
+            <input value="Подписать" onclick="createCAdESFromFileCall();" type="button" style="width:50%;"  />
+            <textarea class="form-control mt-3" id="createdCMS" rows="6" readonly>Подпись в формате CMS</textarea>
+        </div>
+	<div class="container py-5">
+            <h3 class="pb-2">5. Подпись Base64 данных в формате CMS</h3>
+            <div class="form-group row">
+                <div class="col-9">
+                    <textarea class="form-control" id="base64ToSign" rows="3">Введите текст в формате Base64</textarea>
+                </div>
+            </div>
+            <div>
+                <input type="checkbox" id="flagForBase64" /> Включить данные в подпись
+            </div>
+            <input value="Подписать" onclick="createCAdESFromBase64Call();" type="button" style="width:50%;"  />
+            <textarea class="form-control mt-3" id="createdCMSforBase64" rows="6" readonly>Подпись в формате CMS</textarea>
+        </div>
+        <div class="container py-5">
+            <h3 class="pb-2">6. Подпись хэша данных Base64 в формате CMS</h3>
+            <div class="form-group row">
+                <div class="col-9">
+                    <textarea class="form-control" id="base64HashToSign" rows="3">Введите хэш данных в формате Base64</textarea>
+                </div>
+            </div>
+            <input value="Подписать" onclick="createCAdESFromBase64HashCall();" type="button" style="width:50%;"  />
+            <textarea class="form-control mt-3" id="createdCMSforBase64Hash" rows="6" readonly>Подпись в формате CMS</textarea>
+        </div>
+        <div class="container py-5">
+            <h3 class="pb-2">7. Приложить метку времени к подписи CMS</h3>
+            <div class="form-group row">
+                <div class="col-9">
+                    <textarea class="form-control" id="CMSForTS" rows="3">Введите CMS подпись в формате Base64</textarea>
+                </div>
+            </div>
+            <input value="Приложить метку времени" onclick="applyCAdESTCall();" type="button" style="width:50%;"  />
+            <textarea class="form-control mt-3" id="createdCMSWithAppliedTS" rows="6" readonly>Подпись в формате CMS</textarea>
+        </div>
+        <hr />
+        <div class="container py-5">
+            Смена языка <select id="localeSelect" class="custom-select">
+                <option value="kk" selected>kk</option>
+                <option value="ru" selected>ru</option>
+                <option value="en" selected>en</option>
+            </select>
+            <br /><br />
+            <input value="Сменить язык" onclick="changeLocaleCall();" type="button" class="mb-3" />
+        </div>
+    </body>
+    
+</html>
