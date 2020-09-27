@@ -31,7 +31,8 @@ export default class CustomApi {
     companies: () => $app.api.get('my/companies'),
     companiesAdmin: () => $app.api.get('my/companies/admin'), // todo temp
     projects: () => $app.api.get('my/projects'),
-    structureTree: (projectId, withWorks) => $app.api.get([ 'my/projects*/structure/tree', projectId, ]).query({ works: withWorks, }),
+    structureTree: (projectId, works = false, supplies = false) =>
+      $app.api.get([ 'my/projects*/structure/tree', projectId, ]).query({ works, supplies, }),
     partners: (projectId) => $app.api.get([ 'my/projects*/partners', projectId, ]),
     participants: (projectId) => $app.api.get([ 'my/projects*/participants', projectId, ]),
     signers: (projectId) => $app.api.get([ 'my/projects*/signers', projectId, ]),
@@ -40,19 +41,83 @@ export default class CustomApi {
   
   
   /**
-   * Projects
+   * Edms
    */
-  projects = {
-    get: (id) => $app.api.get([ 'projects', id, ]),
-    create: (data) => $app.api.post([ 'projects', ]).data(data),
-    edit: (id, data) => $app.api.patch([ 'projects', id, ]).data(data),
-    delete: (id) => $app.api.delete([ 'projects', id, ]),
-    createSub: (parentId, data) => $app.api.post([ 'projects*/sub', parentId, ]).data(data),
+  edms = {
+    templates: {
+      get: () => $app.api.get([ 'templates', ]),
+    },
+    documents: {
+      get: (id) => $app.api.get([ 'edms/documents*', id, ]),
+      getByProject: (projectId, id) => $app.api.get([ 'edms/projects*/documents*', projectId, id, ]),
+      create: (data) => $app.api.post([ 'edms/documents', ]).data(data),
+      edit: (id, data) => $app.api.patch([ 'edms/documents*', id, ]).data(data),
+      changeStatus: (id, status) => $app.api.patch([ 'edms/documents*/status', id, ]).data({ status, }),
+      delete: (id) => $app.api.delete([ 'edms/documents*', id, ]),
+      files: {
+        get: (documentId) => $app.api.get([ 'edms/documents*/files', documentId, ]),
+        create: (documentId, data) => $app.api.post([ 'edms/documents*/files', documentId, ]).data(data),
+        edit: (documentId, fileId, data) => $app.api.patch([ 'edms/documents*/files*', documentId, fileId, ]).data(data),
+        delete: (documentId, fileId) => $app.api.delete([ 'edms/documents*/files*', documentId, fileId, ]),
+      },
+  
+      getFilesByWork: (id) => $app.api.get([ 'edms/documents/works*/documents', id, ]),
+      getFilesByConstruction: (id) => $app.api.get([ 'edms/documents/constructions*/documents', id, ]),
+    },
+    signs: {
+      info: (token) => $app.api.get([ 'edms/signs*', token, ]),
+      sign: (id, data) => $app.api.post([ 'edms/signs*/sign', id, ]).data(data),
+    },
+    records: {
+      get: (documentId, tableName, recordId) => $app.api.get([ 'edms/documents***', documentId, tableName, recordId, ]),
+      create: (documentId, tableName, data) => $app.api.post([ 'edms/documents**', documentId, tableName, ]).data(data),
+      edit: (documentId, tableName, recordId, data) => $app.api.patch([ 'edms/documents***', documentId, tableName, recordId, ]).data(data),
+      changeStatus: (documentId, tableName, recordId, data) =>
+        $app.api.patch([ 'edms/documents***/status', documentId, tableName, recordId, ]).data(data),
+      sign: (documentId, tableName, recordId, data) => $app.api.post([ 'edms/documents***/sign', documentId, tableName, recordId, ]).data(data),
+      delete: (documentId, tableName, recordId) => $app.api.delete([ 'edms/documents***', documentId, tableName, recordId, ]),
+    },
+  }
+  
+  
+  /**
+   * iQurylys
+   */
+  iq = {
+    projects: {
+      get: (id) => $app.api.get([ 'projects', id, ]),
+      getActs: (id) => $app.api.get([ 'projects*/acts', id, ]),
+      create: (data) => $app.api.post([ 'projects', ]).data(data),
+      edit: (id, data) => $app.api.patch([ 'projects*', id, ]).data(data),
+      delete: (id) => $app.api.delete([ 'projects', id, ]),
+    },
   
     sections: {
       create: (data) => $app.api.post([ 'projects*/sections', ]).data(data),
       edit: (id, data) => $app.api.patch([ 'projects/sections*', id, ]).data(data),
       delete: (id) => $app.api.delete([ 'projects/sections*', id, ]),
+    },
+    works: {
+      get: (projectId) => $app.api.get([ 'projects*/works', projectId, ]),
+      supplies: {
+        get: (projectId, workId) => $app.api.get([ 'projects*/works*/supplies*', projectId, workId, ]),
+      },
+      types: {
+        get: (id) => $app.api.get([ 'works/types*', id, ]).size(200),
+      },
+    },
+  
+    documents: {
+      get: (id) => $app.api.get([ 'documents*', id, ]),
+      getByProject: (projectId) => $app.api.get([ 'projects*/documents', projectId, ]).size(999),
+      getTypes: () => $app.api.get([ 'documents/types', ]).size(999),
+      create: (data) => $app.api.post([ 'documents', ]).data(data),
+      createVersion: (id, file) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        return $app.api.post([ 'documents*/version', id, ]).data(formData).config({ headers: { 'Content-Type': 'multipart/form-data', }, })
+      },
+      edit: (id, data) => $app.api.patch([ 'documents*', id, ]).data(data),
     },
     
     partners: {
@@ -79,29 +144,6 @@ export default class CustomApi {
         create: (id, data) => $app.api.post([ 'projects/participants*/accesses', id, ]).data(data),
       },
     },
-    works: {
-      get: (projectId) => $app.api.get([ 'projects*/works', projectId, ]),
-      supplies: {
-        get: (projectId, workId) => $app.api.get([ 'projects*/works*/supplies*', projectId, workId, ]),
-      },
-      types: {
-        get: (id) => $app.api.get([ 'works/types*', id, ]).size(200),
-      },
-    },
-  }
-  
-  documents = {
-    get: (id) => $app.api.get([ 'documents*', id, ]),
-    getByProject: (projectId) => $app.api.get([ 'projects*/documents', projectId, ]).size(999),
-    getTypes: () => $app.api.get([ 'documents/types', ]).size(999),
-    getClasses: () => $app.api.get([ 'documents/classes', ]).size(999),
-    create: (data) => $app.api.post([ 'documents', ]).data(data),
-    createVersion: (id, file) => {
-      const formData = new FormData()
-      formData.append('file', file)
-      return $app.api.post([ 'documents*/version', id, ]).data(formData).config({ headers: { 'Content-Type': 'multipart/form-data', }, })
-    },
-    edit: (id, data) => $app.api.patch([ 'documents*', id, ]).data(data),
   }
   
   /**
@@ -112,6 +154,7 @@ export default class CustomApi {
     invite: {
       get: (token) => $app.api.get([ 'auth/invite*', token, ]),
     },
+    info: (companyId, projectId) => $app.api.get([ 'auth/info', ]).query({ companyId, projectId, }),
     login: (data) => $app.api.post('auth/login').data(data),
     register: (data, token = '') => $app.api.post([ 'auth/register*', token, ]).data(data),
     registerCompany: (data, token = '') => $app.api.post([ 'auth/registerCompany*', token, ]).data(data),
@@ -127,9 +170,11 @@ export default class CustomApi {
   
   files = {
     get: (id) => $app.api.get([ 'files*', id, ]),
-    create: (file) => {
+    create: (data) => {
       const formData = new FormData()
-      formData.append('file', file)
+      $n.each(data, (value, name) => {
+        formData.append(name, value)
+      })
       return $app.api.post([ 'files', ]).data(formData).config({ headers: { 'Content-Type': 'multipart/form-data', }, })
     },
     delete: (id) => $app.api.delete([ 'files*', id, ]),

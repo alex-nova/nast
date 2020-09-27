@@ -28,7 +28,7 @@
       <template v-if="work">
         <div v-for="(item, i) in supplies" :key="i" class="materials">
           <n-input :value="item.title" text inline />
-          <n-input class="count" :value="suppliesCount[item.id]" title="Количество" inline @input="(v) => changeSupplyCount(item.id, v)" />
+          <n-input class="count" :value="suppliesCount[item.id]" title="Количество" inline :input="(v) => changeSupplyCount(item.id, v)" />
           <span class="unit">{{ item.unit }}</span>
         </div>
       </template>
@@ -98,10 +98,10 @@ export default {
     loadSupplies() {
       this.$var('loadSupplies', false)
       this.suppliesCount = {}
-      $api.projects.works.supplies.get(this.projectId, this.work.id).then((response) => {
+      $api.iq.works.supplies.get(this.projectId, this.work.id).then((response) => {
         this.supplies = response.data.content
-        this.supplies.map((item) => {
-          this.suppliesCount[item.id] = this.getSupplyCount(item)
+        this.supplies.forEach((item) => {
+          this.$set(this.suppliesCount, item.id, this.getSupplyCount(item))
         })
       }).finally(() => {
         this.$var('loadSupplies', false)
@@ -109,13 +109,13 @@ export default {
     },
     changeWorkCount(value) {
       this.workCount = value
-      this.supplies.map((item) => {
-        this.suppliesCount[item.id] = this.getSupplyCount(item)
+      this.supplies.forEach((item) => {
+        this.$set(this.suppliesCount, item.id, this.getSupplyCount(item))
       })
       this.change()
     },
     changeSupplyCount(id, value) {
-      this.suppliesCount[id] = value
+      this.$set(this.suppliesCount, id, value)
       this.change()
     },
     change() {

@@ -56,7 +56,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.documents.getByProject(this.project.id).then((response) => {
+      $api.iq.documents.getByProject(this.project.id).then((response) => {
         this.data = response.data.content
       }).finally(() => {
         this.$var('load', false)

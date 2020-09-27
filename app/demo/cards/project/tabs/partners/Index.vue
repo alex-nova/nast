@@ -57,7 +57,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      const api = $api.projects.partners.get(this.project.id)
+      const api = $api.iq.partners.get(this.project.id)
       if (!this.showAll) {
         api.filter({ delegator: $app.store.getter('app.company').id, })
       }

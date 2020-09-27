@@ -18,6 +18,7 @@
           <n-input title="Имя" v-bind="$form.input('fullName')" />
           <n-input title="Телефон" v-bind="$form.input('phone')" />
           <n-input title="Email" v-bind="$form.input('email')" />
+          <n-input title="Должность" v-bind="$form.input('worker.position')" />
         </n-items>
       </template>
       <template #tab.docs>
@@ -47,7 +48,7 @@ export default {
       model: {},
       tabs: [
         { name: 'info', title: 'Информация', callback: this.save, },
-        { name: 'docs', title: 'Документы', },
+        // { name: 'docs', title: 'Документы', },
         // { name: 'roles', title: 'Компании', },
         // { name: 'roles', title: 'Проекты', },
       ],

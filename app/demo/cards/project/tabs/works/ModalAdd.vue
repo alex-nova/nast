@@ -33,7 +33,7 @@ export default {
       this.$var('load', true)
       const promises = [
         $api.my.structureTree(this.project.id),
-        $api.projects.works.types.get(),
+        $api.iq.works.types.get(),
       ]
       Promise.all(promises).then((result) => {
         this.structure = result[0].data.content

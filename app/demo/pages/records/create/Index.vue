@@ -11,6 +11,7 @@
         </n-items>
       </n-card>
   
+      <block-materials v-if="journal.name === 'input'" :project-id="projectId" class="items" @change="materialChange" />
       <block-works v-if="journal.name === 'main'" :project-id="projectId" class="items" @change="supplyChange" />
     </div>
     
@@ -22,9 +23,11 @@
         <template v-if="journal.front">
           <n-input v-for="field in journal.front.create" :key="field.name" :title="field.title" v-bind="$form.input(field.name)" />
         </template>
-        <n-select title="Чертежи" :data="figures" :value.sync="selectedFigures" option-title="title" selected-title="title" item-value="id" />
+        <div v-if="journal.name === 'input'"><n-upload title="Документы входного контроля" :value.sync="inputDocs" multi /></div>
+        <n-select v-if="journal.name === 'main'" title="Чертежи" :data="figures" :value.sync="selectedFigures"
+                  option-title="file.name" selected-title="file.name" item-value="id" />
         <div style="width: 100%"><n-upload title="Фото/видео файлы" :value.sync="files" multi /></div>
-        <div><n-upload title="Исполнительные схемы" :value.sync="schemas" multi /></div>
+        <div v-if="journal.name === 'main'"><n-upload title="Исполнительные схемы" :value.sync="schemas" multi /></div>
       </n-items>
     </n-card>
     
@@ -39,10 +42,11 @@
 
 <script>
 import BlockWorks from './WorksBlock'
+import BlockMaterials from './MaterialBlock'
 
 export default {
   name: 'PageRecordCreate',
-  components: { BlockWorks, },
+  components: { BlockMaterials, BlockWorks, },
   data() {
     return {
       publishedAt: $app.date.format($app.date.now()),
@@ -51,6 +55,8 @@ export default {
       fields: [],
       files: [],
       schemas: [],
+      inputDocs: [],
+      material: null, // входной контроль
       supply: null,
       signers: {},
       selectedSigners: {},
@@ -76,9 +82,9 @@ export default {
       this.$var('load', true)
       const promises = [
         $api.journals.get(this.projectId, this.journalName),
-        $api.projects.get(this.projectId),
+        $api.iq.projects.get(this.projectId),
         $api.journals.records.getColumns(this.projectId, this.journalName, 'records'),
-        $api.documents.getByProject(this.projectId).filter({ type: 'figure', }),
+        $api.iq.documents.getByProject(this.projectId).filter({ type: 'search:psd-figure', }).tree(),
       ]
       Promise.all(promises).then((response) => {
         this.journal = response[0].data.content
@@ -93,25 +99,35 @@ export default {
     supplyChange(value) {
       this.supply = value
     },
+    materialChange(value) {
+      this.material = value
+    },
     submit() {
       this.$var('loadSubmit', true)
   
       let api = $n.reduce(this.files, (result, file) => {
         result.push({
-          promise: $api.files.create(file),
+          promise: $api.files.create({ file, }),
           type: 'file',
         })
         return result
       }, [])
       api = $n.reduce(this.schemas, (result, file) => {
         result.push({
-          promise: $api.files.create(file),
+          promise: $api.files.create({ file, }),
           type: 'schema',
         })
         return result
       }, api)
+      api = $n.reduce(this.inputDocs, (result, file) => {
+        result.push({
+          promise: $api.files.create({ file, }),
+          type: 'input-34',
+        })
+        return result
+      }, api)
       
-      const callback = (files, schemas) => {
+      const callback = (files, schemas, inputDocs) => {
         const data = {
           record: {
             ...this.$form.get(),
@@ -122,8 +138,10 @@ export default {
             }, {}),
           },
           supply: this.supply,
+          material: this.material,
           files,
           schemas,
+          inputDocs,
           figures: $n.reduce(this.selectedFigures, (result, v) => {
             result.push(v.id)
             return result
@@ -131,7 +149,7 @@ export default {
         }
         $api.journals.records.create(this.projectId, this.journalName, 'records', data).then((response) => {
           if (this.journal.name === 'main') {
-            this.$router.push({ name: 'journals.index', })
+            this.$router.push({ name: 'journals.main', params: { projectId: this.project.id, }, })
           } else {
             this.$router.push({ name: 'journals.spec', params: { id: this.journal.id, projectId: this.project.id, }, })
           }
@@ -144,16 +162,18 @@ export default {
         $n.promiseObjects(api).then((result) => {
           const files = []
           const schemas = []
+          const inputDocs = []
           $n.each(result, (file) => {
             if (file.type === 'file') files.push(file.response.data.content.id)
             if (file.type === 'schema') schemas.push(file.response.data.content.id)
+            if (file.type === 'input-34') inputDocs.push(file.response.data.content.id)
           })
-          callback(files, schemas)
+          callback(files, schemas, inputDocs)
         }).finally(() => {
           this.$var('loadSubmit', false)
         })
       } else {
-        callback([], [])
+        callback([], [], [])
       }
     },
   },

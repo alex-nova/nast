@@ -46,7 +46,7 @@ export default {
         workerId: this.worker.id,
         position: this.$form.get('position'),
       }
-      $api.projects.participants.create(this.project.id, data).then((response) => {
+      $api.iq.participants.create(this.project.id, data).then((response) => {
         this.$emit('submit', response.data.content)
         this.$emit('close')
       }).finally(() => {

@@ -76,7 +76,7 @@ export default {
         type: this.type.value,
         typeName: this.type.title,
       }
-      $api.projects.docs.post(this.modelId, data).then((response) => {
+      $api.iq.docs.post(this.modelId, data).then((response) => {
         this.load()
         this.$var('add', false)
       })

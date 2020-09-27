@@ -80,7 +80,6 @@ export default {
     },
     setToStorage({ state, commit, }, { name, value, }) {
       commit('set', { name, value, })
-      // console.log(name, value)
       return $app.storage.set(name, {
         data: value.data,
         updatedAt: value.updatedAt.format(),

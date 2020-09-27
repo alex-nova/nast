@@ -8,6 +8,8 @@
         <n-input title="Описание" v-bind="$form.input('description')" />
         <n-input title="Начало строительства" v-bind="$form.input('startedAt')" />
         <n-input title="Окончание строительства" v-bind="$form.input('endedAt')" />
+        <n-upload title="Фото" :value.sync="file" />
+        
         <n-button color="primary" wide type="submit">Создать</n-button>
       </n-items>
     </n-form>
@@ -19,6 +21,7 @@ export default {
   name: 'CreateProject',
   props: [ 'submit', ],
   data: () => ({
+    file: null,
   }),
   created() {
     this.$form.init({
@@ -41,14 +44,30 @@ export default {
     },
     s_submit() {
       this.$var('loading', true)
-      $api.projects.create(this.$form.get()).then((response) => {
+  
+      if (this.file) {
+        $api.files.create({ file: this.file, }).then((response) => {
+          this.callback(response.data.content.id)
+        }).catch(() => {
+          this.$var('loading', false)
+        })
+      } else {
+        this.callback()
+      }
+    },
+    callback(fileId) {
+      const data = {
+        ...this.$form.get(),
+        avatar: fileId,
+      }
+      $api.iq.projects.create(data).then((response) => {
         this.$d.reloadTag('projects')
         this.$emit('close')
         this.submit()
       }).finally(() => {
         this.$var('loading', false)
       })
-    },
+    }
   },
 }
 </script>

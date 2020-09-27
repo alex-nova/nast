@@ -48,7 +48,7 @@ export default {
   methods: {
     init(act) {
       if (act) {
-        const content = act.content.replace(/\(\*\*(?!\*\*\)).+\*\*\)/g, (str) => {
+        const content = act.content.replace(/!\*\*[^!]+\*\*!/g, (str) => {
           str = str.substr(3, str.length - 6)
           const vars = str.split('**')
           if (vars[0] === 'var') {

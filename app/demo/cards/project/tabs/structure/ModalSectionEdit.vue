@@ -38,7 +38,7 @@ export default {
         ...this.$form.get(),
         type: this.type.value,
       }
-      $api.projects.sections.edit(this.model.id, data).then((response) => {
+      $api.iq.sections.edit(this.model.id, data).then((response) => {
         this.$emit('close')
         this.update()
       }).finally(() => {

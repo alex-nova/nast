@@ -34,7 +34,7 @@ export default {
   methods: {
     submit() {
       this.$var('loading', true)
-      $api.files.create(this.file).then((response) => {
+      $api.files.create({ file: this.file, }).then((response) => {
         const data = {
           fileId: response.data.content.id,
           ...this.$form.get(),

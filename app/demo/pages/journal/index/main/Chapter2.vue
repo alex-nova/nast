@@ -34,7 +34,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.projects.participants.get(this.project.id).then((response) => {
+      $api.iq.participants.get(this.project.id).then((response) => {
         this.data = response.data.content
       }).finally(() => {
         this.$var('load', false)

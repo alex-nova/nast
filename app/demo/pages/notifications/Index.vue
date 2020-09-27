@@ -1,14 +1,18 @@
 <template>
   <div class="page-company-index">
     <n-card>
-      <n-table :data="$d.get('companies')" :loading="$d.loading('companies')" :columns="columns">
-        <template #type="{item}">
+      <n-table :data="$d.get('notifications')" :loading="$d.loading('notifications')" :columns="columns">
+        <template #notification="{item}">
+          {{ item.title }}
+        </template>
+        <template #tools="{item}">
           <template v-if="item.type === 'project.invite.company'">
-            Вашу компанию {{ item.company.title }} пригласили на проект {{ item.project.title }}.
             <n-button @click="resolveInvite(item, true)">Принять</n-button>
             <n-button @click="resolveInvite(item, false)">Отклонить</n-button>
           </template>
-          <n-link :to="{ query: { modal: 'company', id: item.id, },}"><n-button icon="pen" flat round /></n-link>
+          <template v-else>
+            <n-button icon="pen" flat round @click="types[item.type](item)" />
+          </template>
         </template>
       </n-table>
     </n-card>
@@ -18,17 +22,26 @@
 <script>
 export default {
   name: 'PageNotificationsIndex',
-  data: () => ({
-    types: {
-      'project.invite.company': 'Вас пригласили на проект',
+  data() {
+    return {
+      types: {
+        'project.invite.company': this.resolveInvite,
+        'document.sign': this.documentSign,
+      },
+      columns: [
+        { name: 'notification', title: 'Уведомление', },
+        { name: 'tools', title: '', },
+      ],
+    }
+  },
+  watch: {
+    '$route.query'() {
+      this.$d.reload('notifications')
     },
-    columns: [
-      { name: 'type', title: 'Уведомление', },
-    ],
-  }),
+  },
   load(router) {
     return {
-      companies: {
+      notifications: {
         api: $api.my.notifications(),
         tag: 'companies',
       },
@@ -51,9 +64,12 @@ export default {
   methods: {
     resolveInvite(item, accepted) {
       $app.store.mutation('app.company', item.company)
-      $api.projects.partners.acceptInvite(item.project.id, { accepted, }).then(() => {
-        this.$router.push({ name: 'projects.list', })
+      $api.iq.partners.acceptInvite(item.projectId, { accepted, }).then(() => {
+        this.$router.push({ name: 'projects.index', params: { projectId: item.projectId, }, })
       })
+    },
+    documentSign(item) {
+      this.$router.push({ query: { ...this.$route.query, document: item.modelId, }, })
     },
   },
 }

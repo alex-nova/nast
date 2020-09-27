@@ -3,14 +3,14 @@
     <n-loader :loading="$store.state.app.loading" />
     <div class="sidebar">
       <div class="sidebar-content">
-        <div class="logo">{{ names['logo'] }}</div>
+        <div class="logo"><img :src="logo" style="height: 34px" /></div>
         <div class="other">
           <!--          <n-select :data="langs" value="Русский" inline />-->
         </div>
         <div class="footer">
-          {{ names['product'] }}
+          iQurylys v1.1.7
           <br />
-          {{ names['company'] }}
+          ТОО «Direct Construction Service»
         </div>
       </div>
     </div>
@@ -22,18 +22,20 @@
 
 <script>
 import names from './../names'
+import logo from 'assets/images/logo.png'
 
 export default {
   name: 'LayoutAuth',
   data: () => ({
     names: names(),
+    logo,
     langs: [ 'Русский', 'Казахский', 'Английский', ],
   }),
 }
 </script>
 
 <style lang="scss">
-  @import url('https://fonts.googleapis.com/css?family=Raleway|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i');
+  @import url('https://fonts.googleapis.com/css?family=Ubuntu:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i');
   @import '~nast-ui/src/style/global';
   
   @include initialize((
@@ -45,8 +47,8 @@ export default {
       ),
       
       typography: (
-        header-font: 'Roboto, sans-serif',
-        text-font: '400 1em Roboto, sans-serif',
+        header-font: 'Ubuntu, sans-serif',
+        text-font: '400 1em Ubuntu, sans-serif',
         h1-font: '300 2em var(--header-font)',
         h3-font: '400 1.2em var(--header-font)',
         text-color: #444,
@@ -76,6 +78,8 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+  @import '~nast-ui/src/style/global';
+  
   .layout-auth {
     display: flex;
     min-height: 100vh;
@@ -94,6 +98,7 @@ export default {
       
       .sidebar-content {
         margin-top: 15vh;
+        margin-bottom: 50px;
         text-align: right;
         padding-right: 50px;
         width: 100%;
@@ -120,11 +125,30 @@ export default {
       }
     }
     .content {
-      margin-top: 15vh;
+      margin: 15vh 40px 0 40%;
       padding-left: 50px;
       padding-bottom: 100px;
-      margin-left: 40%;
       width: 60%;
+    }
+    
+    @include media(null, md) {
+      flex-direction: column;
+      
+      .sidebar {
+        height: auto;
+        position: static;
+        width: 100%;
+        .sidebar-content {
+          margin: 50px 20px;
+          text-align: left;
+          float: none;
+        }
+      }
+      .content {
+        margin: 60px 0 80px 0;
+        width: 100%;
+        padding: 0 20px;
+      }
     }
   }
 </style>

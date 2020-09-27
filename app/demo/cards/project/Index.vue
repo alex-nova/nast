@@ -108,7 +108,7 @@ export default {
   methods: {
     load() {
       this.$var('loading', true)
-      $api.projects.get(this.$route.query.id).then((response) => {
+      $api.iq.projects.get(this.$route.query.id).then((response) => {
         this.model = response.data.content
         this.model.startedAt = $app.date.format(this.model.startedAt)
         this.model.endedAt = $app.date.format(this.model.endedAt)
@@ -119,7 +119,7 @@ export default {
     save() {
       if (this.$form.check()) {
         this.$var('loading', true)
-        $api.projects.edit(this.$route.query.id, this.$form.diff()).then((response) => {
+        $api.iq.projects.edit(this.$route.query.id, this.$form.diff()).then((response) => {
           this.model = response.data.content
           this.model.startedAt = $app.date.format(this.model.startedAt)
           this.model.endedAt = $app.date.format(this.model.endedAt)

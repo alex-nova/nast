@@ -89,7 +89,7 @@ export default {
         type: this.type.id,
         object: this.object.name,
       }
-      $api.projects.works.post(data).then((response) => {
+      $api.iq.works.post(data).then((response) => {
         $d.reload.works()
         this.$var('add', false)
       })

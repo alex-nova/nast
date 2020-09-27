@@ -52,7 +52,7 @@ export default {
   methods: {
     loadMain() {
       this.$var('loadMain', true)
-      $api.projects.partners.getMain(this.project.id).then((response) => {
+      $api.iq.partners.getMain(this.project.id).then((response) => {
         this.data = response.data.content
       }).finally(() => {
         this.$var('loadMain', false)

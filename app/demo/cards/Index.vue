@@ -1,9 +1,14 @@
 <template>
-  <div v-if="open" class="modals">
-    <CardProject />
-    <CardCompany />
-    <CardRecord />
-    <CardUser />
+  <div>
+    <div v-if="open" class="modals">
+      <CardProject />
+      <CardCompany />
+      <CardRecord />
+      <CardUser />
+    </div>
+    <div v-if="document">
+      <CardDocument />
+    </div>
   </div>
 </template>
 
@@ -12,13 +17,17 @@ import CardUser from './user/Index'
 import CardProject from './project/Index'
 import CardCompany from './company/Index'
 import CardRecord from './record/Index'
+import CardDocument from './document/Index'
 
 export default {
   name: 'Cards',
-  components: { CardRecord, CardCompany, CardProject, CardUser, },
+  components: { CardDocument, CardRecord, CardCompany, CardProject, CardUser, },
   computed: {
     open() {
       return this.$route.query.modal
+    },
+    document() {
+      return this.$route.query.document
     },
   },
 }

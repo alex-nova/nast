@@ -11,8 +11,8 @@
     </n-divide>
     
     <n-table :columns="columns" :data="data">
-      <template #createdAt="{item}">
-        {{ $app.date.format(item.createdAt) }}
+      <template #publishedAt="{item}">
+        {{ $app.date.format(item.publishedAt) }}
       </template>
       <template #date="{item}">
         {{ $app.date.format(item.date) }}

@@ -8,16 +8,16 @@
           {{ document.partner.company.title }}
           <span style="font-size: .9em; opacity: .9;">[{{ document.partner.company.bin }}]</span>
         </n-form-item>
-        
+
         <n-form-item v-if="document.type" title="Документ" active>
           {{ document.type.title }}
           <span v-if="document.class" style="font-size: .9em; opacity: .9;">[{{ document.class.title }}]</span>
         </n-form-item>
-  
+
         <n-input title="Название" v-bind="$form.input('title')" text />
-        
+
         <n-input v-if="document.type.name === 'figure'" title="Шифр" v-bind="$form.input('code')" text />
-        
+
         <n-form-item v-if="document.type.hasVersions" title="Версии" active>
           <n-button style="font-size: .8em; margin-bottom: 5px" @click="$var('add', document)">Загрузить новую версию</n-button>
           <n-table :data="document.versions" :columns="columns" style="font-size: .8em;">
@@ -40,7 +40,7 @@
         <n-button style="margin-top: 10px;" @click="$emit('close')">Закрыть</n-button>
       </n-divide>
     </n-form>
-  
+
     <modal-add-version v-if="$var('add')" :document="document" @submit="submit" @close="$var('add', false)" />
   </n-modal>
 </template>
@@ -66,7 +66,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.documents.get(this.documentId).with({ versions: {}, }).then((result) => {
+      $api.iq.documents.get(this.documentId).with({ versions: {}, }).then((result) => {
         this.document = result.data.content
         this.$form.init({
           title: this.document.title,

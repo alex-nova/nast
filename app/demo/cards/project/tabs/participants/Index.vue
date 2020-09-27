@@ -70,7 +70,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      const api = $api.projects.participants.get(this.project.id)
+      const api = $api.iq.participants.get(this.project.id)
       if (!this.showAll) {
         api.filter({ company: $app.store.getter('app.company').id, })
       }

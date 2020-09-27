@@ -8,9 +8,9 @@ export default (type = 'eq') => {
       company: '© 2017 - 2020 ICORE Software Development',
     },
     eq: {
-      logo: 'E-Qurylys',
-      logoMin: 'EQ',
-      product: 'E-Qurylys 1.0',
+      logo: 'iQurylys',
+      logoMin: 'iQ',
+      product: 'iQurylys 1.0',
       company: '© 2020 TOO "DCS инжиниринг"',
     },
   }

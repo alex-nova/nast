@@ -43,6 +43,19 @@ export default {
     catch: (error) => {
       if (error.response?.status === 401) {
         $app.auth.logout()
+      } else if (error.response?.status === 422) {
+        const message = error.response?.data.message
+        const data = error.response?.data.data
+        let errors = ''
+        $n.each(data, (item) => {
+          errors += item[0]
+        })
+        Vue.$toast.open({
+          message: 'Ошибка: ' + message + ', ' + errors,
+          type: 'error',
+          position: 'top-right',
+          duration: 5000,
+        })
       } else {
         const message = error.response?.data.message || 'Сервер недоступен'
         Vue.$toast.open({
@@ -72,8 +85,6 @@ export default {
       return [
         { name: 'index', },
         { name: 'company.list', },
-        { name: 'projects.list', },
-        { name: 'journals.index', },
         { name: 'notifications.list', },
       ]
     },
@@ -98,13 +109,24 @@ export default {
   },
   
   form: {
-    input: (self, name, form) => ({
-      name,
-      value: self.$form.get(name, form),
-      input: (value) => self.$form.set(name, value, form),
-      danger: self.$form.errors(name, form),
-      text: self.$form.editable(form) === false,
-    }),
+    input: (self, name, type, form) => {
+      if (type === 'select') {
+        return {
+          name,
+          value: self.$form.get(name, form),
+          input: (value) => self.$form.set(name, value, form),
+          danger: self.$form.errors(name, form),
+          text: self.$form.editable(form) === false,
+        }
+      }
+      return {
+        name,
+        value: self.$form.get(name, form),
+        input: (value) => self.$form.set(name, value, form),
+        danger: self.$form.errors(name, form),
+        text: self.$form.editable(form) === false,
+      }
+    },
     validations: {
       customRule(value) {
         return value.length === 14

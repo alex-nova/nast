@@ -2,7 +2,7 @@
 export default () => ({
   app: {
     pages: {
-      index: 'Главная страница',
+      index: 'Проекты',
       user: 'Карточка пользователя',
       profile: 'Профиль',
       company: {
@@ -12,12 +12,14 @@ export default () => ({
         admins: 'Администраторы',
       },
       projects: {
+        index: 'Карточка проекта',
         group: 'Проекты',
         list: 'Проекты',
         info: 'Проект',
       },
       journals: {
-        index: 'Журнал производства работ',
+        main: 'Журнал производства работ',
+        spec: 'Спец журнал',
       },
       notifications: {
         list: 'Уведомления',

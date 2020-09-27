@@ -1,9 +1,9 @@
 <template>
   <div class="page-journal">
-    <n-card :loading="$var('loadProjects')">
-      <n-select title="Проект" :data="projects" :value.sync="project" option-title="name" selected-title="name" item-value="id" inline />
+    <n-card v-if="project">
+      <n-input title="Проект" :value="project.title" text />
     </n-card>
-    <n-card :loading="$var('loadJournal')">
+    <n-card :loading="$var('load')">
       <n-tabs :data="tabs" :active.sync="activeTab" />
       <n-tabs-content v-if="project" class="content" :active.sync="activeTab">
         <template #chapter1>
@@ -44,38 +44,31 @@ export default {
     project: null,
     projects: [],
   }),
-  watch: {
-    project(value) {
-      if (value) {
-        $app.store.mutation('app.project', this.project)
-      }
+  computed: {
+    projectId() {
+      return this.$route.params.projectId
     },
   },
   created() {
-    this.loadProjects()
+    this.loadProject()
   },
   methods: {
-    loadProjects() {
-      this.$var('loadProjects', true)
-      $api.my.projects().then((response) => {
-        this.projects = response.data.content
-        if ($app.store.state('app.project')) {
-          this.project = $app.store.state('app.project')
-        } else {
-          this.project = this.projects[0]
-        }
+    loadProject() {
+      this.$var('load', true)
+      $api.iq.projects.get(this.projectId).then((response) => {
+        this.project = response.data.content
         this.loadJournal()
-      }).finally(() => {
-        this.$var('loadProjects', false)
+      }).catch(() => {
+        this.$var('load', false)
       })
     },
     loadJournal() {
-      this.$var('loadJournal', true)
+      this.$var('load', true)
       $api.journals.get(this.project.id, this.$route.params.journal).then((response) => {
         this.journal = response.data.content
         $app.router.setPage({ title: this.journal.title, })
       }).finally(() => {
-        this.$var('loadJournal', false)
+        this.$var('load', false)
       })
     },
   },

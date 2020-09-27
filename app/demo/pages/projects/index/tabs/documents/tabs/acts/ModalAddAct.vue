@@ -4,7 +4,7 @@
     <div>
       <n-select title="Шаблон" :data="templates" :value.sync="template" item-value="id" option-title="title" selected-title="title" />
     </div>
-    <c-act v-if="template" :project-id="project.id" :act="template" :values.sync="values" editable />
+    <n-document v-if="template" :project-id="project.id" :template="template" :document.sync="document" />
     <div v-else class="empty-info">Выберите шаблон</div>
     <n-divide v-if="template">
       <div></div>
@@ -14,15 +14,15 @@
 </template>
 
 <script>
-import CAct from 'components/act/Index'
+import NDocument from 'components/Document/default/Index'
 
 export default {
   name: 'ModalAddAct',
-  components: { CAct, },
+  components: { NDocument, },
   props: [ 'project', ],
   data: () => ({
-    template: null,
-    values: {},
+    template: undefined,
+    document: { fields: {}, tables: {}, signs: {}, },
     templates: [],
   }),
   created() {
@@ -31,7 +31,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.acts.getTemplates(this.project.id).then((response) => {
+      $api.edms.templates.get().filter({ tag: 'act', }).all().then((response) => {
         this.templates = response.data.content
       }).finally(() => {
         this.$var('load', false)
@@ -41,11 +41,15 @@ export default {
       this.$var('load', true)
       const data = {
         templateId: this.template.id,
-        values: this.values,
+        ownerId: this.project.id,
+        ownerType: 'project',
+        fields: this.document.fields,
+        tables: this.document.tables,
       }
-      $api.acts.create(this.project.id, data).then((response) => {
+      $api.edms.documents.create(data).then((response) => {
         this.$emit('submit', response.data.content)
         this.$emit('close')
+        this.$router.push({ query: { ...this.$route.query, _document: response.data.content.id, }, })
       }).finally(() => {
         this.$var('load', false)
       })
@@ -56,7 +60,7 @@ export default {
 
 <style lang="scss" scoped>
   .modal-add-act {
-    .c-act {
+    .n-document {
       margin: 30px 0 20px;
     }
     .empty-info {

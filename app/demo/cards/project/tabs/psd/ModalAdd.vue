@@ -8,7 +8,6 @@
         <template v-if="type.name === 'figure'">
           <n-select title="Классификатор" :data="classes" :value.sync="selectedClass"
                     item-value="id" option-title="title" selected-title="title" />
-          <n-input title="Шифр" v-bind="$form.input('code')" />
           <n-select title="Проектная компания" :data="projectors" :value.sync="projector"
                     item-value="id" option-title="company.title" selected-title="company.title" />
         </template>
@@ -39,7 +38,6 @@ export default {
   created() {
     this.loadData()
     this.$form.init({
-      code: undefined,
       endedAt: undefined,
     })
   },
@@ -47,9 +45,9 @@ export default {
     loadData() {
       this.$var('load', true)
       const apis = [
-        $api.documents.getTypes(),
-        $api.documents.getClasses(),
-        $api.projects.partners.get(this.project.id).filter({ role: 'projector', }),
+        $api.iq.documents.getTypes(),
+        $api.iq.documents.getClasses(),
+        $api.iq.partners.get(this.project.id).filter({ role: 'projector', }),
       ]
       Promise.all(apis).then((response) => {
         this.types = response[0].data.content
@@ -63,7 +61,7 @@ export default {
       this.$var('load', true)
       const api = $n.reduce(this.files, (result, file) => {
         result.push({
-          promise: $api.files.create(file),
+          promise: $api.files.create({ file, }),
           title: file.name.split('.').slice(0, -1).join('.'),
         })
         return result
@@ -77,10 +75,9 @@ export default {
           typeId: this.type.id,
           classId: this.selectedClass.id,
           files: files.map((item) => ({ file: item.response.data.content.id, title: item.title, })),
-          code: this.$form.get('code'),
           endedAt: this.$form.get('endedAt'),
         }
-        $api.documents.create(data).then((result) => {
+        $api.iq.documents.create(data).then((result) => {
           this.$emit('submit')
           this.$emit('close')
         }).finally(() => {

@@ -74,7 +74,7 @@ export default {
         type: this.type.id,
         object: this.object.name,
       }
-      $api.projects.docs2.post(this.$route.params.id, data).then((response) => {
+      $api.iq.docs2.post(this.$route.params.id, data).then((response) => {
         $d.reload.projectFiles2(this.$route.params.id)
         this.$var('add', false)
       })

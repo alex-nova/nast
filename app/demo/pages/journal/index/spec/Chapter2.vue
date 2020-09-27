@@ -6,8 +6,8 @@
     </div>
     <n-button style="margin: 10px 0; float: right;" @click="newRecord">Создать запись</n-button>
     <n-table :columns="columns" :data="data">
-      <template #createdAt="{item}">
-        {{ $app.date.format(item.createdAt) }}
+      <template #publishedAt="{item}">
+        {{ $app.date.format(item.publishedAt) }}
       </template>
       <template #tools="{item}">
         <n-link :to="{query: { modal: 'record', id: item.id, projectId: project.id, journal: $route.params.journal, type: 'records', }}"><n-button icon="eye" /></n-link>
@@ -25,7 +25,7 @@ export default {
   }),
   computed: {
     columns() {
-      if (!this.journal.front) {
+      if (!this.journal?.front) {
         return []
       } else {
         return [
@@ -59,6 +59,10 @@ export default {
 
 <style lang="scss" scoped>
   .main-chapter1 {
-  
+    &::v-deep {
+      .n-table .row.header .cell {
+        min-width: 100px;
+      }
+    }
   }
 </style>

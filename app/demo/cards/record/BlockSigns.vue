@@ -58,8 +58,20 @@ export default {
   methods: {
     load() {
       this.$var('loading', true)
-      $api.journals.records.getSigns(this.projectId, this.journalId, this.recordId).then((response) => {
-        this.signs = response.data.content
+      const api = [
+        $api.journals.records.getSigns(this.projectId, this.journalId, this.recordId),
+        $api.auth.info($app.store.state('app.company').id, this.projectId),
+      ]
+      Promise.all(api).then((responses) => {
+        const me = responses[1].data.content
+        this.signs = responses[0].data.content.reduce((result, item) => {
+          if (item.name === 'pj_approver' ||
+            (item.name === 'author' && me?.participant?.role === 'Авторский надзор') ||
+            (item.name === 'tech' && me?.participant?.role === 'Технический надзор')) {
+            result.push(item)
+          }
+          return result
+        }, [])
       }).finally(() => {
         this.$var('loading', false)
       })

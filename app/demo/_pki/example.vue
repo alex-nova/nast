@@ -55,7 +55,7 @@ export default {
     submit() {
       this.$var('load', true)
       const api = $n.reduce(this.files, (result, file) => {
-        result.push($api.files.create(file))
+        result.push($api.files.create({ file, }))
         return result
       }, [])
       Promise.all(api).then((files) => {
