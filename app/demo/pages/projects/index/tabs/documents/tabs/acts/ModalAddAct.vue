@@ -69,8 +69,8 @@ export default {
       opacity: .5;
     }
     &::v-deep > .n-wrapper {
-      width: 1100px;
-      left: calc(50% - 550px);
+      width: 1300px;
+      left: calc(50% - 650px);
     }
   }
 </style>

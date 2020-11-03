@@ -1,18 +1,18 @@
 <template>
   <n-modal class="modal-edit-document" :loading="$var('load')" @close="close">
-    <n-divide v-if="document">
-      <div style="width: 100%">
-        <n-input title="Статус" :value="statuses[status]" text />
-      </div>
-      <n-items style="text-align: right">
-        <n-button v-if="status === 'draft'" @click="changeStatus('formed')">Отправить на согласование</n-button>
-        <!--        <n-button v-if="status === 'draft'" color="danger" icon="trash" flat round @click="remove" />-->
-      </n-items>
-    </n-divide>
+<!--    <n-divide v-if="document">-->
+<!--      <div style="width: 100%">-->
+<!--&lt;!&ndash;        <n-input title="Статус" :value="statuses[status]" text />&ndash;&gt;-->
+<!--      </div>-->
+<!--      <n-items style="text-align: right">-->
+<!--&lt;!&ndash;        <n-button v-if="status === 'draft'" @click="changeStatus('formed')">Отправить на согласование</n-button>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <n-button v-if="status === 'draft'" color="danger" icon="trash" flat round @click="remove" />&ndash;&gt;-->
+<!--      </n-items>-->
+<!--    </n-divide>-->
     
     <n-document
       v-if="me && project" :template="template" :document="document" :editable="status === 'draft'"
-      :author-id="me.user.id" :settings="settings"
+      :author-id="me.id" :me="me" :settings="settings"
       :project-id="project ? project.id : 0"
       @update:document="updateDocument" @signed="documentSigned" />
   </n-modal>
@@ -36,7 +36,7 @@ export default {
     document: undefined,
     project: null,
     me: null,
-    statuses,
+    // statuses,
   }),
   computed: {
     status() {
@@ -68,7 +68,11 @@ export default {
         this.project = document.owner
   
         $api.auth.info($app.store.state('app.company').id, this.project.id).then((response) => {
-          this.me = response.data.content
+          const data = response.data.content
+          this.me = {
+            id: data.user.id,
+            accesses: [],
+          }
         }).finally(() => {
           this.$var('load', false)
         })
@@ -123,8 +127,8 @@ export default {
       margin: 30px 0 20px;
     }
     &::v-deep > .n-wrapper {
-      width: 1100px;
-      left: calc(50% - 550px);
+      width: 1300px;
+      left: calc(50% - 650px);
     }
   
     .signs-block {

@@ -45,7 +45,6 @@ export default {
     line-height: 1;
     font-size: .7em;
     padding: 0 20px;
-    margin-top: 1px;
     height: 0;
     white-space: nowrap;
     float: left;

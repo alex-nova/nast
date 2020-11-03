@@ -7,6 +7,7 @@ export default {
     fields: {},
     values: {},
     projectId: {},
+    document: {},
     settings: { type: Object, default: () => defaultSettings, },
   },
 }

@@ -60,6 +60,9 @@ export default class CustomApi {
         edit: (documentId, fileId, data) => $app.api.patch([ 'edms/documents*/files*', documentId, fileId, ]).data(data),
         delete: (documentId, fileId) => $app.api.delete([ 'edms/documents*/files*', documentId, fileId, ]),
       },
+      data: {
+        get: (id, path) => $app.api.get([ 'edms/documents*/data*', id, path, ]),
+      },
   
       getFilesByWork: (id) => $app.api.get([ 'edms/documents/works*/documents', id, ]),
       getFilesByConstruction: (id) => $app.api.get([ 'edms/documents/constructions*/documents', id, ]),
@@ -73,7 +76,7 @@ export default class CustomApi {
       create: (documentId, tableName, data) => $app.api.post([ 'edms/documents**', documentId, tableName, ]).data(data),
       edit: (documentId, tableName, recordId, data) => $app.api.patch([ 'edms/documents***', documentId, tableName, recordId, ]).data(data),
       changeStatus: (documentId, tableName, recordId, data) =>
-        $app.api.patch([ 'edms/documents***/status', documentId, tableName, recordId, ]).data(data),
+        $app.api.post([ 'edms/documents***/status', documentId, tableName, recordId, ]).data(data),
       sign: (documentId, tableName, recordId, data) => $app.api.post([ 'edms/documents***/sign', documentId, tableName, recordId, ]).data(data),
       delete: (documentId, tableName, recordId) => $app.api.delete([ 'edms/documents***', documentId, tableName, recordId, ]),
     },
@@ -214,9 +217,9 @@ export default class CustomApi {
     delete: (projectId, id) => $app.api.delete([ 'projects*/acts*', projectId, id, ]),
   }
   
-  data = {
-    get: (projectId, code) => $app.api.get([ 'projects*/data*', projectId, code, ]),
-  }
+  // data = {
+  //   get: (projectId, code) => $app.api.get([ 'projects*/data*', projectId, code, ]),
+  // }
   
   dictionaries = {
     get: (name) => $app.api.get([ 'dictionaries*', name, ]).size(999),

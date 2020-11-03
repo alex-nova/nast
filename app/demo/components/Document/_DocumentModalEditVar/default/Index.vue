@@ -82,7 +82,7 @@ export default {
   methods: {
     load() {
       this.$var('load', true)
-      $api.data.get(this.projectId, this.api).then((response) => {
+      $api.edms.documents.data.get(this.document.id, this.api).then((response) => {
         if (this.select) {
           this.data = response.data.content
         } else if (!this.$form.get('value')) {

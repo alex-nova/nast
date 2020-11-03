@@ -18,6 +18,15 @@ export default (projectId) => ({
     removeFile: (documentId, fileId) => $api.edms.documents.files.delete(documentId, fileId),
   },
   
+  translates: {
+    statuses: {
+      draft: 'Черновик',
+      formed: 'Ожидает подписания',
+      approved: 'Подписан',
+      rejected: 'Отклонен',
+    },
+  },
+  
   custom: {
     projectId,
   },

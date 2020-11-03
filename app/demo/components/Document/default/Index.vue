@@ -1,6 +1,19 @@
 <template>
   <div class="n-document">
     <n-loader :loading="loading || $var('load')" />
+    
+    <n-divide v-if="document.id" class="n-tools">
+      <div style="width: 100%">
+        <n-input title="Статус" :value="settings.translates.statuses[document.status]" text />
+      </div>
+      <n-items style="text-align: right">
+<!--        <n-button v-for="status in actions.push" :key="status" icon="long-arrow-alt-right" @click="changeStatus(status)">-->
+<!--          Отправить на подписание-->
+<!--        </n-button>-->
+        <n-button v-if="actions.delete" color="danger" icon="trash" flat round @click="remove" />
+      </n-items>
+    </n-divide>
+    
     <n-tabs :data="tabs" name="page" state />
     
     <div class="n-paper">
@@ -19,7 +32,7 @@
     </div>
   
     <n-document-modal-edit-var
-      v-if="$var('editVar')" :name="$var('editVar')" :project-id="projectId" :fields="template.fields" :values="document.fields" :settings="settings"
+      v-if="$var('editVar')" :name="$var('editVar')" :project-id="projectId" :document="document" :fields="template.fields" :values="document.fields" :settings="settings"
       @submit="editVar" @close="$var('editVar', false)" />
     <n-document-modal-record
       v-if="$var('createRecord')" :template="template" :table-name="$var('createRecord')"
@@ -40,7 +53,7 @@ import reduce from 'lodash/reduce'
 import isObject from 'lodash/isObject'
 import each from 'lodash/each'
 import props from './../props'
-import { contentParserComponent, replaceSigns, replaceTables, replaceVars, } from './../utils'
+import { calcAvailableActions, contentParserComponent, replaceSigns, replaceTables, replaceVars, } from './../utils'
 import NDocumentField from './../_DocumentField/default/Index'
 import NDocumentModalEditVar from './../_DocumentModalEditVar/default/Index'
 import NDocumentModalRecord from './../_DocumentModalRecord/default/Index'
@@ -54,14 +67,18 @@ export default {
     records: {},
   }),
   computed: {
-    parser() {
-      if (this.template && this.document) {
-        return reduce(this.content, (result, content, name) => {
-          result[name] = contentParserComponent(this.prepareContent(content))
-          return result
-        }, {})
-      }
-      return []
+    myActors() {
+      return reduce(this.template.actors, (result, item, actorName) => {
+        if (item.field && this.document.fields[item.field]?.id === this.me.id) {
+          result.push(actorName)
+        } else if (item.accesses) {
+          result.push(actorName) // todo сделать доступы
+        }
+        return result
+      }, [])
+    },
+    actions() {
+      return calcAvailableActions(this.template, this.document, this.myActors)
     },
     tabs() {
       const result = []
@@ -73,9 +90,18 @@ export default {
         result.push({ name: 'main', title: 'Документ', })
       }
       if (this.document.id) { // при просмотре шаблона файлы показывать не надо
-        result.push({ name: 'files', title: 'Файлы', })
+        result.push({ name: 'files', title: 'Приложения', })
       }
       return result
+    },
+    parser() {
+      if (this.template && this.document) {
+        return reduce(this.content, (result, content, name) => {
+          result[name] = contentParserComponent(this.prepareContent(content))
+          return result
+        }, {})
+      }
+      return []
     },
     content() {
       return isObject(this.template.content) ? this.template.content : { main: this.template.content, }
@@ -224,23 +250,32 @@ export default {
 
 <style lang="scss" scoped>
   .n-document {
+    .n-tools {
+      margin: 0 0 20px;
+      font-size: .9em;
+      .n-button {
+        font-size: .9em;
+      }
+    }
+    
     .n-paper {
       position: relative;
       background: white;
       border: 1px solid #eee;
       box-shadow: 1px 1px 2px rgba(127, 127, 127, .5);
-      padding: 80px 80px;
-      font-size: .8em;
-      min-height: 800px;
-      
-      .n-content {
-      }
+      padding: 60px 80px;
+      min-height: 1200px;
     }
   
     .n-paper .n-content::v-deep {
+      font-size: .8em;
+      
       p {
-        line-height: 2.2;
+        line-height: 2;
         margin: 20px 0;
+      }
+      li {
+        line-height: 2;
       }
       table {
         width: 100%;

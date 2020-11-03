@@ -11,6 +11,15 @@ export default {
     removeFile: (documentId, fileId) => {},
   },
   
+  translates: {
+    statuses: {
+      draft: 'Черновик',
+      formed: 'Ожидает подписания',
+      approved: 'Подписан',
+      rejected: 'Отклонен',
+    },
+  },
+  
   custom: {},
   
   loadFieldData(name) {

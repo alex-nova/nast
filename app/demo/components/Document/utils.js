@@ -1,5 +1,7 @@
 import qrcode from 'qrcode-generator'
 import get from 'lodash/get'
+import each from 'lodash/each'
+import isArray from 'lodash/isArray'
 import NDocumentField from './_DocumentField/default/Index'
 
 // https://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
@@ -105,4 +107,36 @@ export const replaceSigns = (content, document, authorId) => {
     const signName = strP.substr(6, strP.length - 7)
     return `<n-document-sign sign="getSign('${signName}')" :title="getSignTitle('${signName}')" :author-id="${authorId}" @doSign="s_doSign" />`
   })
+}
+
+export const calcAvailableActions = (template, document, myActors) => {
+  const actions = {
+    edit: [],
+    delete: false,
+    push: [],
+    // sign: null,
+  }
+  if (document.id) {
+    each(template.statuses[document.status], (value, actorName) => {
+      if (!myActors.includes(actorName)) return
+      
+      if (value.edit === true) {
+        actions.edit = Object.keys(template.fields)
+      }
+      if (isArray(value.edit)) {
+        each(value.edit, (item) => {
+          if (!actions.edit.includes(item)) actions.edit.push(item)
+        })
+      }
+      if (!actions.delete && actorName.delete) {
+        actions.delete = actorName.delete
+      }
+      if (isArray(value.push)) {
+        each(value.push, (item) => {
+          if (!actions.push.includes(item)) actions.push.push(item)
+        })
+      }
+    })
+  }
+  return actions
 }

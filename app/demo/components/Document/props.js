@@ -35,7 +35,9 @@ export default {
     template: { type: Object, default: undefined, },
     editable: { type: Boolean, default: false, },
     loading: { type: Boolean, default: false, },
+    // todo заменить на me
     authorId: { type: Number, default: 0, },
+    me: { type: Object, default: () => ({ id: 0, accesses: [], }), },
     settings: { type: Object, default: () => defaultSettings, },
     
     getData: {},

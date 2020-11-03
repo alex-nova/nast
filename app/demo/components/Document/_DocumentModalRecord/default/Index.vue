@@ -17,7 +17,7 @@
       </template>
       <n-divide>
         <div>
-          <n-button v-if="editable && status === 'draft'" @click="changeStatus('formed')">Отправить на согласование</n-button>
+<!--          <n-button v-if="editable && status === 'draft'" @click="changeStatus('formed')">Отправить на согласование</n-button>-->
         </div>
         <div>
           <n-button @click="$emit('close')">Закрыть</n-button>
