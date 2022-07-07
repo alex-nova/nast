@@ -13,7 +13,7 @@
     "cookie-universal": "^2.0.16",
     "core-js": "^2.6.5",
     "localforage": "^1.7.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "nast": "file:app/nast",
     "nast-ui": "file:./../nast-ui/app/nast-ui",
     "vue": "^2.6.10",
